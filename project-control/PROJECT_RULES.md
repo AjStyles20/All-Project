@@ -141,3 +141,20 @@ Read `docs/DOCUMENTATION_GUIDELINES.md` for the default professional standard. `
 Not every project is intended for school or university submission. Do not force dissertation chapters, academic front matter, school-specific formatting, or academic submission language onto general projects.
 
 When AJ later designates a project as academic, derive the academic version from the verified professional project state, research evidence, architecture, implementation, testing, and limitations. Do not modify technical reality merely to make it fit an academic template.
+
+## 21. Technology and Platform Selection Must Be Explicit
+Every project must explicitly record its primary platform, primary language(s), framework(s), frontend approach, storage/database approach, deployment target, and major AI/external-service choices before substantial implementation.
+
+Read `docs/TECHNOLOGY_PLATFORM_SELECTION.md` for the default selection standard.
+
+Default preferences when technically suitable:
+- Python as the primary application/backend and AI/data language.
+- Web application delivery for products naturally centered on dashboards, documents, AI interaction, forms, administration, collaboration, or cross-device access.
+- HTML/CSS/lightweight JavaScript before introducing a heavy frontend framework.
+- React only when UI complexity, client-side state, component reuse, or a deliberate learning objective justifies it.
+
+A web application may be a complete, full-fledged application. Native desktop/mobile delivery must be justified by actual platform requirements rather than by appearance or perceived seriousness.
+
+Python-first does not mean Python-only. C, C++, C#, Java, JavaScript/TypeScript, or other technologies may be selected when the project's runtime, hardware, performance, ecosystem, or deployment requirements materially favor them.
+
+Changing an approved project's core language, framework, database, or primary platform is an A3 decision unless the change was already explicitly approved as part of a planned migration path.

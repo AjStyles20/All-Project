@@ -5,7 +5,7 @@
 - Project ID: P001
 - Owner: AJ
 - Status: ACTIVE
-- Stage: Secure bounded multi-turn text practice workflow implemented and CI verified with test-only providers; real provider and AJ-device live verification remain outstanding.
+- Stage: Secure bounded multi-turn practice workflow plus optional review-before-submit speech input implemented and CI verified; real provider/device verification remains outstanding.
 - Last verified date: 2026-09-08
 
 ## Approved Direction
@@ -20,7 +20,7 @@ Create a defensible web application that helps users practice presentations, def
 - React: optional later only when UI/client-state complexity justifies it
 - Document ingestion: provenance-aware TXT/Markdown/PDF/DOCX/PPTX
 - Retrieval: inspectable lexical FTS5 plus optional provider-neutral semantic layer
-- AI services: provider-adapter interfaces; no production provider hard-coded into the core
+- AI/speech services: provider-adapter interfaces; no production provider hard-coded into the core
 - Security baseline: active release gate for every substantial feature
 
 ## Verified Engineering Progress
@@ -31,29 +31,46 @@ Create a defensible web application that helps users practice presentations, def
 - Feature 005: evidence-aware qualitative answer evaluation — CI VERIFIED with test-only evaluator
 - Feature 006: secure server-rendered UI — CI VERIFIED
 - Feature 007: optional OpenAI provider adapter — CI VERIFIED with mocked HTTP; PR #7 READY FOR REVIEW; real authenticated call NOT VERIFIED
-- Feature 008: bounded multi-turn defense sessions — CI VERIFIED with test-only follow-up provider; real authenticated follow-up NOT VERIFIED
+- Feature 008: bounded multi-turn defense sessions — CI VERIFIED; PR #8 READY FOR REVIEW; real authenticated follow-up NOT VERIFIED
+- Feature 009: secure microphone/speech input — CI VERIFIED with fake/mocked transcription providers; real microphone/provider NOT VERIFIED
 
-## Feature 008 Current Behavior
-A practice session now:
-1. belongs to exactly one workspace;
-2. has one approved reviewer role and topic;
-3. starts from a normal source-grounded reviewer question;
-4. records ordered turns and parent-question linkage;
-5. requires the current question to have an answer/evaluation before another challenge can be generated;
-6. reconstructs follow-up evidence from authoritative stored question provenance rather than client-submitted evidence;
-7. restricts follow-up decisions to a fixed allowlist (`probe_missing`, `challenge_unsupported`, `clarify_reasoning`, `request_evidence`, `deepen_topic`, `complete`);
-8. enforces a configurable maximum with a hard bound of 10 turns;
-9. terminates explicitly when the provider returns `complete` or when limits prevent another turn;
-10. exposes session history through API and a server-rendered session page.
+## Current Practice Flow
+1. Create workspace.
+2. Upload supported source documents.
+3. Extract/chunk with provenance.
+4. Retrieve workspace-scoped evidence.
+5. Generate a grounded reviewer question.
+6. Answer by text, or optionally record audio and explicitly request transcription.
+7. Speech transcript is returned to the answer textarea for review/editing; it is never auto-submitted.
+8. Submit answer for five-category evidence-aware qualitative feedback.
+9. In a bounded defense session, generate evidence-grounded follow-up challenges only after the current question has been answered/evaluated.
+10. Stop when the reviewer returns `complete` or the configured turn bound is reached.
+
+## Feature 009 Privacy / Security Behavior
+- microphone capture never starts automatically;
+- browser microphone invocation occurs only from the explicit Start button handler;
+- camera and geolocation remain denied;
+- recording stops at 120 seconds maximum;
+- Cancel discards captured data;
+- Stop recording does not transmit audio;
+- Transcribe recording is a separate explicit network-consent action;
+- UI discloses the configured transcription provider/model before the user records/sends audio;
+- server validates workspace/question ownership, audio size and media type;
+- raw audio is not persisted by the application;
+- transcript is bounded to the existing 8000-character answer limit;
+- transcription does not create an answer/evaluation automatically;
+- text answer remains available when speech is unsupported, denied, or unconfigured;
+- provider credential stays server-side/environment-only;
+- provider raw error bodies are not exposed to users.
 
 ## Security Posture
 - Security baseline: ACTIVE
 - Parameterized SQLite statements: in use
-- Workspace scoping/ownership checks: implemented across retrieval/question/evaluation/session paths
-- Upload size/extension/parser controls: implemented within current feature bounds
+- Workspace scoping/ownership checks: implemented across retrieval/question/evaluation/session/transcription paths
+- Upload/audio bounds and allowlists: implemented within current feature bounds
 - Cross-workspace question/evidence/session checks: tested
 - Prompt/instruction separation: tested at request-structure and mocked provider-payload level
-- Provider outputs: bounded and validated before persistence
+- Provider outputs: bounded/validated before persistence or use
 - Provider tools/actions: disabled for current OpenAI adapters
 - API secrets: environment-only; not stored in source/UI/database
 - Dependency audit in CI: active
@@ -63,22 +80,24 @@ A practice session now:
 - Security claim: do not describe the product as production-ready, tamper-proof, hack-proof, or universally prompt-injection-proof
 
 ## Current Verification Gate
-Feature 008 checked-out GitHub CI:
+Feature 009 checked-out GitHub CI:
+- final run ID: `34207981904`
+- checked-out merge ref: `6b66dfaf3d55ac4806389928dd433a92766229fb`
 - Ubuntu 24.04 / Python 3.12.14
 - compile check: PASS
-- 82 tests PASS
+- 95 tests PASS
 - dependency audit: no known vulnerabilities found at verification time
-- real external provider request: NOT RUN
-- AJ Windows/browser verification: NOT RUN
+- real external transcription request: NOT RUN
+- AJ Windows/browser/microphone verification: NOT RUN
 
 ## Research / Claim Boundary
-- Historical research window: approximately 1990-present
 - Generic `AI presentation coach with questions` novelty: CONTRADICTED
-- Stronger differentiated direction: source-grounded, evidence-traceable technical/research review with explicit reviewer roles, transparent uncertainty, and bounded multi-turn challenge behavior: UNDER REVIEW / PROVISIONALLY ACCEPTED
+- Stronger differentiated direction: source-grounded, evidence-traceable technical/research review with explicit reviewer roles, transparent uncertainty, bounded multi-turn challenge behavior, and optional voice interaction: UNDER REVIEW / PROVISIONALLY ACCEPTED
 - Educational effectiveness claim: UNSUPPORTED
 - Human-examiner equivalence claim: UNSUPPORTED
 - Confidence/anxiety improvement claim: UNSUPPORTED
 - Objective presentation-quality scoring claim: UNSUPPORTED
+- Voice emotion/confidence/accent scoring claim: NOT IMPLEMENTED / NOT CLAIMED
 
 ## Current Pull Request Stack
 - PR #1 — Feature 001
@@ -88,16 +107,18 @@ Feature 008 checked-out GitHub CI:
 - PR #5 — Feature 005, stacked on #4
 - PR #6 — Feature 006, stacked on #5
 - PR #7 — Feature 007, stacked on #6, READY FOR REVIEW
-- PR #8 — Feature 008, stacked on #7, CI VERIFIED but remains draft pending final review/state synchronization
+- PR #8 — Feature 008, stacked on #7, READY FOR REVIEW
+- PR #9 — Feature 009, stacked on #8, CI VERIFIED; ready-state pending final documentation/PR transition
 
 ## Current Limitations
-- no real authenticated OpenAI provider verification yet
-- no speech input/output or delivery analysis
+- no real authenticated external AI/transcription verification yet
+- no AJ-device/browser/microphone verification
+- no speech output/TTS yet
+- no delivery analysis
 - no authentication/multi-user authorization
 - no public deployment hardening/rate limiting
 - no OCR for scanned PDFs
 - no image/chart/diagram understanding
-- no AJ-device/browser verification
 
 ## Next Engineering Gate
-Complete Feature 008 review/state synchronization, then choose between (a) AJ-controlled live provider verification and local browser verification, or (b) a bounded speech-input/output slice. Live provider verification must never require putting an API key into source control or browser forms.
+Close Feature 009 review state, then implement speech output/TTS as a separate bounded feature if it preserves accessibility and does not make audio mandatory. Live provider/device verification remains a separate AJ-controlled gate and must never require committing or pasting secrets into source/browser forms.

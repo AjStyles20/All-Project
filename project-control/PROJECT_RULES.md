@@ -121,3 +121,23 @@ Every agent must leave a handoff containing:
 
 ## 18. Prefer Truth Over Presentation
 A professionally presented truthful prototype is superior to an impressive interface that exaggerates capability, hides simulation, fabricates data, or misstates verification.
+
+## 19. Professional Documentation Is the Default
+All Project OS documentation must default to professional, product-neutral, and institution-neutral presentation.
+
+Do not include or infer:
+- school/university name
+- faculty or department name
+- supervisor, lecturer, examiner, head of department, dean, or staff names
+- registration/student number
+- institutional declaration, certification, approval, or submission wording
+- institutional branding, cover colour, signature blocks, or hard-copy/submission instructions
+
+These fields are opt-in and may be added only when AJ explicitly selects a project for academic adaptation.
+
+Read `docs/DOCUMENTATION_GUIDELINES.md` for the default professional standard. `docs/ACADEMIC_ADAPTATION_PROFILE.md` is optional and must not be activated automatically.
+
+## 20. Academic Formatting Is a Derived Layer
+Not every project is intended for school or university submission. Do not force dissertation chapters, academic front matter, school-specific formatting, or academic submission language onto general projects.
+
+When AJ later designates a project as academic, derive the academic version from the verified professional project state, research evidence, architecture, implementation, testing, and limitations. Do not modify technical reality merely to make it fit an academic template.

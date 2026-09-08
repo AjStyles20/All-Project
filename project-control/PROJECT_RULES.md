@@ -158,3 +158,24 @@ A web application may be a complete, full-fledged application. Native desktop/mo
 Python-first does not mean Python-only. C, C++, C#, Java, JavaScript/TypeScript, or other technologies may be selected when the project's runtime, hardware, performance, ecosystem, or deployment requirements materially favor them.
 
 Changing an approved project's core language, framework, database, or primary platform is an A3 decision unless the change was already explicitly approved as part of a planned migration path.
+
+## 22. Security Is a Release Gate
+All projects must be designed and implemented with secure defaults. Security must be considered at requirements, architecture, implementation, testing, verification, deployment, and maintenance stages; it is not a final cleanup phase.
+
+At minimum, applicable projects must address:
+- server-side validation of untrusted input;
+- injection prevention and parameterized database access;
+- strict file-upload validation and resource limits;
+- authentication and authorization before protected remote/multi-user use;
+- least privilege and default-deny access controls;
+- secret management outside source code;
+- safe error handling without sensitive information leakage;
+- dependency and supply-chain review;
+- rate/resource limits before public or costly endpoints;
+- secure browser controls such as output encoding, CSRF/CORS/session protections where applicable;
+- secure external-service timeouts and failure behavior;
+- threat review for modified trust boundaries and security regression testing.
+
+For AI/RAG systems, uploaded/retrieved content must be treated as untrusted data rather than trusted instructions. Prompt injection, retrieval poisoning, cross-workspace data leakage, tool/action authorization, model-output trust boundaries, and provider cost/resource abuse must be explicitly tested before public deployment.
+
+No project may be described as `secure`, `hardened`, `tamper-proof`, or `production-ready` solely because functional tests pass. Security claims require project-specific review and deployment evidence.

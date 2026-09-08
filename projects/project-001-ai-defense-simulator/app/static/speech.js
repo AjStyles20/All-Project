@@ -34,6 +34,7 @@
     let chunks = [];
     let recordedBlob = null;
     let timer = null;
+    let discardOnStop = false;
 
     function setStatus(text) {
       status.textContent = text;
@@ -66,20 +67,27 @@
     start.addEventListener("click", async () => {
       try {
         recordedBlob = null;
+        discardOnStop = false;
         transcribe.disabled = true;
         stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
         const mimeType = chooseMimeType();
         recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
         chunks = [];
         recorder.addEventListener("dataavailable", (event) => {
-          if (event.data && event.data.size > 0) chunks.push(event.data);
+          if (!discardOnStop && event.data && event.data.size > 0) chunks.push(event.data);
         });
         recorder.addEventListener("stop", () => {
+          if (discardOnStop) {
+            resetRecording();
+            discardOnStop = false;
+            setStatus("Recording cancelled. No audio was sent.");
+            return;
+          }
           const type = recorder.mimeType || mimeType || "audio/webm";
           recordedBlob = new Blob(chunks, { type });
           resetRecording({ keepBlob: true });
           if (recordedBlob.size > 0) {
-            setStatus("Recording stopped. Review your choice, then select Transcribe recording to send the audio for transcription.");
+            setStatus("Recording stopped. Select Transcribe recording if you choose to send the audio for transcription.");
           } else {
             recordedBlob = null;
             transcribe.disabled = true;
@@ -109,11 +117,12 @@
 
     cancel.addEventListener("click", () => {
       if (recorder && recorder.state === "recording") {
-        recorder.ondataavailable = null;
-        try { recorder.stop(); } catch (_) { /* already stopped */ }
+        discardOnStop = true;
+        try { recorder.stop(); } catch (_) { resetRecording(); }
+      } else {
+        resetRecording();
+        setStatus("Recording cancelled. No audio was sent.");
       }
-      resetRecording();
-      setStatus("Recording cancelled. No audio was sent.");
     });
 
     transcribe.addEventListener("click", async () => {

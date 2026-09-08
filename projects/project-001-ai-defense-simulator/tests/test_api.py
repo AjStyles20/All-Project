@@ -13,6 +13,7 @@ def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     database.initialize()
     monkeypatch.setattr(main, "db", database)
     monkeypatch.setattr(main, "MAX_UPLOAD_BYTES", 64)
+    monkeypatch.setattr(main, "embedding_provider", None)
     with TestClient(main.app) as test_client:
         yield test_client
 
@@ -25,13 +26,18 @@ def create_workspace(client: TestClient, name: str = "Verification Workspace") -
     return payload["id"]
 
 
-def test_health_reports_ai_provider_not_configured(client: TestClient):
+def test_health_reports_ai_and_semantic_provider_not_configured(client: TestClient):
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {
         "application": "available",
         "database": "available",
         "ai_provider": "not configured",
+        "semantic_retrieval": {
+            "status": "not configured",
+            "provider": None,
+            "model": None,
+        },
     }
 
 
@@ -39,6 +45,12 @@ def test_workspace_creation_rejects_blank_name(client: TestClient):
     response = client.post("/api/workspaces", data={"name": "   "})
     assert response.status_code == 422
     assert response.json()["detail"] == "Workspace name is required"
+
+
+def test_workspace_creation_rejects_excessive_name(client: TestClient):
+    response = client.post("/api/workspaces", data={"name": "x" * 121})
+    assert response.status_code == 422
+    assert response.json()["detail"] == "Workspace name is too long"
 
 
 def test_valid_markdown_upload_and_search_preserve_provenance(client: TestClient):
@@ -66,12 +78,46 @@ def test_valid_markdown_upload_and_search_preserve_provenance(client: TestClient
     payload = search.json()
     assert payload["workspace_id"] == workspace_id
     assert payload["query"] == "rainfall"
+    assert payload["retrieval"]["effective_mode"] == "lexical"
     assert len(payload["results"]) == 1
     result = payload["results"][0]
     assert result["document_id"] == document["id"]
     assert result["filename"] == "evidence.md"
     assert result["locator"]
     assert "rainfall" in result["text"].lower()
+
+
+def test_hybrid_request_fails_closed_to_explicit_lexical_when_provider_missing(client: TestClient):
+    workspace_id = create_workspace(client)
+    upload = client.post(
+        f"/api/workspaces/{workspace_id}/documents",
+        files={"file": ("evidence.md", b"Rainfall evidence for flood review.", "text/markdown")},
+    )
+    assert upload.status_code == 200
+
+    response = client.get(
+        f"/api/workspaces/{workspace_id}/search",
+        params={"q": "rainfall", "mode": "hybrid"},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["retrieval"] == {
+        "requested_mode": "hybrid",
+        "effective_mode": "lexical",
+        "semantic_status": "not configured",
+        "provider": None,
+        "model": None,
+    }
+    assert payload["results"][0]["semantic_similarity"] is None
+
+
+def test_invalid_search_mode_is_rejected(client: TestClient):
+    workspace_id = create_workspace(client)
+    response = client.get(
+        f"/api/workspaces/{workspace_id}/search",
+        params={"q": "rainfall", "mode": "unsafe-mode"},
+    )
+    assert response.status_code == 422
 
 
 def test_upload_to_unknown_workspace_returns_404(client: TestClient):
@@ -91,6 +137,16 @@ def test_unsupported_upload_is_rejected(client: TestClient):
     )
     assert response.status_code == 415
     assert "Unsupported file type" in response.json()["detail"]
+
+
+def test_excessive_filename_is_rejected(client: TestClient):
+    workspace_id = create_workspace(client)
+    response = client.post(
+        f"/api/workspaces/{workspace_id}/documents",
+        files={"file": (("a" * 252) + ".md", b"content", "text/markdown")},
+    )
+    assert response.status_code == 422
+    assert response.json()["detail"] == "Filename is too long"
 
 
 def test_empty_upload_is_rejected(client: TestClient):

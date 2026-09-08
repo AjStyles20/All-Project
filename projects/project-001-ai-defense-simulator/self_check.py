@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
-import sqlite3
 import sys
 
+from app.db import Database
 from app.local_runtime import LocalRuntimeConfigurationError, load_local_runtime_settings
 from app.openai_provider import ProviderConfigurationError, load_openai_settings_from_env
 
@@ -32,13 +31,11 @@ def main() -> int:
     print(f"PASS writable data directory: {db_path.parent}")
 
     try:
-        with sqlite3.connect(db_path) as connection:
-            connection.execute("PRAGMA foreign_keys = ON")
-            connection.execute("CREATE TABLE IF NOT EXISTS local_self_check (id INTEGER PRIMARY KEY, checked_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)")
-    except sqlite3.Error as exc:
-        print(f"FAIL SQLite initialization: {exc}")
+        Database(db_path).initialize()
+    except Exception as exc:
+        print(f"FAIL SQLite initialization: {type(exc).__name__}")
         return 4
-    print("PASS SQLite initialization")
+    print("PASS canonical SQLite initialization")
 
     try:
         provider = load_openai_settings_from_env()

@@ -11,7 +11,8 @@
   <div>
     <p class="eyebrow">Bounded defense session</p>
     <h1>{{ session.topic }}</h1>
-    <p class="muted">Reviewer: {{ session.reviewer_role }} · Status: {{ session.status }} · Maximum turns: {{ session.max_turns }}</p>
+    <p><strong>{{ session.answered_count }} of {{ session.turn_count }} generated turn(s) answered</strong> · Current turn {{ session.current_turn_index or 0 }} of maximum {{ session.max_turns }}</p>
+    <p class="muted">Reviewer: {{ session.reviewer_role }} · Status: {{ session.status }}</p>
   </div>
 </header>
 
@@ -21,12 +22,17 @@
     <ol class="question-history">
       {% for turn in session.turns %}
         <li>
-          <p><strong>Turn {{ turn.turn_index }}</strong> <span class="badge">{{ turn.follow_up_type }}</span></p>
+          <p>
+            <strong>Turn {{ turn.turn_index }}</strong>
+            <span class="badge">{{ turn.follow_up_type | replace('_', ' ') }}</span>
+            {% if turn.is_current %}<span>· Current turn</span>{% endif %}
+            · {% if turn.answered %}Answered{% else %}Awaiting answer{% endif %}
+          </p>
           <p>{{ turn.question_text }}</p>
           <p class="muted">{{ turn.rationale }}</p>
           <p>
-            <a href="/workspaces/{{ workspace.id }}/questions/{{ turn.question_id }}">
-              {% if turn.answered %}View answer and feedback{% else %}Answer this question{% endif %}
+            <a href="/workspaces/{{ workspace.id }}/sessions/{{ session.id }}/questions/{{ turn.question_id }}">
+              {% if turn.answered %}Review turn and feedback{% else %}Answer current turn{% endif %}
             </a>
           </p>
         </li>
@@ -41,11 +47,15 @@
   <h2 id="next-title">Next step</h2>
   {% if session.status == 'complete' %}
     <div class="notice neutral" role="status">This session is complete. No further challenge will be generated.</div>
+    <p>You can review any turn above or return to the workspace to start another bounded rehearsal.</p>
+    <p><a href="/workspaces/{{ workspace.id }}">Return to workspace</a></p>
   {% elif session.turns and not session.turns[-1].answered %}
-    <div class="notice neutral" role="status">Answer the current question before requesting a follow-up.</div>
+    <div class="notice neutral" role="status">Turn {{ session.current_turn_index }} is awaiting your answer.</div>
+    <p><a href="/workspaces/{{ workspace.id }}/sessions/{{ session.id }}/questions/{{ session.current_question_id }}">Continue with current question</a></p>
   {% elif followup_configured %}
+    <p>Your latest answer has feedback. Generate one evidence-grounded follow-up to continue this same rehearsal.</p>
     <form method="post" action="/ui/workspaces/{{ workspace.id }}/sessions/{{ session.id }}/follow-up">
-      <button type="submit">Generate evidence-grounded follow-up</button>
+      <button type="submit">Generate next reviewer challenge</button>
     </form>
   {% else %}
     <div class="notice neutral" role="status">Follow-up generation is not configured. The application will not fabricate another question.</div>

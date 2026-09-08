@@ -90,7 +90,7 @@ def test_max_turns_enforced(tmp_path):
     session = create_session(db, workspace_id=ws["id"], reviewer_role="technical", topic="provenance", max_turns=1)
     attach_initial_question(db, session_id=session["id"], workspace_id=ws["id"], question_id=question["id"])
     evaluate_and_store_answer(db, workspace_id=ws["id"], question_id=question["id"], answer="It stores provenance.", provider=E())
-    with pytest.raises(ValueError, match="maximum"):
+    with pytest.raises(ValueError, match="complete"):
         generate_follow_up(db, session_id=session["id"], workspace_id=ws["id"], provider=F())
 
 

@@ -7,10 +7,8 @@ from pathlib import Path
 import re
 
 from docx import Document
-from docx.opc.exceptions import PackageNotFoundError as DocxPackageNotFoundError
 from pypdf import PdfReader
 from pptx import Presentation
-from pptx.exc import PackageNotFoundError as PptxPackageNotFoundError
 
 SUPPORTED_EXTENSIONS = {".txt", ".md", ".pdf", ".docx", ".pptx"}
 
@@ -144,10 +142,9 @@ def _extract_pdf(data: bytes) -> list[TextChunk]:
             ) from exc
         if not text:
             continue
-        page_chunks = chunk_text(text)
         chunks.extend(
             _prefix_and_reindex(
-                page_chunks,
+                chunk_text(text),
                 locator_prefix=f"page {page_number}",
                 start_index=len(chunks),
             )
@@ -158,7 +155,7 @@ def _extract_pdf(data: bytes) -> list[TextChunk]:
 def _extract_docx(data: bytes) -> list[TextChunk]:
     try:
         document = Document(BytesIO(data))
-    except (DocxPackageNotFoundError, Exception) as exc:
+    except Exception as exc:
         raise DocumentExtractionError("DOCX could not be opened") from exc
 
     chunks: list[TextChunk] = []
@@ -166,10 +163,9 @@ def _extract_docx(data: bytes) -> list[TextChunk]:
         text = paragraph.text.strip()
         if not text:
             continue
-        paragraph_chunks = chunk_text(text)
         chunks.extend(
             _prefix_and_reindex(
-                paragraph_chunks,
+                chunk_text(text),
                 locator_prefix=f"paragraph {paragraph_number}",
                 start_index=len(chunks),
             )
@@ -180,7 +176,7 @@ def _extract_docx(data: bytes) -> list[TextChunk]:
 def _extract_pptx(data: bytes) -> list[TextChunk]:
     try:
         presentation = Presentation(BytesIO(data))
-    except (PptxPackageNotFoundError, Exception) as exc:
+    except Exception as exc:
         raise DocumentExtractionError("PPTX could not be opened") from exc
 
     chunks: list[TextChunk] = []
@@ -194,10 +190,9 @@ def _extract_pptx(data: bytes) -> list[TextChunk]:
                 parts.append(text)
         if not parts:
             continue
-        slide_chunks = chunk_text("\n\n".join(parts))
         chunks.extend(
             _prefix_and_reindex(
-                slide_chunks,
+                chunk_text("\n\n".join(parts)),
                 locator_prefix=f"slide {slide_number}",
                 start_index=len(chunks),
             )
@@ -213,10 +208,9 @@ def extract_document_chunks(filename: str, data: bytes) -> list[TextChunk]:
 
     if extension in {".txt", ".md"}:
         try:
-            text = decode_text_file(data)
+            return chunk_text(decode_text_file(data))
         except UnicodeDecodeError as exc:
             raise DocumentExtractionError("Text file must contain valid UTF-8") from exc
-        return chunk_text(text)
     if extension == ".pdf":
         return _extract_pdf(data)
     if extension == ".docx":

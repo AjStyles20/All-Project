@@ -21,153 +21,83 @@
 - Status: CI VERIFIED WITH TEST-ONLY EMBEDDING PROVIDER; REAL SEMANTIC PROVIDER NOT LIVE VERIFIED
 - Branch: `p001/feature-hybrid-retrieval`
 - Pull request: #3
-- Implemented: provider-neutral embeddings, vector validation, workspace-scoped embedding persistence, stale detection, cosine similarity, explainable hybrid merge, lexical fallback, security bounds, CI + dependency audit.
-- Verification: 32 tests PASS; `pip-audit` reported no known vulnerabilities at verification time.
-- Limitations: no real embedding provider/model configured; weights are not claimed optimal; public/multi-user hardening incomplete.
-- User-device/runtime verification: NOT RUN
-- User verification: NOT RUN
+- Verification: 32 tests PASS; dependency audit reported no known vulnerabilities at verification time.
 
 ## Feature 004 — Secure Source-Grounded Question Generation Foundation
 - Status: CI VERIFIED WITH TEST-ONLY QUESTION GENERATOR; REAL LLM PROVIDER NOT LIVE VERIFIED
 - Branch: `p001/feature-grounded-questioning`
 - Pull request: #4
-- Implemented:
-  - provider-neutral `QuestionGenerator` interface
-  - explicit unavailable state when no provider is configured
-  - trusted generation policy separated from untrusted retrieved evidence
-  - reviewer-role allowlist
-  - bounded topic/evidence/question sizes
-  - source-grounded generation request structure
-  - question provenance persistence
-  - authoritative revalidation that every evidence chunk/document/filename/locator belongs to the target workspace before persistence
-  - controlled provider failures
-  - prompt-injection fixture and cross-workspace evidence tests
-- Verification evidence:
-  - GitHub Actions checked-out PR merge ref: PASS
-  - Python 3.12 compile check: PASS
-  - full regression + Feature 004 suite: 39 passed
-  - prompt-injection wrapper separation: PASS
-  - reviewer-role allowlist: PASS
-  - cross-workspace evidence ownership rejection: PASS
-  - oversized provider output rejection before persistence: PASS
-  - dependency audit: no known vulnerabilities found at verification time
-- Security correction discovered during development:
-  - initial question persistence only verified that the target workspace existed;
-  - security test identified missing independent ownership verification for evidence chunks;
-  - persistence now revalidates each evidence item against authoritative workspace chunks before storage.
-- Explicit limitations:
-  - no real LLM provider/model is configured
-  - no live AI question generation claim
-  - no multi-turn follow-up logic yet
-  - no autonomous tools/web actions
-  - prompt-injection defenses are foundational, not a claim of universal immunity
-- User-device/runtime verification: NOT RUN
-- User verification: NOT RUN
+- Verification: 39 tests PASS; dependency audit reported no known vulnerabilities at verification time.
 
 ## Feature 005 — Secure Evidence-Aware Answer Evaluation Foundation
 - Status: CI VERIFIED WITH TEST-ONLY ANSWER EVALUATOR; REAL AI EVALUATOR NOT LIVE VERIFIED
 - Branch: `p001/feature-answer-evaluation`
 - Pull request: #5
-- Implemented:
-  - provider-neutral `AnswerEvaluator` interface
-  - explicit HTTP 503 unavailable state when no evaluator is configured
-  - trusted evaluation policy separated from untrusted question, answer, and source evidence
-  - answer length and evaluator-output bounds
-  - authoritative question/workspace ownership checks
-  - authoritative evidence reconstruction from stored question chunk IDs
-  - provenance tampering detection for document ID, filename, and locator
-  - fixed five-category qualitative feedback rubric
-  - fixed qualitative status allowlist
-  - explicit prohibition on an objective overall numeric score in this feature
-  - feedback evidence-reference confinement to the authoritative evaluation context
-  - bounded provider/model/version metadata
-  - persistence of answer, feedback, evidence provenance, policy ID, and provider/model metadata
-  - ownership recheck immediately before persistence
-  - end-to-end FastAPI test of document -> question -> answer -> feedback loop with test-only providers
-- Verification evidence:
-  - GitHub Actions checked-out PR merge ref: PASS
-  - Ubuntu 24.04 / Python 3.12.14 compile check: PASS
-  - full regression + Feature 005 suite: 52 passed
-  - prompt/instruction separation: PASS at request-structure level
-  - cross-workspace question rejection: PASS
-  - provenance-tampering rejection: PASS
-  - invalid category/status rejection: PASS
-  - invalid/out-of-context evidence-reference rejection: PASS
-  - oversized answer/summary/provider metadata rejection: PASS
-  - full test-only API practice loop: PASS
-  - dependency audit: no known vulnerabilities found at verification time
-- Explicit limitations:
-  - no real evaluator/LLM provider/model is configured
-  - no live AI evaluation-quality claim
-  - no objective/high-stakes grading claim
-  - no speech/delivery/confidence/emotion evaluation
-  - no public/multi-user deployment hardening claim
-  - prompt-injection controls are foundational, not universal immunity
-- User-device/runtime verification: NOT RUN
-- User verification: NOT RUN
+- Verification: 52 tests PASS; dependency audit reported no known vulnerabilities at verification time.
+- Objective overall numeric grading: INTENTIONALLY NOT CLAIMED.
 
-## Feature 006 — First Usable Secure Server-Rendered Web UI
-- Status: CI VERIFIED — NOT USER-DEVICE/BROWSER VERIFIED
+## Feature 006 — Secure Server-Rendered Web Interface
+- Status: CI VERIFIED; NOT USER-DEVICE VERIFIED
 - Branch: `p001/feature-web-ui`
 - Pull request: #6
+- Implemented: server-rendered Jinja UI, workspace/document/search/question/answer flows, provenance display, security headers, restrictive CSP, host/origin controls, escaped untrusted output, provider-status disclosure.
+- Verification: 59 tests PASS; dependency audit reported no known vulnerabilities at verification time.
+- Public/multi-user deployment security: NOT CLAIMED.
+
+## Feature 007 — Optional Real Provider Adapter
+- Status: CI VERIFIED WITH MOCKED HTTP; LIVE AUTHENTICATED PROVIDER NOT VERIFIED
+- Branch: `p001/feature-real-provider-adapter`
+- Pull request: #7 — READY FOR REVIEW
+- Implemented: environment-only OpenAI configuration, fixed outbound API base, embeddings/question/evaluation adapters, no-tool calls, `store: false`, structured evaluation output, bounded provider errors/timeouts.
+- Verification: 70 tests PASS; dependency audit reported no known vulnerabilities at verification time.
+- API secret: NOT STORED IN SOURCE/UI/DB.
+
+## Feature 008 — Bounded Multi-Turn Defense Sessions
+- Status: CI VERIFIED WITH TEST-ONLY FOLLOW-UP PROVIDER; REAL FOLLOW-UP PROVIDER NOT LIVE VERIFIED
+- Branch: `p001/feature-multiturn-defense`
+- Pull request: #8
 - Implemented:
-  - Jinja2 server-rendered home, workspace, and question pages
-  - workspace creation, document upload, evidence search, question-generation, answer/evaluation form flows
-  - question and evaluation history views
-  - visible filename/locator/source provenance
-  - truthful configured/not-configured capability states
-  - no React dependency and no inline JavaScript in this slice
-  - restrictive Content-Security-Policy and security response headers
-  - trusted-host middleware
-  - explicit rejection of unsafe browser mutations with foreign Origin/cross-site fetch signals
-  - API docs disabled by default
-  - Jinja autoescaped rendering of uploaded/model text
-  - semantic form labels, native keyboard controls, textual status communication, visible focus styling
-  - cross-workspace question-view isolation
+  - workspace-scoped practice sessions;
+  - ordered turn persistence and parent-question linkage;
+  - configurable maximum turns with hard upper bound of 10;
+  - answer/evaluation prerequisite before a follow-up;
+  - authoritative evidence reconstruction from stored question provenance;
+  - explicit provenance mismatch/cross-workspace rejection;
+  - fixed follow-up type allowlist;
+  - explicit `complete` termination state;
+  - trusted follow-up policy separated from untrusted answer/feedback/evidence;
+  - API routes for session creation, history, and follow-up generation;
+  - server-rendered session history UI;
+  - OpenAI follow-up adapter with strict JSON schema, no tools/actions, `store: false`;
+  - provider-neutral/test-only multi-turn integration coverage.
 - Verification evidence:
-  - GitHub Actions checked-out PR #6 merge ref: PASS
-  - Ubuntu 24.04 / Python 3.12.14 compile check: PASS
-  - full regression + Feature 006 suite: 59 passed
-  - script-like uploaded text HTML escaping/XSS regression: PASS
-  - cross-origin unsafe browser mutation rejection: PASS
-  - security-header checks: PASS
-  - API docs disabled by default: PASS
-  - full server-rendered document -> question -> answer -> feedback loop with test-only providers: PASS
-  - cross-workspace question URL isolation: PASS
-  - dependency audit: no known vulnerabilities found at verification time
+  - GitHub Actions checked-out PR merge ref: PASS;
+  - Ubuntu 24.04 / Python 3.12.14 compile check: PASS;
+  - full regression + Feature 008 suite: 82 passed, 2 dependency deprecation warnings;
+  - session/workspace isolation: PASS;
+  - answer-before-follow-up enforcement: PASS;
+  - max-turn and completion enforcement: PASS;
+  - prompt/instruction separation: PASS at request-structure/provider-payload level;
+  - strict provider follow-up JSON schema: PASS with mocked HTTP;
+  - dependency audit: no known vulnerabilities found at verification time.
 - Explicit limitations:
-  - no AJ Windows/browser verification yet
-  - no real AI providers configured
-  - no authentication/multi-user authorization
-  - no full session-bound CSRF token infrastructure
-  - no public-production deployment claim
-  - no full screen-reader/accessibility audit
-- User-device/runtime verification: NOT RUN
-- User verification: NOT RUN
+  - no live authenticated OpenAI follow-up call has been made;
+  - no claim of educational effectiveness or human-examiner equivalence;
+  - no speech/delivery behavior yet;
+  - public/multi-user authentication and authorization remain unimplemented;
+  - user-device/browser verification remains NOT RUN.
 
-## Core Text Practice Loop Status
-The provider-neutral backend and first browser UI now support the complete bounded text workflow:
-1. create a workspace;
-2. upload supported documents with provenance;
-3. inspect workspace-scoped evidence retrieval;
-4. generate a source-grounded reviewer question through a configured provider interface;
-5. review the evidence used for the question;
-6. submit a text answer;
-7. evaluate the answer against authoritative source evidence through a configured evaluator interface;
-8. inspect five-category qualitative feedback and evidence provenance.
-
-The complete workflow is verified in CI with explicit test-only AI providers. Real AI providers are still not configured and must not be represented as live.
+## Current Product Boundary
+The application now supports a bounded provider-neutral text practice workflow with document provenance, retrieval, reviewer questions, evidence-aware qualitative feedback, and multi-turn challenge sessions. Real provider adapters exist but are only live after explicit secure environment configuration and credentialed verification.
 
 ## Still Not Implemented / Not Live Verified
-- real configured semantic embedding provider/model
-- real configured LLM question-generation provider/model
-- real configured answer-evaluation provider/model
-- multi-turn challenge/follow-up behavior
-- speech services
-- authentication/multi-user behavior
-- full CSRF/session infrastructure for authenticated deployment
-- public deployment hardening
-- AJ-device/browser verification
+- authenticated live external AI verification
+- speech input/output and delivery analysis
+- authentication/multi-user authorization
+- public deployment hardening/rate limiting/session security
+- OCR for scanned PDFs
+- image/chart/diagram understanding
+- user-device/browser verification
 
 ## Important Boundary
-No external AI or embedding provider is configured. Test-only fake providers exist solely for verification and must never be represented as production AI. Semantic retrieval, question generation, and answer evaluation are live only after real providers/models are configured and separately verified. The current web interface is a secure-by-default local prototype foundation, not a claim of public-production readiness, hack-proofing, universal prompt-injection immunity, or completed accessibility certification.
+Passing tests and dependency audits do not establish that the product is hack-proof, production-ready, universally prompt-injection-proof, or suitable for high-stakes grading. Security remains a continuing release gate.

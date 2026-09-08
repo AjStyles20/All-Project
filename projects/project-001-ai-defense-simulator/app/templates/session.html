@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Defense Session — {{ workspace.name }}{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">Workspaces</a> <span aria-hidden="true">/</span>
+  <a href="/workspaces/{{ workspace.id }}">{{ workspace.name }}</a> <span aria-hidden="true">/</span>
+  <span>Defense session</span>
+</nav>
+
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Bounded defense session</p>
+    <h1>{{ session.topic }}</h1>
+    <p class="muted">Reviewer: {{ session.reviewer_role }} · Status: {{ session.status }} · Maximum turns: {{ session.max_turns }}</p>
+  </div>
+</header>
+
+<section class="panel" aria-labelledby="turns-title">
+  <h2 id="turns-title">Session turns</h2>
+  {% if session.turns %}
+    <ol class="question-history">
+      {% for turn in session.turns %}
+        <li>
+          <p><strong>Turn {{ turn.turn_index }}</strong> <span class="badge">{{ turn.follow_up_type }}</span></p>
+          <p>{{ turn.question_text }}</p>
+          <p class="muted">{{ turn.rationale }}</p>
+          <p>
+            <a href="/workspaces/{{ workspace.id }}/questions/{{ turn.question_id }}">
+              {% if turn.answered %}View answer and feedback{% else %}Answer this question{% endif %}
+            </a>
+          </p>
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p class="muted">No turns are recorded.</p>
+  {% endif %}
+</section>
+
+<section class="panel" aria-labelledby="next-title">
+  <h2 id="next-title">Next step</h2>
+  {% if session.status == 'complete' %}
+    <div class="notice neutral" role="status">This session is complete. No further challenge will be generated.</div>
+  {% elif session.turns and not session.turns[-1].answered %}
+    <div class="notice neutral" role="status">Answer the current question before requesting a follow-up.</div>
+  {% elif followup_configured %}
+    <form method="post" action="/ui/workspaces/{{ workspace.id }}/sessions/{{ session.id }}/follow-up">
+      <button type="submit">Generate evidence-grounded follow-up</button>
+    </form>
+  {% else %}
+    <div class="notice neutral" role="status">Follow-up generation is not configured. The application will not fabricate another question.</div>
+  {% endif %}
+</section>
+{% endblock %}

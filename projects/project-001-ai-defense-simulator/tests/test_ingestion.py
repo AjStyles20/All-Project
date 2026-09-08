@@ -16,6 +16,17 @@ def test_chunking_is_deterministic_and_hashed():
     assert all(chunk.locator for chunk in first)
 
 
+def test_overlap_locator_does_not_claim_earlier_paragraphs():
+    text = "One.\n\nTwo.\n\n" + ("Three " * 20)
+    chunks = chunk_text(text, target_chars=25, overlap_chars=10)
+
+    assert len(chunks) >= 2
+    # The second chunk may overlap the immediately preceding paragraph only.
+    # Its locator must not imply provenance from paragraph 1.
+    assert chunks[1].locator.startswith("paragraphs 2-") or chunks[1].locator == "paragraph 2"
+    assert "One." not in chunks[1].text
+
+
 def test_same_bytes_have_same_hash():
     data = b"same source material"
     assert sha256_bytes(data) == sha256_bytes(data)

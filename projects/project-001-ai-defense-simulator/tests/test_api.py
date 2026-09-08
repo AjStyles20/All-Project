@@ -15,6 +15,7 @@ def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(main, "MAX_UPLOAD_BYTES", 64)
     monkeypatch.setattr(main, "embedding_provider", None)
     monkeypatch.setattr(main, "question_generator", None)
+    monkeypatch.setattr(main, "answer_evaluator", None)
     with TestClient(main.app) as test_client:
         yield test_client
 
@@ -27,7 +28,7 @@ def create_workspace(client: TestClient, name: str = "Verification Workspace") -
     return payload["id"]
 
 
-def test_health_reports_ai_and_semantic_provider_not_configured(client: TestClient):
+def test_health_reports_ai_semantic_and_evaluation_providers_not_configured(client: TestClient):
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {
@@ -35,6 +36,11 @@ def test_health_reports_ai_and_semantic_provider_not_configured(client: TestClie
         "database": "available",
         "ai_provider": {"status": "not configured", "provider": None, "model": None},
         "semantic_retrieval": {
+            "status": "not configured",
+            "provider": None,
+            "model": None,
+        },
+        "answer_evaluation": {
             "status": "not configured",
             "provider": None,
             "model": None,
@@ -120,6 +126,16 @@ def test_question_generation_unavailable_without_provider(client: TestClient):
     )
     assert response.status_code == 503
     assert response.json()["detail"] == "Question generation is not configured"
+
+
+def test_answer_evaluation_unavailable_without_provider(client: TestClient):
+    workspace_id = create_workspace(client)
+    response = client.post(
+        f"/api/workspaces/{workspace_id}/questions/not-configured/answers",
+        data={"answer": "A bounded answer."},
+    )
+    assert response.status_code == 503
+    assert response.json()["detail"] == "Answer evaluation is not configured"
 
 
 def test_invalid_search_mode_is_rejected(client: TestClient):

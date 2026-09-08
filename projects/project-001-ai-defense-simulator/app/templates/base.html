@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Project 001{% endblock %}</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="/">Project 001</a>
+      <span class="subtitle">Source-Grounded Review Simulator</span>
+    </div>
+  </header>
+
+  <main class="container" id="main-content">
+    {% if message %}
+      <div class="notice success" role="status">{{ message }}</div>
+    {% endif %}
+    {% if error %}
+      <div class="notice error" role="alert">{{ error }}</div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Local prototype. AI capabilities are shown as configured only when a real or explicitly test-only provider is actually present.</p>
+    </div>
+  </footer>
+</body>
+</html>

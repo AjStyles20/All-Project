@@ -14,6 +14,8 @@ Feature 001: document ingestion + provenance-aware lexical retrieval.
 - ingestion/chunking implementation
 - automated test definitions
 - engineering handoff
+- executed API integration suite
+- executed live Uvicorn smoke test
 
 ## Findings
 
@@ -23,38 +25,44 @@ Feature 001: document ingestion + provenance-aware lexical retrieval.
 - Observation: The first overlap implementation used the final N characters of the entire previous chunk while labeling the next chunk as beginning at only the immediately preceding paragraph. With several short paragraphs, the overlap could contain text from an earlier paragraph not represented in the locator.
 - Root cause: overlap was derived from the entire rendered chunk rather than the immediately preceding source paragraph.
 - Correction: overlap is now restricted to the immediately preceding paragraph before the next chunk is formed.
-- Regression test: added `test_overlap_locator_does_not_claim_earlier_paragraphs`.
-- Current status: CORRECTED; logic-level regression check PASS.
+- Regression test: `test_overlap_locator_does_not_claim_earlier_paragraphs`.
+- Current status: PASS after correction.
 
 ### V-002 — Database initialization idempotency
 - Expected: repeated initialization does not fail.
-- Evidence: schema uses `IF NOT EXISTS`; logic-level execution repeated initialization successfully.
-- Status: PASS at logic level.
+- Evidence: automated execution repeated initialization successfully.
+- Status: PASS.
 
 ### V-003 — Workspace isolation in retrieval
 - Expected: search in workspace A must not return chunks from workspace B.
-- Evidence: FTS table stores workspace ID and query filters by workspace ID; known-query logic-level execution returned the A result and excluded B.
-- Status: PASS at logic level.
+- Evidence: database-level and API-level tests passed.
+- Status: PASS.
 
 ### V-004 — Provenance returned with retrieval results
 - Expected: retrieved chunks expose document ID, filename, locator, and text.
-- Evidence: query projection includes these fields.
-- Status: PASS by code inspection and logic-level execution.
+- Evidence: automated API test and live search returned the expected provenance fields.
+- Status: PASS.
 
-### V-005 — Unsupported/empty upload validation
-- Expected: unsupported extension, empty file, missing filename, and oversized file are rejected.
-- Evidence: endpoint code contains explicit checks.
-- Status: PASS BY CODE INSPECTION; API integration test NOT YET RUN.
+### V-005 — Upload validation
+- Expected: unsupported extension, empty file, invalid UTF-8 input, and oversized input are rejected.
+- Evidence: FastAPI TestClient integration tests executed.
+- Status: PASS in verifier environment.
 
 ### V-006 — External-AI independence
-- Expected: Feature 001 tests and behavior must not require an LLM/provider.
-- Evidence: no external AI provider is invoked by Feature 001; health endpoint explicitly reports `not configured`.
-- Status: PASS by code inspection.
+- Expected: Feature 001 behavior must not require an LLM/provider.
+- Evidence: no external AI provider is invoked; health endpoint reports `not configured`.
+- Status: PASS.
 
 ### V-007 — FTS5 runtime availability
-- Expected: target Python/SQLite runtime supports FTS5.
-- Evidence: logic-level test environment successfully created and queried the FTS5 table.
-- Status: PASS in verifier environment; target user/runtime live verification still required.
+- Expected: verification runtime supports SQLite FTS5.
+- Evidence: SQLite 3.46.1 created and queried the FTS5 table during automated and live tests.
+- Status: PASS in verifier environment.
+
+### V-008 — Direct Git checkout unavailable in verifier container
+- Severity: Low / environment limitation
+- Observation: direct `git clone` failed because the execution container could not resolve `github.com`.
+- Mitigation: the verification workspace was reconstructed from the exact branch file contents retrieved through the authenticated GitHub connector and then executed locally.
+- Status: RECORDED LIMITATION. This does not count as user-device/runtime verification.
 
 ## Tests / Checks Performed
 - deterministic chunk generation: PASS
@@ -62,18 +70,30 @@ Feature 001: document ingestion + provenance-aware lexical retrieval.
 - repeated SQLite schema initialization: PASS
 - known-query FTS5 retrieval: PASS
 - workspace isolation: PASS
-- overlap-provenance regression scenario: PASS after correction
-- FastAPI TestClient endpoint suite: NOT RUN
-- checked-out repository `pytest` execution: NOT RUN
-- live server/browser test: NOT RUN
+- overlap-provenance regression scenario: PASS
+- FastAPI TestClient endpoint suite: PASS
+- complete local reconstructed-source suite: `14 passed in 0.37s`
+- live Uvicorn health/workspace/upload/search flow: PASS
+- browser/UI test: NOT APPLICABLE; Feature 001 has no UI
+- user-device/runtime verification: NOT RUN
+
+## Verification Environment
+- Python 3.13.5
+- FastAPI 0.128.2
+- HTTPX 0.28.1
+- pytest 9.0.2
+- SQLite 3.46.1
+
+Detailed execution evidence is recorded in `project-control/TEST_EVIDENCE.md`.
 
 ## Verification Decision
-**PARTIAL PASS — DO NOT MERGE AS FULLY VERIFIED YET.**
+**PASS IN VERIFIER ENVIRONMENT — READY FOR REVIEW, NOT USER VERIFIED.**
 
-The core ingestion/chunking/database/retrieval logic is coherent and one provenance defect was detected and corrected. The PR should remain draft until the actual branch test suite and API integration tests run successfully. No live or user verification has occurred.
+Feature 001 has passed the independent logic, API integration, and live API smoke-test gate in the verifier environment. The previously identified provenance defect was corrected and regression-tested.
 
-## Required Before Merge
-1. Run `pytest` from the checked-out Project 001 directory.
-2. Add/execute API integration tests for workspace creation, valid upload, unsupported upload, empty upload, oversized upload, and search.
-3. Start the FastAPI application and manually verify one upload/search flow.
-4. Record exact environment/version and test output in `TEST_EVIDENCE.md` or equivalent.
+This decision does not claim user-device verification, production readiness, browser/UI completion, or support for formats/features outside the Feature 001 contract.
+
+## Remaining Before User Verification
+1. Run the same test suite on AJ's working environment when the repository is checked out there.
+2. Start the server on that environment and repeat one workspace/upload/search flow.
+3. Record any environment-specific failure separately rather than weakening the current verifier evidence.

@@ -12,6 +12,21 @@
     <p class="eyebrow">{{ question.reviewer_role }} reviewer</p>
     <h1>{{ question.question_text }}</h1>
     <p class="muted">Topic: {{ question.topic }} · Retrieval: {{ question.retrieval_mode }} · {{ question.created_at }}</p>
+    <div class="speech-controls"
+         data-tts-controls
+         data-endpoint="/api/workspaces/{{ workspace.id }}/questions/{{ question.id }}/speech"
+         data-configured="{{ 'true' if tts_provider_name else 'false' }}">
+      <div class="button-row">
+        <button type="button" data-tts-listen {% if not tts_provider_name %}disabled{% endif %}>Listen to reviewer</button>
+        <button type="button" data-tts-stop disabled>Stop audio</button>
+      </div>
+      {% if tts_provider_name %}
+        <p class="hint">Optional generated audio: {{ tts_provider_name }}{% if tts_model_name %} / {{ tts_model_name }}{% endif %}{% if tts_voice_name %} · voice {{ tts_voice_name }}{% endif %}. Audio is generated only when you select Listen and is not stored by this application.</p>
+      {% else %}
+        <p class="hint">Reviewer speech output is not configured. The written question remains fully available.</p>
+      {% endif %}
+      <p data-tts-status role="status" aria-live="polite">Reviewer audio is idle.</p>
+    </div>
   </div>
 </header>
 
@@ -92,5 +107,6 @@
 </section>
 {% endblock %}
 {% block scripts %}
+<script src="/static/speech_output.js" defer></script>
 <script src="/static/speech.js" defer></script>
 {% endblock %}

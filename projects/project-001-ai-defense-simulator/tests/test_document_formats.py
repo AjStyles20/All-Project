@@ -137,6 +137,7 @@ def create_workspace(client: TestClient) -> str:
             "application/vnd.openxmlformats-officedocument.presentationml.presentation",
         ),
     ],
+    ids=["pdf", "docx", "pptx"],
 )
 def test_format_upload_and_search_preserve_locator(
     client: TestClient,

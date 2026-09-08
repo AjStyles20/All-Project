@@ -81,8 +81,40 @@
   {% endif %}
 </section>
 
+<section class="panel" aria-labelledby="session-title">
+  <h2 id="session-title">Start bounded defense session</h2>
+  {% if question_configured %}
+    <form method="post" action="/ui/workspaces/{{ workspace.id }}/sessions">
+      <label for="session-topic">Topic or evidence query</label>
+      <input id="session-topic" name="topic" type="text" maxlength="500" required>
+
+      <label for="session-reviewer-role">Reviewer role</label>
+      <select id="session-reviewer-role" name="reviewer_role">
+        <option value="technical">Technical reviewer</option>
+        <option value="methodology">Methodology reviewer</option>
+        <option value="evidence">Evidence / skeptical reviewer</option>
+        <option value="security_privacy">Security & privacy reviewer</option>
+        <option value="product_usability">Product / usability reviewer</option>
+      </select>
+
+      <label for="session-retrieval-mode">Retrieval mode</label>
+      <select id="session-retrieval-mode" name="retrieval_mode">
+        <option value="hybrid">Hybrid</option>
+        <option value="lexical">Lexical</option>
+      </select>
+
+      <label for="session-max-turns">Maximum reviewer turns</label>
+      <input id="session-max-turns" name="max_turns" type="number" min="1" max="10" value="5" required>
+      <p class="hint">The reviewer stops when no useful evidence-grounded challenge remains or the turn limit is reached.</p>
+      <button type="submit">Start defense session</button>
+    </form>
+  {% else %}
+    <div class="notice neutral" role="status">Question generation is not configured, so a defense session cannot be started.</div>
+  {% endif %}
+</section>
+
 <section class="panel" aria-labelledby="question-title">
-  <h2 id="question-title">Generate reviewer question</h2>
+  <h2 id="question-title">Generate one reviewer question</h2>
   {% if question_configured %}
     <form method="post" action="/ui/workspaces/{{ workspace.id }}/questions">
       <label for="topic">Topic or evidence query</label>
@@ -105,9 +137,7 @@
       <button type="submit">Generate question</button>
     </form>
   {% else %}
-    <div class="notice neutral" role="status">
-      Question generation is not configured. The application will not fabricate AI questions.
-    </div>
+    <div class="notice neutral" role="status">Question generation is not configured. The application will not fabricate AI questions.</div>
   {% endif %}
 </section>
 

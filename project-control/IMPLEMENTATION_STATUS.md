@@ -11,6 +11,7 @@ Use one row per subsystem or feature.
 | SYS-005 | Google Drive workspace | Project Lead | NOT STARTED | — | — | Drive connection verified, structure not yet created |
 | SYS-006 | Work orchestration test | Orchestrator | NOT STARTED | — | — | Requires Work mode execution |
 | SYS-007 | Codex handoff test | Engineering | NOT STARTED | — | — | Requires instantiated project/repo workflow |
+| P001-F011 | Project 001 multi-provider AI foundation — Groq question generation + answer evaluation, OpenAI preserved | Engineering + Verification | LIVE VERIFIED | TE-005 through TE-008; GitHub CI 126 passed; pip-audit clean | `FEATURE_011_MULTI_PROVIDER_AI_CONTRACT.md` | Live-verified only for Groq text question/evaluation scope. Semantic embeddings, Groq follow-up, STT, TTS, auth/public deployment remain outside this status. |
 
 ## Allowed Status Values
 

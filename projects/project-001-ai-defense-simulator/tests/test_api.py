@@ -14,6 +14,7 @@ def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(main, "db", database)
     monkeypatch.setattr(main, "MAX_UPLOAD_BYTES", 64)
     monkeypatch.setattr(main, "embedding_provider", None)
+    monkeypatch.setattr(main, "question_generator", None)
     with TestClient(main.app) as test_client:
         yield test_client
 
@@ -32,7 +33,7 @@ def test_health_reports_ai_and_semantic_provider_not_configured(client: TestClie
     assert response.json() == {
         "application": "available",
         "database": "available",
-        "ai_provider": "not configured",
+        "ai_provider": {"status": "not configured", "provider": None, "model": None},
         "semantic_retrieval": {
             "status": "not configured",
             "provider": None,
@@ -109,6 +110,16 @@ def test_hybrid_request_fails_closed_to_explicit_lexical_when_provider_missing(c
         "model": None,
     }
     assert payload["results"][0]["semantic_similarity"] is None
+
+
+def test_question_generation_unavailable_without_provider(client: TestClient):
+    workspace_id = create_workspace(client)
+    response = client.post(
+        f"/api/workspaces/{workspace_id}/questions",
+        data={"topic": "rainfall", "reviewer_role": "technical"},
+    )
+    assert response.status_code == 503
+    assert response.json()["detail"] == "Question generation is not configured"
 
 
 def test_invalid_search_mode_is_rejected(client: TestClient):

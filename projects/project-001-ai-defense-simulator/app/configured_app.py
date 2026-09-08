@@ -7,7 +7,9 @@ The underlying `app.main` remains provider-neutral and testable without secrets.
 from . import main as runtime
 from .openai_followup import OpenAIFollowUpGenerator
 from .openai_provider import build_openai_providers_from_env, load_openai_settings_from_env
+from .openai_transcription import OpenAITranscriber
 from .session_routes import build_session_router
+from .speech_routes import build_speech_router
 
 
 embedding_provider, question_generator, answer_evaluator = build_openai_providers_from_env()
@@ -17,6 +19,9 @@ runtime.answer_evaluator = answer_evaluator
 
 _openai_settings = load_openai_settings_from_env()
 follow_up_generator = OpenAIFollowUpGenerator(_openai_settings) if _openai_settings is not None else None
+speech_transcriber = OpenAITranscriber(_openai_settings) if _openai_settings is not None else None
+
 runtime.app.include_router(build_session_router(runtime, follow_up_generator))
+runtime.app.include_router(build_speech_router(runtime, speech_transcriber))
 
 app = runtime.app

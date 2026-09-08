@@ -40,7 +40,7 @@
            data-configured="{{ 'true' if speech_provider_name else 'false' }}">
         <h3>Optional microphone answer</h3>
         {% if speech_provider_name %}
-          <p class="hint">Recording is optional. When you choose to transcribe, the captured audio is sent to {{ speech_provider_name }}{% if speech_model_name %} ({{ speech_model_name }}){% endif %}. Raw audio is not stored by this application. The transcript is placed in the answer box for you to review and edit before submission.</p>
+          <p class="hint">Recording is optional. Audio stays in your browser after you stop recording. It is sent to {{ speech_provider_name }}{% if speech_model_name %} ({{ speech_model_name }}){% endif %} only when you select <strong>Transcribe recording</strong>. Raw audio is not stored by this application. The returned transcript is placed in the answer box for you to review and edit before submission.</p>
         {% else %}
           <p class="hint">Speech transcription is not configured. You can continue using the text answer box.</p>
         {% endif %}
@@ -48,6 +48,7 @@
           <button type="button" data-record-start {% if not speech_provider_name %}disabled{% endif %}>Start recording</button>
           <button type="button" data-record-stop disabled>Stop recording</button>
           <button type="button" data-record-cancel disabled>Cancel recording</button>
+          <button type="button" data-record-transcribe disabled>Transcribe recording</button>
         </div>
         <p data-record-status role="status" aria-live="polite">Microphone is idle.</p>
       </div>

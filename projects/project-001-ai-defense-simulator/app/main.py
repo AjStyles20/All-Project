@@ -7,6 +7,7 @@ from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
 
 from .db import Database
 from .embeddings import EmbeddingProvider, provider_identity
+from .evaluation import AnswerEvaluator, evaluate_and_store_answer
 from .ingestion import (
     DocumentExtractionError,
     SUPPORTED_EXTENSIONS,
@@ -29,10 +30,11 @@ db.initialize()
 
 embedding_provider: EmbeddingProvider | None = None
 question_generator: QuestionGenerator | None = None
+answer_evaluator: AnswerEvaluator | None = None
 
 app = FastAPI(
     title="Project 001 — Source-Grounded Review Simulator",
-    version="0.4.0",
+    version="0.5.0",
 )
 
 
@@ -61,11 +63,20 @@ def health() -> dict:
             "model": str(question_generator.model_name),
         }
 
+    evaluation_status = {"status": "not configured", "provider": None, "model": None}
+    if answer_evaluator is not None:
+        evaluation_status = {
+            "status": "configured",
+            "provider": str(answer_evaluator.provider_name),
+            "model": str(answer_evaluator.model_name),
+        }
+
     return {
         "application": "available",
         "database": database_status,
         "ai_provider": question_status,
         "semantic_retrieval": semantic,
+        "answer_evaluation": evaluation_status,
     }
 
 
@@ -214,3 +225,28 @@ def create_grounded_question(
         raise HTTPException(status_code=422, detail="Question could not be generated safely") from exc
     except Exception as exc:
         raise HTTPException(status_code=502, detail="Question provider failed") from exc
+
+
+@app.post("/api/workspaces/{workspace_id}/questions/{question_id}/answers")
+def evaluate_answer(
+    workspace_id: str,
+    question_id: str,
+    answer: str = Form(...),
+) -> dict:
+    if not db.workspace_exists(workspace_id):
+        raise HTTPException(status_code=404, detail="Workspace not found")
+    if answer_evaluator is None:
+        raise HTTPException(status_code=503, detail="Answer evaluation is not configured")
+
+    try:
+        return evaluate_and_store_answer(
+            db,
+            workspace_id=workspace_id,
+            question_id=question_id,
+            answer=answer,
+            provider=answer_evaluator,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail="Answer could not be evaluated safely") from exc
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Answer evaluator failed") from exc

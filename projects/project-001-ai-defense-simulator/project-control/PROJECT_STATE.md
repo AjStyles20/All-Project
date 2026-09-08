@@ -5,96 +5,156 @@
 - Project ID: P001
 - Owner: AJ
 - Status: ACTIVE
-- Stage: Feature 001 verified in verifier environment; awaiting user-runtime verification / review
+- Stage: Core provider-neutral text practice loop implemented and CI verified with test-only AI providers; first usable web UI is the next engineering slice.
 - Last verified date: 2026-09-08
 
 ## Approved Direction
-Create a defensible prototype that helps users practice presentations, defenses, vivas, interviews, and professional reviews using their own materials as context for source-grounded AI questions and feedback.
+Create a defensible web application that helps users practice presentations, defenses, vivas, interviews, and professional reviews using their own materials as context for source-grounded AI questions and evidence-aware feedback.
 
 ## Approved Initial Scope
 - Upload or ingest project documents/slides.
 - Ground question generation in supplied materials where appropriate.
 - Support configurable reviewer/audience/panel personas.
-- Conduct practice sessions through text and, where technically feasible, microphone input.
+- Conduct practice sessions through text and, where technically feasible later, microphone input.
 - Store or summarize session history.
 - Produce explainable feedback based on explicit criteria.
 - Track provenance for claims, tests, generated questions, retrieved evidence, and evaluation outputs.
 
-## Not Yet Approved as MVP
-- Computer-vision body-language scoring.
-- Emotion recognition.
-- Voice cloning.
-- Animated 3D classroom/audience.
-- Multi-user real-time conferencing.
-- Automated high-stakes grading.
-- Any claim that the system objectively measures confidence or presentation quality without validated evidence.
-
 ## Approved Technical Foundation
-- FastAPI backend
-- SQLite persistence
-- server-rendered HTML + lightweight JavaScript frontend
-- provenance-aware document ingestion
-- inspectable hybrid retrieval beginning with lexical FTS5 and optional embeddings later
-- provider-adapter interfaces for LLM/embedding/speech services
+- Primary language: Python
+- Backend: FastAPI
+- Persistence: SQLite for the MVP/local single-user phase
+- Delivery platform: full web application
+- Frontend: server-rendered HTML/CSS + lightweight JavaScript initially
+- React: optional later only if UI/client-state complexity materially justifies it
+- Document ingestion: provenance-aware TXT/Markdown/PDF/DOCX/PPTX
+- Retrieval: inspectable lexical FTS5 plus optional provider-neutral semantic layer
+- AI services: provider-adapter interfaces; no production provider hard-coded
+- Security baseline: active release gate for every substantial feature
 
-## Current Workstreams
-- Research: IN PROGRESS — historical window approximately 1990-present; screened evidence set recorded and expanding.
-- Literature review: IN PROGRESS — speech-aware tutoring, conversational ITS, automatic question generation, presentation feedback, RAG assessment, and LLM-mediated oral/performance assessment identified as established prior art.
-- Comparable systems: FIRST PASS COMPLETE — Microsoft Speaker Coach, Yoodli, and VirtualSpeech reviewed.
-- Research-gap challenge: PROVISIONALLY ACCEPTED — generic presentation-coach novelty rejected; source-grounded evidence-aware review selected as stronger direction.
-- Architecture: APPROVED for MVP foundation.
-- Engineering/Codex: FEATURE 001 IMPLEMENTED on branch `p001/feature-document-ingestion-retrieval`.
-- Verification: FEATURE 001 PASS in verifier environment; user-device/runtime verification still pending.
-- Documentation: RESEARCH + TECHNICAL DOCUMENTATION ACTIVE.
-- Presentation/evaluation preparation: NOT STARTED.
+## Not Yet Approved / Not Yet Verified as MVP Claims
+- Computer-vision body-language scoring
+- Emotion recognition
+- Voice cloning
+- Animated 3D classroom/audience
+- Multi-user real-time conferencing
+- Automated high-stakes grading
+- Objective confidence or presentation-quality scoring without validated evidence
+- Public/multi-user deployment security until authentication/authorization/deployment hardening are implemented and verified
 
-## Feature 001 Status
-Document ingestion + provenance-aware lexical retrieval:
-- implementation: COMPLETE within bounded contract
-- TXT/Markdown ingestion: IMPLEMENTED
-- deterministic chunking + SHA-256 provenance: IMPLEMENTED
-- SQLite FTS5 retrieval: IMPLEMENTED
-- workspace isolation: IMPLEMENTED
-- API integration suite: PASS
-- full verifier-environment suite: 14 passed
-- live Uvicorn workspace/upload/search smoke test: PASS
-- independent verification: PASS IN VERIFIER ENVIRONMENT
-- user-device/runtime verification: NOT RUN
-- user verification: NOT RUN
-- pull request: #1, ready for review after verification update
+## Current Engineering Status
 
-## Current Claims
-- Speech-enabled automated tutoring existed by the late 1990s: SUPPORTED as historical background.
-- Mixed-initiative conversational intelligent tutoring is established prior art: SUPPORTED.
-- Automatic question generation from supplied text is established prior art: SUPPORTED.
-- Simulation-based public-speaking practice and automated presentation feedback are established prior art: SUPPORTED as background.
-- Retrieval-augmented generation is an established grounding/assessment approach: SUPPORTED as background; Project 001 implementation effectiveness not verified.
-- LLM-mediated oral/performance assessment is established prior art by 2026: SUPPORTED at abstract-level evidence; detailed comparison still required.
-- `AI presentation coaching with follow-up questions` as novelty: CONTRADICTED by reviewed literature/comparable systems.
-- Project 001 source-grounded, evidence-traceable review workflow as a differentiated contribution: UNDER REVIEW.
-- Confidence/anxiety improvement by Project 001: UNSUPPORTED.
-- Objective presentation-quality scoring by Project 001: UNSUPPORTED.
+### Feature 001 — Document Ingestion + Lexical Retrieval
+- TXT/Markdown ingestion: VERIFIED in verifier environment
+- deterministic chunking + SHA-256 provenance: VERIFIED
+- SQLite FTS5 retrieval: VERIFIED
+- workspace isolation: VERIFIED
+- API integration: PASS
+- live Uvicorn smoke test: PASS in verifier environment
+- user-device verification: NOT RUN
 
-## Evidence Created
-- `research/COMPARABLE_SYSTEMS.md`
-- `research/LITERATURE_SCREENING.md`
-- `research/HISTORICAL_LITERATURE_TIMELINE.md`
-- `research/RESEARCH_GAP_REVIEW.md`
-- `docs/technical/ARCHITECTURE_PROPOSAL.md`
-- `docs/technical/FEATURE_001_INGESTION_RETRIEVAL_CONTRACT.md`
-- `verification/FEATURE_001_VERIFICATION_REPORT.md`
-- `project-control/TEST_EVIDENCE.md`
-- Project 001 literature matrix in Google Drive, populated with screened sources.
-- Project 001 research & scope brief in Google Drive.
+### Feature 002 — Rich Document Formats
+- PDF text extraction with page locators: VERIFIED in verifier environment
+- DOCX paragraph locators: VERIFIED
+- PPTX slide locators: VERIFIED
+- malformed/encrypted input handling: VERIFIED within bounded cases
+- OCR/visual understanding/exact layout reconstruction: NOT IMPLEMENTED
 
-## Current Research Observation
-The historical record shows that speech-aware tutoring, conversational questioning, source-text question generation, automated presentation feedback, and RAG-based assessment each have established precedents. Recent work also reaches directly into LLM-mediated oral and performance assessment. Project 001 therefore should not claim novelty from combining generic AI, questioning, speech, and presentation coaching. The strongest current direction remains source-grounded technical/research review with explicit evidence provenance, reviewer-role differentiation, multi-turn challenge behavior, and transparent uncertainty.
+### Feature 003 — Hybrid Retrieval Foundation
+- provider-neutral embedding interface: IMPLEMENTED
+- workspace-scoped embedding persistence: IMPLEMENTED
+- stale detection/vector validation: IMPLEMENTED
+- explainable lexical/semantic merge: IMPLEMENTED
+- no-provider lexical fallback: VERIFIED
+- test-only semantic provider: CI VERIFIED
+- real semantic provider/model: NOT CONFIGURED / NOT LIVE VERIFIED
+- CI gate at feature verification: 32 tests PASS; dependency audit reported no known vulnerabilities at that time
 
-## Current Engineering Boundary
-Feature 001 does not implement PDF/DOCX/PPTX extraction, semantic retrieval, LLM question generation, answer evaluation, speech, or UI screens. No documentation or interface may imply otherwise.
+### Feature 004 — Source-Grounded Question Generation Foundation
+- provider-neutral question generator: IMPLEMENTED
+- trusted-policy/untrusted-evidence separation: IMPLEMENTED
+- reviewer-role allowlist: IMPLEMENTED
+- question/evidence provenance persistence: IMPLEMENTED
+- authoritative workspace evidence ownership validation: IMPLEMENTED
+- test-only question generator: CI VERIFIED
+- real LLM provider/model: NOT CONFIGURED / NOT LIVE VERIFIED
+- CI gate at feature verification: 39 tests PASS; dependency audit reported no known vulnerabilities at that time
 
-## Known Verification Limitation
-The verifier execution environment could not resolve GitHub for direct cloning, so exact branch files were retrieved through the authenticated GitHub connector and reconstructed locally before running the test suite and live API smoke test. This is not equivalent to AJ's own-device verification.
+### Feature 005 — Evidence-Aware Answer Evaluation Foundation
+- provider-neutral answer evaluator: IMPLEMENTED
+- trusted-policy separation from untrusted question/answer/evidence: IMPLEMENTED
+- authoritative question/workspace ownership validation: IMPLEMENTED
+- authoritative evidence reconstruction: IMPLEMENTED
+- provenance tampering detection: IMPLEMENTED
+- fixed five-category qualitative rubric: IMPLEMENTED
+- objective overall numeric grading: INTENTIONALLY NOT CLAIMED
+- feedback evidence-reference confinement: IMPLEMENTED
+- answer/evaluation persistence: IMPLEMENTED
+- complete test-only HTTP practice loop: VERIFIED
+- CI gate: 52 tests PASS on checked-out PR merge ref
+- dependency audit: no known vulnerabilities found at verification time
+- real evaluator/LLM provider/model: NOT CONFIGURED / NOT LIVE VERIFIED
+- user-device verification: NOT RUN
 
-## Next Gate
-Review Feature 001 PR and perform user-runtime verification when practical. In parallel, continue research. After Feature 001 is accepted, the next bounded engineering slice should add richer document-format ingestion (PDF/DOCX/PPTX) or the first question-generation contract, subject to Project Lead sequencing and evidence review.
+## Core Text Practice Loop
+The backend now has a complete bounded provider-neutral flow:
+1. user creates a workspace;
+2. uploads supported source material;
+3. system extracts/chunks it with provenance;
+4. retrieval selects workspace-scoped evidence;
+5. configured question provider receives trusted policy + untrusted evidence and returns one grounded review question;
+6. question and evidence provenance are persisted;
+7. user submits a text answer;
+8. configured evaluator receives trusted policy + authoritative question/evidence + untrusted answer;
+9. evaluator returns five-category qualitative feedback;
+10. output is validated, provenance-checked, persisted, and returned without an objective overall score.
+
+This flow is verified with test-only providers only. It is not yet a live AI product because no real embedding/question/evaluation provider is configured.
+
+## Security Posture
+- Security baseline: ACTIVE
+- Parameterized SQLite statements: in use
+- Workspace scoping/ownership checks: implemented across current retrieval/question/evaluation paths
+- Upload size/extension/parser controls: implemented within current feature bounds
+- Cross-workspace question/evidence checks: tested
+- Prompt/instruction separation: tested at request-structure level
+- Provider outputs: bounded and validated before persistence
+- Dependency audit in CI: active
+- Authentication: NOT IMPLEMENTED
+- Multi-user authorization: NOT IMPLEMENTED
+- Public rate limiting/CSRF/production headers/HTTPS config: NOT IMPLEMENTED
+- Security claim: do not describe the product as production-ready, tamper-proof, or universally prompt-injection-proof
+
+## Research Status
+- Historical window: approximately 1990-present, with earlier foundational work where relevant
+- Literature review: IN PROGRESS
+- Comparable-system first pass: COMPLETE
+- Generic `AI presentation coach with questions` novelty: CONTRADICTED
+- Stronger differentiated direction: source-grounded, evidence-traceable technical/research review with explicit reviewer roles, transparent uncertainty, and multi-turn challenge behavior: UNDER REVIEW / PROVISIONALLY ACCEPTED
+- Confidence/anxiety improvement claim: UNSUPPORTED
+- Objective presentation-quality scoring claim: UNSUPPORTED
+
+## Current Pull Request Stack
+- PR #1 — Feature 001 document ingestion/retrieval
+- PR #2 — Feature 002 PDF/DOCX/PPTX ingestion, stacked on Feature 001
+- PR #3 — Feature 003 hybrid retrieval, stacked on Feature 002
+- PR #4 — Feature 004 grounded questioning, stacked on Feature 003
+- PR #5 — Feature 005 answer evaluation, stacked on Feature 004
+
+All remain review/merge controlled; verification status must not be inferred merely from PR existence.
+
+## Current Limitations
+- no real embedding model/provider configured
+- no real question-generation LLM configured
+- no real answer-evaluation LLM configured
+- no first usable browser UI yet
+- no session/history UI
+- no multi-turn challenge/follow-up behavior yet
+- no speech input/output
+- no authentication/multi-user authorization
+- no public deployment hardening
+- no OCR for scanned PDFs
+- no image/chart/diagram understanding
+
+## Next Engineering Gate
+Build the first usable server-rendered web interface around the verified core text workflow, with accessibility, safe output rendering, CSRF/deployment considerations documented, and no fake AI state. The UI must clearly distinguish configured/unconfigured AI capabilities and preserve evidence provenance in visible feedback.

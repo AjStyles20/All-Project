@@ -18,3 +18,11 @@
 - Decision: Implement document ingestion + provenance-aware lexical retrieval as the first engineering slice before adding LLM question generation.
 - Rationale: Grounding quality and evidence traceability are foundational to the project’s differentiated direction and can be tested without relying on an external AI provider.
 - Acceptance gate: Independent verification must confirm extraction/provenance/retrieval behavior before the feature is treated as verified.
+
+## P001-DR-003 — Feature 001 verification gate passed in verifier environment
+- Date: 2026-09-08
+- Status: RECORDED
+- Authority level: A1 verification outcome
+- Decision: Feature 001 passed independent logic tests, API integration tests, and a live Uvicorn workspace/upload/search smoke test in the verifier environment. It may move to review-ready status.
+- Evidence: `project-control/TEST_EVIDENCE.md` and `verification/FEATURE_001_VERIFICATION_REPORT.md`.
+- Limitation: direct Git checkout was unavailable in the verifier container because GitHub DNS resolution failed; exact branch files were fetched through the authenticated connector and reconstructed locally. AJ-device/runtime and user verification remain outstanding.

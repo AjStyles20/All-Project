@@ -18,33 +18,48 @@ Create a reusable project operating system that coordinates research, engineerin
 - Codex: intended engineering execution environment using the same GitHub repository/project state
 
 ## Implemented
-- Repository initialized
+- Repository initialized and live write access verified
 - README created
 - AJ Project Agent Constitution created
+- Requirements registry created
+- Decision registry created
+- Work log created
+- Implementation status registry created
+- Test evidence registry created
+- Research/product claims registry created
+- Known limitations registry created
+- Standard agent handoff template created
+- Project Orchestrator instructions created
+- Research Agent instructions created
+- Engineering/Codex Agent instructions created
+- Verification Agent instructions created
+- Documentation Agent instructions created
+- Defense Agent instructions created
+- AJ Tutor instructions created
 
 ## In Progress
-- Core project-control templates
-- Agent-role instructions
-- Handoff and decision templates
-- Work orchestration instructions
+- Remaining specialist agent instructions
+- Google Drive workspace initialization
+- Work orchestration instructions refinement
 
 ## Not Started
-- Google Drive workspace initialization
 - Project 001 instantiation
 - Full Work orchestration test
 - Codex engineering handoff test
-- Independent verification cycle test
+- Independent verification cycle test on a real feature
 
 ## Parked
 - Instantiation of additional project ideas beyond Project 001
 
 ## Current Blockers
-- None for GitHub starter-kit creation
+- None for starter-kit creation
 
 ## Verification Status
 - Repository access: LIVE VERIFIED
+- GitHub write operations: LIVE VERIFIED
 - Google Drive connection: LIVE VERIFIED
-- Starter-kit contents: PARTIAL / IN PROGRESS
+- Starter-kit governance/control layer: IMPLEMENTED
+- Starter-kit end-to-end workflow: NOT YET VERIFIED
 - Work orchestration: NOT TESTED
 - Codex shared-state workflow: NOT TESTED
 

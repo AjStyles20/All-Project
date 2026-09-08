@@ -1,76 +1,90 @@
-# Agent Handoff
+# AGENT HANDOFF
 
 ## Workstream
-Engineering / Backend
+Engineering → Independent Verification → Review
 
 ## Task
-Feature 001 — Document ingestion + provenance-aware lexical retrieval.
+Feature 001: provenance-aware document ingestion and lexical retrieval.
 
-## Starting Project State
-Architecture proposed and awaiting AJ approval. Research gap provisionally accepted around source-grounded, evidence-traceable review.
+## Starting state
+Architecture approved for the MVP foundation. Engineering was authorized to implement only the bounded ingestion/retrieval slice.
 
-## Files Inspected
-- `project-control/PROJECT_STATE.md`
-- `project-control/REQUIREMENTS.md`
-- `docs/technical/ARCHITECTURE_PROPOSAL.md`
-- Project root structure
-
-## Files Changed / Added
-- `project-control/DECISIONS.md`
-- `project-control/IMPLEMENTATION_STATUS.md`
-- `docs/technical/FEATURE_001_INGESTION_RETRIEVAL_CONTRACT.md`
-- `requirements.txt`
-- `app/__init__.py`
-- `app/ingestion.py`
-- `app/db.py`
+## Files inspected
+- Project 001 project state and requirements
+- architecture proposal
+- Feature 001 contract
 - `app/main.py`
+- `app/db.py`
+- `app/ingestion.py`
+- tests and verification report
+
+## Files changed
+- FastAPI application files
+- SQLite persistence/retrieval implementation
+- ingestion/chunking implementation
 - `tests/test_ingestion.py`
+- `tests/test_api.py`
+- `requirements.txt`
+- implementation status
+- project state
+- test evidence
+- verification report
 
 ## Implemented
-- Architecture approval recorded.
-- FastAPI application skeleton.
-- SQLite persistence and idempotent schema creation.
-- Workspace creation.
-- TXT/Markdown ingestion with validation.
-- Deterministic paragraph-aware chunking.
-- SHA-256 source/chunk hashes.
-- Provenance fields for stored/retrieved chunks.
-- SQLite FTS5 lexical retrieval scoped to workspace.
-- Initial tests for deterministic chunking, hashes, DB initialization, retrieval relevance, and workspace isolation.
+- FastAPI application skeleton
+- workspace creation
+- TXT/Markdown uploads
+- explicit upload validation
+- deterministic paragraph-aware chunking
+- SHA-256 document/chunk hashes
+- provenance locators
+- SQLite persistence
+- workspace-scoped FTS5 lexical retrieval
+- health endpoint that truthfully reports AI provider as not configured
+- API integration tests
 
-## Not Implemented
-- PDF/DOCX/PPTX parsing.
-- Embeddings/semantic retrieval.
-- LLM question generation.
-- Answer evaluation.
-- STT/TTS.
-- UI screens.
-- Authentication/multi-user behavior.
+## Not implemented
+- PDF/DOCX/PPTX extraction
+- semantic embeddings/hybrid ranking
+- LLM question generation
+- answer evaluation
+- STT/TTS
+- UI screens
 
 ## Tests
-- Logic-level self-test: PASS for chunking, repeat DB initialization, FTS5 known-query retrieval, and workspace isolation.
-- Repository pytest suite: NOT YET RUN in a checked-out branch environment.
-- API integration tests: NOT YET RUN.
-- Live browser verification: NOT RUN.
-- Independent Verification Agent: NOT RUN.
+- automated suite: PASS — 14 tests in verifier environment
+- API integration: PASS
+- live Uvicorn workspace/upload/search smoke test: PASS
+- user-device/runtime verification: NOT RUN
+- user verification: NOT RUN
 
-## Issues / Assumptions
-- SQLite build must support FTS5; common modern Python SQLite builds do, but Verification must confirm the target runtime.
-- Search query syntax currently passes through to SQLite FTS5; malformed FTS queries are converted to HTTP 422 rather than silently rewritten.
-- Text decoding is deliberately UTF-8 only for this slice; encoding auto-detection is not claimed.
+## Issues discovered
+### Overlap provenance defect
+The first overlap algorithm could include text from a paragraph earlier than the locator declared.
 
-## Architecture Changes
-None. Implementation follows the approved proposal.
+Root cause: overlap used the tail of the entire previous chunk.
 
-## Claims Affected
-No product-performance or novelty claims are upgraded by this implementation.
+Correction: overlap now comes only from the immediately preceding paragraph.
 
-## Documentation Requiring Update
-- Project state after independent verification.
-- Technical API reference after endpoint behavior is verified.
+Regression: `test_overlap_locator_does_not_claim_earlier_paragraphs` — PASS.
 
-## Decisions Awaiting AJ
-None for Feature 001 implementation. Future semantic retrieval/provider selection remains open.
+### Verifier environment limitation
+Direct `git clone` could not run because the container could not resolve `github.com`. Exact current branch files were fetched via the authenticated GitHub connector and reconstructed locally for execution. This limitation is recorded in `TEST_EVIDENCE.md`.
 
-## Recommended Next Agent
-Independent Verification Agent. It should challenge upload validation, database idempotency, provenance correctness, workspace isolation, FTS query behavior, and API error handling before merge/verification.
+## Architecture changes
+None beyond approved Feature 001 contract.
+
+## Claims affected
+No research/novelty claims upgraded. Engineering evidence only establishes the implemented Feature 001 behavior in the verifier environment.
+
+## Documentation updated
+- `PROJECT_STATE.md`
+- `IMPLEMENTATION_STATUS.md`
+- `TEST_EVIDENCE.md`
+- `FEATURE_001_VERIFICATION_REPORT.md`
+
+## Decisions awaiting AJ
+None required to continue verification/review of Feature 001.
+
+## Recommended next agent
+Project Lead / reviewer should review PR #1. Research continues in parallel. After acceptance, sequence Feature 002 without adding unrelated scope.

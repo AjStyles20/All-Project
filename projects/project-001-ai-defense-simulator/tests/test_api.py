@@ -143,7 +143,7 @@ def test_excessive_filename_is_rejected(client: TestClient):
     workspace_id = create_workspace(client)
     response = client.post(
         f"/api/workspaces/{workspace_id}/documents",
-        files={"file": (("a" * 252) + ".md", b"content", "text/markdown")},
+        files={"file": (("a" * 253) + ".md", b"content", "text/markdown")},
     )
     assert response.status_code == 422
     assert response.json()["detail"] == "Filename is too long"

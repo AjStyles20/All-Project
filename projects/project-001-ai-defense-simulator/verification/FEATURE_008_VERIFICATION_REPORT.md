@@ -7,8 +7,8 @@ PASS IN CHECKED-OUT GITHUB CI WITH TEST-ONLY FOLLOW-UP PROVIDER — REAL EXTERNA
 - Repository: `AjStyles20/All-Project`
 - Branch: `p001/feature-multiturn-defense`
 - Pull request: #8
-- Checked-out PR merge ref: `f195136bb5e5f7c4781aba93f9fb18e758a17a26`
-- Verification run ID: `34206342071`
+- Final checked-out PR merge ref: `c5c04e2bd0b9f7cb4d2d319e6cee82ef010b6f00`
+- Final verification run ID: `34206784750`
 
 ## Environment
 - GitHub-hosted Ubuntu 24.04 runner
@@ -16,11 +16,12 @@ PASS IN CHECKED-OUT GITHUB CI WITH TEST-ONLY FOLLOW-UP PROVIDER — REAL EXTERNA
 
 ## Automated Gate
 - Python compile check: PASS
-- `pytest`: `82 passed, 2 warnings in 2.11s`
+- `pytest`: `82 passed, 2 warnings in 2.23s`
 - Dependency audit: `No known vulnerabilities found`
 
 ## Verified Behaviors
 - workspace-scoped session creation and retrieval
+- visible browser entry point for starting a defense session
 - initial grounded question attachment
 - ordered turns and parent-question linkage
 - current question must be answered/evaluated before follow-up
@@ -31,7 +32,7 @@ PASS IN CHECKED-OUT GITHUB CI WITH TEST-ONLY FOLLOW-UP PROVIDER — REAL EXTERNA
 - fixed follow-up type allowlist
 - prompt/instruction separation for prior answer, feedback and evidence
 - API session start/history/follow-up flow
-- server-rendered session page implementation compiles with application
+- server-rendered session page implementation
 - mocked OpenAI follow-up request uses strict JSON schema, `store: false`, no tools/actions
 - malformed provider JSON fails closed
 - Features 001–007 regression suite remains passing

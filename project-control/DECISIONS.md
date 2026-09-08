@@ -47,3 +47,16 @@ Use this file for durable architectural, methodological, governance, and scope d
 - Decision: Substantial implementation work must be independently challenged before being accepted as verified.
 - Consequences: `IMPLEMENTED` is not equivalent to `VERIFIED`.
 - Approved by: AJ through prior workflow design.
+
+## DR-004 — Instantiate Project 001 as AI Virtual Audience / Presentation & Defense Simulator
+- Date: 2026-09-08
+- Status: Approved
+- Authority level: A3
+- Context: AJ Project OS needs a real pilot project to validate the multi-agent workflow from research through engineering, verification, documentation, and defense preparation.
+- Options considered: Multiple earlier project ideas including virtual classroom, coding examination platform, and AI presentation/defense simulator.
+- Decision: Use the AI Virtual Audience / Presentation & Defense Simulator as Project 001.
+- Rationale: It exercises research, literature review, RAG/document grounding, personas, speech interfaces, frontend/backend engineering, evaluation, testing, documentation, and defense preparation without requiring specialized hardware.
+- Consequences: Project-specific work is now authorized under `projects/project-001-ai-defense-simulator/`. Advanced features remain subject to scope gates.
+- Files/components affected: Project 001 workspace, Drive Project 001 workspace, project-control state.
+- Claims affected: Novelty and outcome claims remain unverified pending research.
+- Approved by: AJ explicitly on 2026-09-08.

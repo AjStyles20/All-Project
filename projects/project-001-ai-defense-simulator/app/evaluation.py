@@ -7,13 +7,17 @@ from typing import Protocol, Sequence
 import uuid
 
 from .db import Database
-from .questioning import EvidenceItem, ensure_question_schema
+from .questioning import EvidenceItem, ensure_question_schema, validate_reviewer_role
 
 
 MAX_ANSWER_CHARS = 8000
 MAX_FEEDBACK_EXPLANATION_CHARS = 2000
 MAX_SUMMARY_CHARS = 3000
 MAX_EVIDENCE_REFERENCES = 8
+MAX_PROVIDER_NAME_CHARS = 100
+MAX_MODEL_NAME_CHARS = 200
+MAX_MODEL_VERSION_CHARS = 100
+MAX_IDENTIFIER_CHARS = 64
 POLICY_ID = "answer-eval-v1"
 
 FEEDBACK_CATEGORIES = (
@@ -95,7 +99,15 @@ def _clean_text(value: object, *, field: str, maximum: int) -> str:
     return cleaned
 
 
+def _clean_optional_text(value: object, *, field: str, maximum: int) -> str | None:
+    if value is None:
+        return None
+    return _clean_text(value, field=field, maximum=maximum)
+
+
 def _load_question_row(database: Database, *, workspace_id: str, question_id: str) -> sqlite3.Row:
+    if not question_id or len(question_id) > MAX_IDENTIFIER_CHARS:
+        raise ValueError("invalid question identifier")
     ensure_question_schema(database)
     with database.connect() as connection:
         row = connection.execute(
@@ -129,7 +141,7 @@ def _load_authoritative_evidence(
             if not isinstance(raw, dict):
                 raise ValueError("question evidence is malformed")
             chunk_id = str(raw.get("chunk_id", ""))
-            if not chunk_id or chunk_id in seen:
+            if not chunk_id or len(chunk_id) > MAX_IDENTIFIER_CHARS or chunk_id in seen:
                 raise ValueError("question evidence contains an invalid chunk reference")
             seen.add(chunk_id)
 
@@ -194,7 +206,7 @@ def build_evaluation_request(
         policy_id=POLICY_ID,
         question_id=row["id"],
         question_text=_clean_text(row["question_text"], field="question", maximum=1200),
-        reviewer_role=str(row["reviewer_role"]),
+        reviewer_role=validate_reviewer_role(str(row["reviewer_role"])),
         topic=_clean_text(row["topic"], field="topic", maximum=500),
         answer=cleaned_answer,
         evidence=evidence,
@@ -314,6 +326,21 @@ def evaluate_and_store_answer(
         raw_result,
         allowed_evidence_chunk_ids=[item.chunk_id for item in request.evidence],
     )
+    provider_name = _clean_text(
+        provider.provider_name,
+        field="evaluator provider name",
+        maximum=MAX_PROVIDER_NAME_CHARS,
+    )
+    model_name = _clean_text(
+        provider.model_name,
+        field="evaluator model name",
+        maximum=MAX_MODEL_NAME_CHARS,
+    )
+    model_version = _clean_optional_text(
+        provider.model_version,
+        field="evaluator model version",
+        maximum=MAX_MODEL_VERSION_CHARS,
+    )
     ensure_evaluation_schema(database)
 
     evaluation_id = str(uuid.uuid4())
@@ -352,9 +379,9 @@ def evaluate_and_store_answer(
                 json.dumps(feedback_payload, separators=(",", ":"), ensure_ascii=False),
                 json.dumps(evidence_payload, separators=(",", ":"), ensure_ascii=False),
                 request.policy_id,
-                str(provider.provider_name),
-                str(provider.model_name),
-                str(provider.model_version) if provider.model_version else None,
+                provider_name,
+                model_name,
+                model_version,
             ),
         )
 
@@ -368,9 +395,9 @@ def evaluate_and_store_answer(
         "evidence": evidence_payload,
         "policy_id": request.policy_id,
         "evaluator": {
-            "provider": str(provider.provider_name),
-            "model": str(provider.model_name),
-            "model_version": str(provider.model_version) if provider.model_version else None,
+            "provider": provider_name,
+            "model": model_name,
+            "model_version": model_version,
         },
         "grading": {
             "overall_numeric_score": None,

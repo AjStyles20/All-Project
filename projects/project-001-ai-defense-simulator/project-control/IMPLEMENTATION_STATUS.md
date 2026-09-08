@@ -1,8 +1,9 @@
 # Project 001 Implementation Status
 
 ## Feature 001 — Document Ingestion + Provenance-Aware Retrieval
-- Status: IMPLEMENTED — SELF-TESTED, NOT INDEPENDENTLY VERIFIED
+- Status: INTEGRATION TESTED + LIVE API VERIFIED IN VERIFIER ENVIRONMENT; NOT USER VERIFIED
 - Branch: `p001/feature-document-ingestion-retrieval`
+- Draft PR: #1
 - Scope implemented:
   - FastAPI application skeleton
   - SQLite schema initialization
@@ -13,7 +14,8 @@
   - chunk provenance metadata
   - SQLite FTS5 lexical retrieval
   - workspace-scoped search
-  - initial automated tests
+  - automated logic tests
+  - FastAPI API integration tests
 - Not implemented:
   - PDF/DOCX/PPTX parsers
   - semantic embeddings/hybrid merge
@@ -21,14 +23,19 @@
   - answer evaluation
   - speech services
   - server-rendered UI screens
-- Self-test evidence:
-  - deterministic chunk/hash logic exercised
-  - repeated SQLite initialization exercised
-  - FTS5 known-query retrieval exercised
-  - workspace isolation exercised
-- Independent verification: NOT RUN
-- Live browser/API verification: NOT RUN
+- Verification evidence:
+  - deterministic chunk/hash logic: PASS
+  - overlap/provenance regression: PASS
+  - repeated SQLite initialization: PASS
+  - FTS5 known-query retrieval: PASS
+  - workspace isolation: PASS
+  - API integration suite: PASS
+  - full local reconstructed-source suite: 14 passed in 0.37s
+  - live Uvicorn workspace/upload/search smoke test: PASS
+- Environment limitation:
+  - verifier container could not resolve GitHub for direct `git clone`; exact branch files were fetched through the authenticated connector and reconstructed locally for execution.
+- User-device/runtime verification: NOT RUN
 - User verification: NOT RUN
 
 ## Important Boundary
-No external AI provider is configured. The system must not display or document AI question generation, answer evaluation, speech input/output, PDF/DOCX/PPTX support, or semantic retrieval as implemented.
+No external AI provider is configured. The system must not display or document AI question generation, answer evaluation, speech input/output, PDF/DOCX/PPTX support, semantic retrieval, or UI completion as implemented.

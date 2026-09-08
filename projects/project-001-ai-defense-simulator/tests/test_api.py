@@ -87,7 +87,7 @@ def test_unsupported_upload_is_rejected(client: TestClient):
     workspace_id = create_workspace(client)
     response = client.post(
         f"/api/workspaces/{workspace_id}/documents",
-        files={"file": ("evidence.pdf", b"not a pdf", "application/pdf")},
+        files={"file": ("evidence.exe", b"not supported", "application/octet-stream")},
     )
     assert response.status_code == 415
     assert "Unsupported file type" in response.json()["detail"]
@@ -110,7 +110,7 @@ def test_invalid_utf8_upload_is_rejected(client: TestClient):
         files={"file": ("broken.txt", b"\xff\xfe\xfa", "text/plain")},
     )
     assert response.status_code == 422
-    assert response.json()["detail"] == "File must contain valid UTF-8 text"
+    assert response.json()["detail"] == "Text file must contain valid UTF-8"
 
 
 def test_oversized_upload_is_rejected(client: TestClient):

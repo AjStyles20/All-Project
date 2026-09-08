@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Request could not be completed — Project 001{% endblock %}
+{% block content %}
+<section class="panel error-page" aria-labelledby="error-title">
+  <p class="eyebrow">Request error</p>
+  <h1 id="error-title">The request could not be completed</h1>
+  <p>{{ detail }}</p>
+  <p><a href="{{ return_path }}">Return</a></p>
+</section>
+{% endblock %}

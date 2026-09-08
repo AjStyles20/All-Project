@@ -1,0 +1,301 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+  color: #17202a;
+  background: #f6f8fb;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: #1f4f8f;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #222;
+  outline-offset: 2px;
+}
+
+.container {
+  width: min(1120px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.site-header {
+  background: #fff;
+  border-bottom: 1px solid #d9e0e8;
+}
+
+.header-row {
+  min-height: 64px;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-weight: 800;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.subtitle,
+.muted,
+.hint {
+  color: #5d6875;
+}
+
+main.container {
+  flex: 1;
+  padding-block: 2rem 3rem;
+}
+
+.site-footer {
+  border-top: 1px solid #d9e0e8;
+  background: #fff;
+  padding-block: 1rem;
+  font-size: 0.9rem;
+  color: #5d6875;
+}
+
+.hero,
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.hero h1,
+.page-header h1 {
+  margin: 0.25rem 0;
+  max-width: 22ch;
+  line-height: 1.15;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #5d6875;
+}
+
+.lead {
+  max-width: 70ch;
+  font-size: 1.05rem;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.status-card,
+.panel,
+.evaluation-card {
+  background: #fff;
+  border: 1px solid #d9e0e8;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.status-card h2,
+.panel h2 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panel {
+  margin-bottom: 1rem;
+}
+
+form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+label {
+  font-weight: 700;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid #9ca8b5;
+  border-radius: 8px;
+  background: #fff;
+  color: #17202a;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  width: fit-content;
+  padding: 0.7rem 1rem;
+  border: 1px solid #173c6d;
+  border-radius: 8px;
+  background: #1f4f8f;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #173c6d;
+}
+
+.search-form {
+  grid-template-columns: minmax(220px, 1fr) minmax(160px, 220px) auto;
+  align-items: end;
+}
+
+.item-list,
+.evidence-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.item-list li,
+.evidence-list li {
+  margin-bottom: 0.85rem;
+}
+
+.item-list li {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.question-history li {
+  display: list-item;
+}
+
+.question-history li span {
+  display: block;
+}
+
+.evidence-list p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.evidence-meta {
+  font-size: 0.9rem;
+  color: #4a5663;
+}
+
+.badge {
+  display: inline-block;
+  border: 1px solid #bac4cf;
+  border-radius: 999px;
+  padding: 0.05rem 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.notice {
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #abb7c4;
+  background: #fff;
+}
+
+.notice.success {
+  border-color: #547d64;
+}
+
+.notice.error {
+  border-color: #9b4b4b;
+}
+
+.notice.neutral {
+  background: #f2f5f8;
+}
+
+.status-line {
+  margin: 1rem 0;
+  padding: 0.65rem;
+  background: #f2f5f8;
+  border-radius: 8px;
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
+}
+
+.feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.75rem;
+}
+
+.feedback-grid div {
+  border: 1px solid #d9e0e8;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.feedback-grid dt {
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.feedback-grid dd {
+  margin: 0.35rem 0 0;
+}
+
+.evaluation-card + .evaluation-card {
+  margin-top: 1rem;
+}
+
+.error-page {
+  max-width: 680px;
+}
+
+@media (max-width: 720px) {
+  .search-form {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1,
+  .page-header h1 {
+    max-width: none;
+  }
+}

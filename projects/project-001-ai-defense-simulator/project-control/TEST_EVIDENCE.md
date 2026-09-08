@@ -63,23 +63,40 @@ Security correction discovered during development: the first persistence path ch
 - Dependency audit: `No known vulnerabilities found`
 - Test-only question/evaluation providers only; real AI evaluation NOT LIVE VERIFIED
 
+Covered question/workspace ownership, authoritative evidence reconstruction, provenance-tampering rejection, prompt/instruction separation, fixed qualitative rubric, invalid category/status/evidence-reference rejection, bounded input/output/provider metadata, persistence integrity, provider-not-configured behavior, and the complete FastAPI document -> question -> answer -> feedback loop using test-only providers.
+
+## Feature 006 — First Usable Secure Server-Rendered Web UI
+- Date: 2026-09-08
+- Branch: `p001/feature-web-ui`
+- Pull request: #6
+- GitHub Actions workflow: `Project 001 CI`
+- Verification run ID: `34202171058`
+- Runner: Ubuntu 24.04
+- Python: 3.12.14
+- Checked-out source: PR #6 merge ref
+- Compile check: PASS
+- Automated result: `59 passed, 2 warnings in 1.92s`
+- Dependency audit: `No known vulnerabilities found`
+- AJ device/browser verification: NOT RUN
+
 Covered:
-- question/workspace ownership enforcement
-- authoritative evidence reconstruction
-- cross-workspace question rejection
-- provenance-tampering rejection
-- trusted evaluator policy separated from untrusted question/answer/evidence
-- fixed five-category qualitative rubric
-- invalid category/status rejection
-- no objective numeric overall score claim
-- evidence-reference confinement
-- answer/summary/explanation/provider-metadata bounds
-- persistence integrity
-- provider-not-configured HTTP 503 behavior
-- full FastAPI document -> question -> answer -> feedback loop with test-only providers
+- home-page rendering;
+- workspace creation through server-rendered form;
+- document upload through UI;
+- evidence search with visible filename/locator/source provenance;
+- script-like uploaded content is HTML-escaped and not rendered as executable markup in tested output;
+- restrictive CSP and security-header checks;
+- cross-origin/cross-site unsafe browser mutation rejection;
+- API docs disabled by default;
+- truthful configured/not-configured AI capability states;
+- full server-rendered document -> question -> answer -> qualitative-feedback flow using explicit test-only providers;
+- cross-workspace question URL isolation;
+- existing Feature 001–005 regression suite remains passing.
+
+Accessibility foundations checked at implementation/test level include semantic headings/landmarks, explicit labels, native keyboard-operable controls, textual statuses, visible focus styling, and provenance that does not require hover. This is not a full screen-reader/device accessibility certification.
 
 ## Current CI Maintenance Note
-The current workflow uses `actions/checkout@v5` and `actions/setup-python@v6`, avoiding the earlier Node-20 action-major deprecation warning. The pytest suite currently emits two dependency deprecation warnings in the FastAPI/Starlette test-client path; these are maintenance debt and not ignored as permanent acceptable state.
+The workflow uses `actions/checkout@v5` and `actions/setup-python@v6`. The pytest suite still emits two dependency deprecation warnings in the FastAPI/Starlette test-client path; these are tracked maintenance debt rather than silently accepted permanent state.
 
 ## Security / Claim Boundary
-This evidence does not establish that Project 001 is hack-proof, production-ready, universally prompt-injection-proof, or suitable for high-stakes grading. No real embedding/question/evaluation provider is currently configured. Public/multi-user security, authentication/authorization, deployment hardening, speech, OCR, visual understanding, and user-device verification remain outstanding.
+This evidence does not establish that Project 001 is hack-proof, production-ready, universally prompt-injection-proof, or suitable for high-stakes grading. No real embedding/question/evaluation provider is currently configured. The browser UI is verified in CI/TestClient, not yet on AJ's Windows/browser environment. Public/multi-user security, authentication/authorization, full session-bound CSRF controls, deployment hardening, speech, OCR, visual understanding, and user-device verification remain outstanding.

@@ -5,7 +5,7 @@
 - Project ID: P001
 - Owner: AJ
 - Status: ACTIVE
-- Stage: Core provider-neutral text practice loop implemented and CI verified with test-only AI providers; first usable web UI is the next engineering slice.
+- Stage: Core provider-neutral text practice loop and first usable server-rendered web interface are CI verified with test-only AI providers; real provider integration is the next engineering/research gate.
 - Last verified date: 2026-09-08
 
 ## Approved Direction
@@ -96,34 +96,57 @@ Create a defensible web application that helps users practice presentations, def
 - real evaluator/LLM provider/model: NOT CONFIGURED / NOT LIVE VERIFIED
 - user-device verification: NOT RUN
 
-## Core Text Practice Loop
-The backend now has a complete bounded provider-neutral flow:
+### Feature 006 — First Usable Secure Server-Rendered Web UI
+- Jinja2 server-rendered home/workspace/question pages: IMPLEMENTED
+- workspace creation/document upload/evidence search through UI: IMPLEMENTED
+- question and answer/evaluation form flows: IMPLEMENTED
+- visible provenance and history views: IMPLEMENTED
+- truthful provider configured/unconfigured states: IMPLEMENTED
+- Jinja autoescape/XSS regression: VERIFIED
+- restrictive CSP and security response headers: VERIFIED
+- trusted-host configuration: IMPLEMENTED
+- cross-origin unsafe browser-mutation rejection: VERIFIED
+- API docs disabled by default: VERIFIED
+- cross-workspace question view isolation: VERIFIED
+- test-only full browser workflow: CI VERIFIED
+- CI gate: 59 tests PASS on checked-out PR #6 merge ref
+- dependency audit: no known vulnerabilities found at verification time
+- AJ Windows/browser verification: NOT RUN
+- full screen-reader/device accessibility audit: NOT RUN
+
+## Core Practice Loop
+The backend and server-rendered UI now have a complete bounded provider-neutral flow:
 1. user creates a workspace;
 2. uploads supported source material;
 3. system extracts/chunks it with provenance;
-4. retrieval selects workspace-scoped evidence;
+4. user can inspect workspace-scoped evidence retrieval;
 5. configured question provider receives trusted policy + untrusted evidence and returns one grounded review question;
-6. question and evidence provenance are persisted;
+6. question and evidence provenance are persisted and displayed;
 7. user submits a text answer;
 8. configured evaluator receives trusted policy + authoritative question/evidence + untrusted answer;
 9. evaluator returns five-category qualitative feedback;
-10. output is validated, provenance-checked, persisted, and returned without an objective overall score.
+10. output is validated, provenance-checked, persisted, and displayed without an objective overall score.
 
-This flow is verified with test-only providers only. It is not yet a live AI product because no real embedding/question/evaluation provider is configured.
+This flow is verified with explicit test-only providers only. It is not yet a live AI product because no real embedding/question/evaluation provider is configured.
 
 ## Security Posture
 - Security baseline: ACTIVE
 - Parameterized SQLite statements: in use
-- Workspace scoping/ownership checks: implemented across current retrieval/question/evaluation paths
+- Workspace scoping/ownership checks: implemented across current retrieval/question/evaluation/UI read paths
 - Upload size/extension/parser controls: implemented within current feature bounds
 - Cross-workspace question/evidence checks: tested
 - Prompt/instruction separation: tested at request-structure level
 - Provider outputs: bounded and validated before persistence
+- Jinja autoescaping and script-like uploaded-content regression: tested
+- restrictive CSP/security headers: tested
+- foreign-Origin/cross-site mutation rejection: tested
+- API docs disabled by default: tested
 - Dependency audit in CI: active
 - Authentication: NOT IMPLEMENTED
 - Multi-user authorization: NOT IMPLEMENTED
-- Public rate limiting/CSRF/production headers/HTTPS config: NOT IMPLEMENTED
-- Security claim: do not describe the product as production-ready, tamper-proof, or universally prompt-injection-proof
+- Full session-bound CSRF token controls: NOT IMPLEMENTED
+- Public rate limiting/HTTPS/reverse-proxy hardening: NOT IMPLEMENTED
+- Security claim: do not describe the product as production-ready, tamper-proof, hack-proof, or universally prompt-injection-proof
 
 ## Research Status
 - Historical window: approximately 1990-present, with earlier foundational work where relevant
@@ -140,6 +163,7 @@ This flow is verified with test-only providers only. It is not yet a live AI pro
 - PR #3 — Feature 003 hybrid retrieval, stacked on Feature 002
 - PR #4 — Feature 004 grounded questioning, stacked on Feature 003
 - PR #5 — Feature 005 answer evaluation, stacked on Feature 004
+- PR #6 — Feature 006 server-rendered secure web UI, stacked on Feature 005
 
 All remain review/merge controlled; verification status must not be inferred merely from PR existence.
 
@@ -147,14 +171,15 @@ All remain review/merge controlled; verification status must not be inferred mer
 - no real embedding model/provider configured
 - no real question-generation LLM configured
 - no real answer-evaluation LLM configured
-- no first usable browser UI yet
-- no session/history UI
 - no multi-turn challenge/follow-up behavior yet
 - no speech input/output
 - no authentication/multi-user authorization
+- no full session-bound CSRF controls
 - no public deployment hardening
+- no AJ-device/browser verification
+- no full screen-reader/accessibility certification
 - no OCR for scanned PDFs
 - no image/chart/diagram understanding
 
-## Next Engineering Gate
-Build the first usable server-rendered web interface around the verified core text workflow, with accessibility, safe output rendering, CSRF/deployment considerations documented, and no fake AI state. The UI must clearly distinguish configured/unconfigured AI capabilities and preserve evidence provenance in visible feedback.
+## Next Engineering / Research Gate
+Select and implement secure real-provider adapters without vendor lock-in. Provider choice must consider cost, data/privacy behavior, output-structure reliability, latency, current API support, and AJ's modest local hardware. Secrets must remain in trusted environment configuration, endpoint destinations must not be user-controlled, external requests must be bounded and timed out, and provider failures must fail closed. A real-provider feature cannot be called LIVE VERIFIED until an actual authenticated request is exercised and its behavior/security is recorded.

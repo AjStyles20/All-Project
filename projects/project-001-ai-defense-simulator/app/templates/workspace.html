@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}{{ workspace.name }} — Project 001{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">Workspaces</a> <span aria-hidden="true">/</span> <span>{{ workspace.name }}</span>
+</nav>
+
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Workspace</p>
+    <h1>{{ workspace.name }}</h1>
+    <p class="muted">Created {{ workspace.created_at }}</p>
+  </div>
+</header>
+
+<div class="two-column">
+  <section class="panel" aria-labelledby="upload-title">
+    <h2 id="upload-title">Upload source material</h2>
+    <form method="post" action="/ui/workspaces/{{ workspace.id }}/documents" enctype="multipart/form-data">
+      <label for="document-file">Document</label>
+      <input id="document-file" name="file" type="file" accept=".txt,.md,.pdf,.docx,.pptx" required>
+      <p class="hint">Supported: TXT, Markdown, PDF, DOCX, PPTX. Scanned PDFs without extractable text are not OCR-processed.</p>
+      <button type="submit">Upload document</button>
+    </form>
+  </section>
+
+  <section class="panel" aria-labelledby="documents-title">
+    <h2 id="documents-title">Documents</h2>
+    {% if documents %}
+      <ul class="item-list">
+        {% for document in documents %}
+          <li>
+            <span><strong>{{ document.original_filename }}</strong> <span class="badge">{{ document.extension }}</span></span>
+            <span class="muted">{{ document.extraction_status }} · {{ document.created_at }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No documents uploaded.</p>
+    {% endif %}
+  </section>
+</div>
+
+<section class="panel" aria-labelledby="search-title">
+  <h2 id="search-title">Inspect retrieved evidence</h2>
+  <form method="get" action="/workspaces/{{ workspace.id }}" class="search-form">
+    <div>
+      <label for="query">Search query</label>
+      <input id="query" name="q" type="search" maxlength="500" value="{{ query or '' }}" required>
+    </div>
+    <div>
+      <label for="mode">Retrieval mode</label>
+      <select id="mode" name="mode">
+        <option value="lexical" {% if mode == 'lexical' %}selected{% endif %}>Lexical</option>
+        <option value="hybrid" {% if mode == 'hybrid' %}selected{% endif %}>Hybrid</option>
+      </select>
+    </div>
+    <button type="submit">Search evidence</button>
+  </form>
+
+  {% if retrieval_status %}
+    <p class="status-line"><strong>Effective mode:</strong> {{ retrieval_status.effective_mode }} · <strong>Semantic:</strong> {{ retrieval_status.semantic_status }}</p>
+  {% endif %}
+
+  {% if search_results is not none %}
+    {% if search_results %}
+      <ol class="evidence-list">
+        {% for result in search_results %}
+          <li>
+            <div class="evidence-meta"><strong>{{ result.filename }}</strong> · {{ result.locator }}</div>
+            <p>{{ result.text }}</p>
+            {% if result.final_score is defined %}
+              <p class="muted">Retrieval score: {{ result.final_score }}</p>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <p class="muted">No matching evidence found.</p>
+    {% endif %}
+  {% endif %}
+</section>
+
+<section class="panel" aria-labelledby="question-title">
+  <h2 id="question-title">Generate reviewer question</h2>
+  {% if question_configured %}
+    <form method="post" action="/ui/workspaces/{{ workspace.id }}/questions">
+      <label for="topic">Topic or evidence query</label>
+      <input id="topic" name="topic" type="text" maxlength="500" required>
+
+      <label for="reviewer-role">Reviewer role</label>
+      <select id="reviewer-role" name="reviewer_role">
+        <option value="technical">Technical reviewer</option>
+        <option value="methodology">Methodology reviewer</option>
+        <option value="evidence">Evidence / skeptical reviewer</option>
+        <option value="security_privacy">Security & privacy reviewer</option>
+        <option value="product_usability">Product / usability reviewer</option>
+      </select>
+
+      <label for="question-retrieval-mode">Retrieval mode</label>
+      <select id="question-retrieval-mode" name="retrieval_mode">
+        <option value="hybrid">Hybrid</option>
+        <option value="lexical">Lexical</option>
+      </select>
+      <button type="submit">Generate question</button>
+    </form>
+  {% else %}
+    <div class="notice neutral" role="status">
+      Question generation is not configured. The application will not fabricate AI questions.
+    </div>
+  {% endif %}
+</section>
+
+<section class="panel" aria-labelledby="history-title">
+  <h2 id="history-title">Question history</h2>
+  {% if questions %}
+    <ol class="item-list question-history">
+      {% for question in questions %}
+        <li>
+          <a href="/workspaces/{{ workspace.id }}/questions/{{ question.id }}">{{ question.question_text }}</a>
+          <span class="muted">{{ question.reviewer_role }} · {{ question.topic }} · {{ question.created_at }}</span>
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p class="muted">No generated questions yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

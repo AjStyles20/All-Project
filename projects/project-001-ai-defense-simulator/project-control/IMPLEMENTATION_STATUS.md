@@ -106,16 +106,57 @@
 - User-device/runtime verification: NOT RUN
 - User verification: NOT RUN
 
-## Core Text Practice Loop Status
-The provider-neutral backend now supports the complete bounded text workflow:
-1. ingest user documents with provenance;
-2. retrieve workspace-scoped evidence;
-3. generate a source-grounded reviewer question through a configured provider interface;
-4. accept the user's text answer;
-5. evaluate that answer against authoritative source evidence through a configured evaluator interface;
-6. return five-category qualitative feedback with evidence provenance.
+## Feature 006 — First Usable Secure Server-Rendered Web UI
+- Status: CI VERIFIED — NOT USER-DEVICE/BROWSER VERIFIED
+- Branch: `p001/feature-web-ui`
+- Pull request: #6
+- Implemented:
+  - Jinja2 server-rendered home, workspace, and question pages
+  - workspace creation, document upload, evidence search, question-generation, answer/evaluation form flows
+  - question and evaluation history views
+  - visible filename/locator/source provenance
+  - truthful configured/not-configured capability states
+  - no React dependency and no inline JavaScript in this slice
+  - restrictive Content-Security-Policy and security response headers
+  - trusted-host middleware
+  - explicit rejection of unsafe browser mutations with foreign Origin/cross-site fetch signals
+  - API docs disabled by default
+  - Jinja autoescaped rendering of uploaded/model text
+  - semantic form labels, native keyboard controls, textual status communication, visible focus styling
+  - cross-workspace question-view isolation
+- Verification evidence:
+  - GitHub Actions checked-out PR #6 merge ref: PASS
+  - Ubuntu 24.04 / Python 3.12.14 compile check: PASS
+  - full regression + Feature 006 suite: 59 passed
+  - script-like uploaded text HTML escaping/XSS regression: PASS
+  - cross-origin unsafe browser mutation rejection: PASS
+  - security-header checks: PASS
+  - API docs disabled by default: PASS
+  - full server-rendered document -> question -> answer -> feedback loop with test-only providers: PASS
+  - cross-workspace question URL isolation: PASS
+  - dependency audit: no known vulnerabilities found at verification time
+- Explicit limitations:
+  - no AJ Windows/browser verification yet
+  - no real AI providers configured
+  - no authentication/multi-user authorization
+  - no full session-bound CSRF token infrastructure
+  - no public-production deployment claim
+  - no full screen-reader/accessibility audit
+- User-device/runtime verification: NOT RUN
+- User verification: NOT RUN
 
-The workflow is verified with test-only AI providers. Real AI providers are still not configured and must not be represented as live.
+## Core Text Practice Loop Status
+The provider-neutral backend and first browser UI now support the complete bounded text workflow:
+1. create a workspace;
+2. upload supported documents with provenance;
+3. inspect workspace-scoped evidence retrieval;
+4. generate a source-grounded reviewer question through a configured provider interface;
+5. review the evidence used for the question;
+6. submit a text answer;
+7. evaluate the answer against authoritative source evidence through a configured evaluator interface;
+8. inspect five-category qualitative feedback and evidence provenance.
+
+The complete workflow is verified in CI with explicit test-only AI providers. Real AI providers are still not configured and must not be represented as live.
 
 ## Still Not Implemented / Not Live Verified
 - real configured semantic embedding provider/model
@@ -123,9 +164,10 @@ The workflow is verified with test-only AI providers. Real AI providers are stil
 - real configured answer-evaluation provider/model
 - multi-turn challenge/follow-up behavior
 - speech services
-- first usable server-rendered web UI
 - authentication/multi-user behavior
+- full CSRF/session infrastructure for authenticated deployment
 - public deployment hardening
+- AJ-device/browser verification
 
 ## Important Boundary
-No external AI or embedding provider is configured. Test-only fake providers exist solely for verification and must never be represented as production AI. Semantic retrieval, question generation, and answer evaluation are live only after real providers/models are configured and separately verified. Public-deployment security, authentication, speech, OCR, and complex visual understanding remain unverified or unimplemented.
+No external AI or embedding provider is configured. Test-only fake providers exist solely for verification and must never be represented as production AI. Semantic retrieval, question generation, and answer evaluation are live only after real providers/models are configured and separately verified. The current web interface is a secure-by-default local prototype foundation, not a claim of public-production readiness, hack-proofing, universal prompt-injection immunity, or completed accessibility certification.

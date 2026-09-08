@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Project 001 — Workspaces{% endblock %}
+{% block content %}
+<section class="hero" aria-labelledby="page-title">
+  <div>
+    <p class="eyebrow">Practice workspace</p>
+    <h1 id="page-title">Prepare for a defense, viva, interview, or technical review</h1>
+    <p class="lead">Upload your own source material, inspect retrieved evidence, and use configured AI providers for grounded questions and qualitative feedback.</p>
+  </div>
+</section>
+
+<section class="status-grid" aria-label="Capability status">
+  <article class="status-card">
+    <h2>Document retrieval</h2>
+    <p><strong>Available</strong></p>
+    <p>TXT, Markdown, PDF, DOCX, and PPTX text ingestion with source provenance.</p>
+  </article>
+  <article class="status-card">
+    <h2>Semantic retrieval</h2>
+    <p><strong>{{ semantic_status.status }}</strong></p>
+    <p>{% if semantic_status.provider %}{{ semantic_status.provider }} / {{ semantic_status.model }}{% else %}Lexical retrieval remains available.{% endif %}</p>
+  </article>
+  <article class="status-card">
+    <h2>Question generation</h2>
+    <p><strong>{{ question_status.status }}</strong></p>
+    <p>{% if question_status.provider %}{{ question_status.provider }} / {{ question_status.model }}{% else %}No questions will be fabricated while unconfigured.{% endif %}</p>
+  </article>
+  <article class="status-card">
+    <h2>Answer evaluation</h2>
+    <p><strong>{{ evaluation_status.status }}</strong></p>
+    <p>{% if evaluation_status.provider %}{{ evaluation_status.provider }} / {{ evaluation_status.model }}{% else %}No AI feedback will be fabricated while unconfigured.{% endif %}</p>
+  </article>
+</section>
+
+<div class="two-column">
+  <section class="panel" aria-labelledby="new-workspace-title">
+    <h2 id="new-workspace-title">Create workspace</h2>
+    <form method="post" action="/ui/workspaces">
+      <label for="workspace-name">Workspace name</label>
+      <input id="workspace-name" name="name" type="text" maxlength="120" required autocomplete="off">
+      <button type="submit">Create workspace</button>
+    </form>
+  </section>
+
+  <section class="panel" aria-labelledby="workspace-list-title">
+    <h2 id="workspace-list-title">Recent workspaces</h2>
+    {% if workspaces %}
+      <ul class="item-list">
+        {% for workspace in workspaces %}
+          <li>
+            <a href="/workspaces/{{ workspace.id }}">{{ workspace.name }}</a>
+            <span class="muted">{{ workspace.created_at }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No workspaces yet.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

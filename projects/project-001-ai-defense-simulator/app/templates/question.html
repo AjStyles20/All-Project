@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Question — {{ workspace.name }}{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">Workspaces</a> <span aria-hidden="true">/</span>
+  <a href="/workspaces/{{ workspace.id }}">{{ workspace.name }}</a> <span aria-hidden="true">/</span>
+  <span>Question</span>
+</nav>
+
+<header class="page-header">
+  <div>
+    <p class="eyebrow">{{ question.reviewer_role }} reviewer</p>
+    <h1>{{ question.question_text }}</h1>
+    <p class="muted">Topic: {{ question.topic }} · Retrieval: {{ question.retrieval_mode }} · {{ question.created_at }}</p>
+  </div>
+</header>
+
+<section class="panel" aria-labelledby="evidence-title">
+  <h2 id="evidence-title">Evidence used for this question</h2>
+  <ol class="evidence-list">
+    {% for item in question.evidence %}
+      <li>
+        <div class="evidence-meta"><strong>{{ item.filename }}</strong> · {{ item.locator }}</div>
+        <p>{{ item.text }}</p>
+      </li>
+    {% endfor %}
+  </ol>
+</section>
+
+<section class="panel" aria-labelledby="answer-title">
+  <h2 id="answer-title">Your answer</h2>
+  {% if evaluation_configured %}
+    <form method="post" action="/ui/workspaces/{{ workspace.id }}/questions/{{ question.id }}/answers">
+      <label for="answer">Answer the reviewer question</label>
+      <textarea id="answer" name="answer" maxlength="8000" rows="10" required></textarea>
+      <p class="hint">Feedback is qualitative and evidence-aware. No validated objective overall grade is claimed.</p>
+      <button type="submit">Submit for feedback</button>
+    </form>
+  {% else %}
+    <div class="notice neutral" role="status">
+      Answer evaluation is not configured. The application will not fabricate AI feedback.
+    </div>
+  {% endif %}
+</section>
+
+<section class="panel" aria-labelledby="evaluation-history-title">
+  <h2 id="evaluation-history-title">Feedback history</h2>
+  {% if evaluations %}
+    {% for evaluation in evaluations %}
+      <article class="evaluation-card">
+        <h3>Evaluation {{ loop.revindex }}</h3>
+        <p><strong>Your answer:</strong> {{ evaluation.answer_text }}</p>
+        <p><strong>Summary:</strong> {{ evaluation.summary }}</p>
+        <dl class="feedback-grid">
+          {% for item in evaluation.feedback %}
+            <div>
+              <dt>{{ item.category | replace('_', ' ') }}</dt>
+              <dd><strong>{{ item.status | replace('_', ' ') }}</strong></dd>
+              <dd>{{ item.explanation }}</dd>
+              {% if item.evidence_chunk_ids %}
+                <dd class="muted">Evidence references: {{ item.evidence_chunk_ids | join(', ') }}</dd>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </dl>
+        <p class="muted">Evaluator: {{ evaluation.provider }} / {{ evaluation.model }} · Policy: {{ evaluation.policy_id }} · {{ evaluation.created_at }}</p>
+      </article>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No answer evaluations yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

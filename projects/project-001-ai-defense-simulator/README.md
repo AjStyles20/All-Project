@@ -1,24 +1,20 @@
 # Project 001 — AI Virtual Audience / Presentation & Defense Simulator
 
 ## Purpose
-Build and evaluate an AI-assisted presentation, viva, interview, and project-defense practice system that can use uploaded source materials to generate context-aware questions, simulate panel/audience roles, capture user responses, and provide transparent feedback.
+A professional, source-grounded practice system for presentations, defenses, vivas, interviews, and technical/research review. Users provide their own materials; the system is designed to generate questions and feedback that remain traceable to those materials rather than relying on opaque unsupported scoring.
 
-## Status
-Project instantiated. Research and architecture are next. No implementation claims are verified yet.
+## Current Status
+Project active. Feature 001 — provenance-aware TXT/Markdown ingestion and workspace-scoped lexical retrieval — is implemented on PR #1 and has passed independent logic, API integration, and live API smoke testing in the verifier environment. User-device/runtime verification remains outstanding.
 
-## Governance
-This project inherits the repository-level `project-control/PROJECT_RULES.md` and agent instructions. Project-specific truth lives in this folder's `project-control/` files.
+## Approved MVP Foundation
+- FastAPI + Python backend
+- SQLite persistence
+- lightweight server-rendered frontend
+- provenance-aware document ingestion
+- inspectable retrieval, beginning with SQLite FTS5
+- provider adapters for later LLM, embedding, STT, and TTS services
 
-## Initial Product Boundary
-The first defensible MVP should focus on:
-- source-grounded question generation from user-provided documents/slides;
-- configurable audience/panel personas;
-- text and microphone-based practice sessions where feasible;
-- response capture and session history;
-- transparent feedback with clearly defined metrics or rubric criteria;
-- clear distinction between implemented, simulated, planned, and unsupported capabilities.
+## Important Boundaries
+The current implementation does **not** yet provide PDF/DOCX/PPTX extraction, semantic retrieval, LLM question generation, answer evaluation, speech input/output, presentation-quality scoring, avatars, VR, or completed UI screens.
 
-Features such as advanced avatars, real-time computer vision, emotion recognition, complex voice cloning, and high-fidelity animated classrooms are not assumed to be MVP requirements. They must pass scope review before implementation.
-
-## Project Owner
-AJ
+Research remains active across approximately 1990-present to establish historical prior art and avoid exaggerated novelty claims.

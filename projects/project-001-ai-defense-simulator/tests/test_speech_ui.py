@@ -12,11 +12,13 @@ def test_question_template_requires_separate_transcribe_action_and_keeps_text_an
     assert '<script src="/static/speech.js" defer></script>' in template
 
 
-def test_speech_javascript_only_requests_microphone_from_start_click_and_never_submits_form():
+def test_speech_javascript_only_invokes_microphone_from_start_click_and_never_submits_form():
     script = Path("app/static/speech.js").read_text(encoding="utf-8")
     start_handler = script.index('start.addEventListener("click"')
-    microphone_request = script.index("navigator.mediaDevices.getUserMedia")
-    assert microphone_request > start_handler
+    # Feature detection may reference getUserMedia before the handler. The awaited invocation
+    # itself must occur only after the explicit Start recording click handler begins.
+    microphone_invocation = script.index("await navigator.mediaDevices.getUserMedia")
+    assert microphone_invocation > start_handler
     assert 'transcribe.addEventListener("click"' in script
     assert "fetch(endpoint" in script
     assert "answer.value = payload.transcript" in script

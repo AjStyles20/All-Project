@@ -87,3 +87,21 @@ Before Feature 011 can be considered live-verified:
 6. provider failure behavior is observed without credential leakage.
 
 CI verification alone is implementation verification, not live-provider verification.
+
+## Live verification record — 2026-09-08
+
+Status: **LIVE VERIFIED for the Feature 011 scope defined above.**
+
+Observed on AJ's Windows 10 development machine using Python 3.14 and the project virtual environment:
+
+- `python -m pytest -q` completed with **126 passed, 2 warnings**.
+- GitHub Actions CI completed with **126 passed, 2 warnings**.
+- `pip-audit` reported **No known vulnerabilities found**.
+- Runtime provider selection showed `groq / openai/gpt-oss-20b` for question generation and answer evaluation while OpenAI was disabled.
+- Semantic retrieval remained truthfully **not configured**.
+- A live source-grounded technical-review question was generated from `Computer Networks - Complete Study Guide.pdf` for the topic `TCP reliability mechanisms`.
+- The generated question used lexical retrieval and displayed page-level evidence provenance from the uploaded PDF, including pages 7 and 6.
+- A live answer (`I am not sure.`) was submitted and Groq returned the five required qualitative feedback categories with evidence references; the evaluation was persisted and displayed successfully.
+- Earlier live provider failures were surfaced only as the sanitized application message `Question provider failed`; no credential or remote response body was displayed by the application.
+
+This verification does **not** extend to semantic embeddings, Groq multi-turn follow-up, speech transcription, reviewer TTS, public deployment, authentication/authorization, or production hardening.

@@ -55,4 +55,25 @@ async def same_origin_microphone_policy(request, call_next):
     return response
 
 
+@runtime.app.middleware("http")
+async def normalize_null_origin_for_same_origin_navigation(request, call_next):
+    """Handle browsers that emit ``Origin: null`` for a verified same-origin form navigation.
+
+    The underlying security guard still rejects ``Sec-Fetch-Site: cross-site`` and explicit
+    non-null origin/host mismatches. We only remove the opaque ``null`` origin when the browser
+    independently reports the request as same-origin.
+    """
+    if request.method.upper() in {"POST", "PUT", "PATCH", "DELETE"}:
+        fetch_site = request.headers.get("sec-fetch-site", "").lower()
+        origin = request.headers.get("origin", "").lower()
+        if fetch_site == "same-origin" and origin == "null":
+            request.scope["headers"] = [
+                (name, value)
+                for name, value in request.scope.get("headers", [])
+                if name.lower() != b"origin"
+            ]
+
+    return await call_next(request)
+
+
 app = runtime.app

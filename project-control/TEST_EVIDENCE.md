@@ -104,3 +104,15 @@ All verification evidence should be reproducible where practical. Do not record 
 - Evidence: User-supplied browser screenshot and PowerShell output.
 - Performed by: AJ
 - Notes: Exact upstream failure cause was not established from the sanitized application output and is not inferred.
+
+### TE-009 — Feature 011 GitHub CI and dependency audit
+- Date: 2026-09-08
+- Feature/subsystem: Project 001 — Multi-Provider AI Foundation
+- Test type: CI / Regression / Security
+- Environment: GitHub Actions, Ubuntu 24.04, Python 3.12.14
+- Procedure: Compile application/tests, run full pytest suite, run `pip-audit -r requirements.txt`.
+- Expected result: Compilation succeeds, all tests pass, dependency audit reports no known vulnerabilities.
+- Observed result: `126 passed, 2 warnings in 2.68s`; `No known vulnerabilities found`.
+- Status: PASS
+- Evidence: GitHub Actions workflow run 34272670176, job `test-and-audit`.
+- Performed by: GitHub Actions

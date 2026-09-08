@@ -13,6 +13,7 @@ from .ingestion import (
     extract_document_chunks,
     sha256_bytes,
 )
+from .questioning import QuestionGenerator, generate_and_store_question
 from .retrieval import hybrid_search
 
 APP_DIR = Path(__file__).resolve().parent
@@ -26,14 +27,12 @@ MAX_UPLOAD_BYTES = int(os.getenv("P001_MAX_UPLOAD_BYTES", str(2 * 1024 * 1024)))
 db = Database(DATABASE_PATH)
 db.initialize()
 
-# No semantic provider is configured by default. A real provider must be wired
-# explicitly from trusted configuration and verified before semantic retrieval
-# is represented as live.
 embedding_provider: EmbeddingProvider | None = None
+question_generator: QuestionGenerator | None = None
 
 app = FastAPI(
     title="Project 001 — Source-Grounded Review Simulator",
-    version="0.3.0",
+    version="0.4.0",
 )
 
 
@@ -54,10 +53,18 @@ def health() -> dict:
             "model": identity.model,
         }
 
+    question_status = {"status": "not configured", "provider": None, "model": None}
+    if question_generator is not None:
+        question_status = {
+            "status": "configured",
+            "provider": str(question_generator.provider_name),
+            "model": str(question_generator.model_name),
+        }
+
     return {
         "application": "available",
         "database": database_status,
-        "ai_provider": "not configured",
+        "ai_provider": question_status,
         "semantic_retrieval": semantic,
     }
 
@@ -161,3 +168,49 @@ def search_workspace(
         "retrieval": retrieval,
         "results": results,
     }
+
+
+@app.post("/api/workspaces/{workspace_id}/questions")
+def create_grounded_question(
+    workspace_id: str,
+    topic: str = Form(...),
+    reviewer_role: str = Form(...),
+    retrieval_mode: str = Form("hybrid"),
+) -> dict:
+    if not db.workspace_exists(workspace_id):
+        raise HTTPException(status_code=404, detail="Workspace not found")
+    if question_generator is None:
+        raise HTTPException(status_code=503, detail="Question generation is not configured")
+    if retrieval_mode not in {"lexical", "hybrid"}:
+        raise HTTPException(status_code=422, detail="Unsupported retrieval mode")
+
+    try:
+        if retrieval_mode == "lexical":
+            evidence = db.search(workspace_id=workspace_id, query=topic, limit=8)
+            effective_mode = "lexical"
+            semantic_status = "not requested"
+        else:
+            evidence, status = hybrid_search(
+                db,
+                workspace_id=workspace_id,
+                query=topic,
+                provider=embedding_provider,
+                limit=8,
+            )
+            effective_mode = status.effective_mode
+            semantic_status = status.semantic_status
+
+        return generate_and_store_question(
+            db,
+            workspace_id=workspace_id,
+            reviewer_role=reviewer_role,
+            topic=topic,
+            evidence_rows=evidence,
+            retrieval_mode=effective_mode,
+            semantic_status=semantic_status,
+            provider=question_generator,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail="Question could not be generated safely") from exc
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Question provider failed") from exc

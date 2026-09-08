@@ -41,8 +41,8 @@ Architecture proposal awaiting AJ approval:
 - provider-adapter interfaces for LLM/embedding/speech services
 
 ## Current Workstreams
-- Research: IN PROGRESS — first evidence screening completed; broader review still required.
-- Literature review: IN PROGRESS — public-speaking simulation, automatic question generation, and RAG identified as established prior art.
+- Research: IN PROGRESS — historical window expanded to approximately 1990-present; first screened historical/current evidence set recorded.
+- Literature review: IN PROGRESS — speech-aware tutoring, conversational ITS, automatic question generation, presentation feedback, RAG assessment, and LLM-mediated oral/performance assessment identified as established prior art.
 - Comparable systems: FIRST PASS COMPLETE — Microsoft Speaker Coach, Yoodli, and VirtualSpeech reviewed.
 - Research-gap challenge: PROVISIONALLY ACCEPTED — generic presentation-coach novelty rejected; source-grounded evidence-aware review selected as stronger direction.
 - Architecture: PROPOSED — awaiting AJ approval of core stack/foundation.
@@ -52,10 +52,13 @@ Architecture proposal awaiting AJ approval:
 - Presentation/evaluation preparation: NOT STARTED.
 
 ## Current Claims
-- Simulation-based public-speaking practice is established prior art: SUPPORTED as background.
-- Automatic question generation is established prior art: SUPPORTED.
-- Retrieval-augmented generation is an established grounding approach: SUPPORTED as background; Project 001 implementation effectiveness not verified.
-- `AI presentation coaching with follow-up questions` as novelty: CONTRADICTED by reviewed comparable systems.
+- Speech-enabled automated tutoring existed by the late 1990s: SUPPORTED as historical background.
+- Mixed-initiative conversational intelligent tutoring is established prior art: SUPPORTED.
+- Automatic question generation from supplied text is established prior art: SUPPORTED.
+- Simulation-based public-speaking practice and automated presentation feedback are established prior art: SUPPORTED as background.
+- Retrieval-augmented generation is an established grounding/assessment approach: SUPPORTED as background; Project 001 implementation effectiveness not verified.
+- LLM-mediated oral/performance assessment is established prior art by 2026: SUPPORTED at abstract-level evidence; detailed comparison still required.
+- `AI presentation coaching with follow-up questions` as novelty: CONTRADICTED by reviewed literature/comparable systems.
 - Project 001 source-grounded, evidence-traceable review workflow as a differentiated contribution: UNDER REVIEW.
 - Confidence/anxiety improvement by Project 001: UNSUPPORTED.
 - Objective presentation-quality scoring by Project 001: UNSUPPORTED.
@@ -63,17 +66,18 @@ Architecture proposal awaiting AJ approval:
 ## Evidence Created
 - `research/COMPARABLE_SYSTEMS.md`
 - `research/LITERATURE_SCREENING.md`
+- `research/HISTORICAL_LITERATURE_TIMELINE.md`
 - `research/RESEARCH_GAP_REVIEW.md`
 - `docs/technical/ARCHITECTURE_PROPOSAL.md`
-- Project 001 literature matrix in Google Drive.
+- Project 001 literature matrix in Google Drive, now populated with first screened sources.
 - Project 001 research & scope brief in Google Drive.
 
 ## Current Research Observation
-The reviewed market already includes speech coaching, virtual audiences, uploaded slides, AI-generated questions, roleplay, interviews, and post-session feedback. Project 001 should therefore focus the MVP on source-grounded technical/research review, question provenance, evidence-aware feedback, reviewer-role differentiation, and explicit uncertainty rather than generic virtual-presentation coaching.
+The historical record shows that speech-aware tutoring, conversational questioning, source-text question generation, automated presentation feedback, and RAG-based assessment each have established precedents. Recent work also reaches directly into LLM-mediated oral and performance assessment. Project 001 therefore should not claim novelty from combining generic AI, questioning, speech, and presentation coaching. The strongest current direction remains source-grounded technical/research review with explicit evidence provenance, reviewer-role differentiation, multi-turn challenge behavior, and transparent uncertainty.
 
 ## Blockers
 - Core framework/database/retrieval foundation requires AJ approval before Engineering/Codex implementation.
-- Novelty remains provisional and requires a broader literature/product review before any strong claim is made.
+- Novelty remains provisional and requires broader literature/product screening before any strong claim is made.
 
 ## Next Gate
-AJ reviews the architecture proposal. If approved, Architect converts it into implementation contracts and Engineering/Codex begins the first bounded feature cycle: document ingestion + provenance-aware retrieval, followed by independent verification.
+AJ reviews the architecture proposal. If approved, Architect converts it into implementation contracts and Engineering/Codex begins the first bounded feature cycle: document ingestion + provenance-aware retrieval, followed by independent verification. Research continues in parallel across older oral-exam/speaking-assessment literature and modern document-grounded systems.

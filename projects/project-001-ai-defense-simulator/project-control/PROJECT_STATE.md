@@ -4,8 +4,8 @@
 - Working name: AI Virtual Audience / Presentation & Defense Simulator
 - Project ID: P001
 - Owner: AJ
-- Status: INITIATED
-- Stage: Research and architecture setup
+- Status: ACTIVE
+- Stage: Preliminary research and evidence screening
 - Last verified date: 2026-09-08
 
 ## Approved Direction
@@ -34,21 +34,31 @@ Create a defensible prototype that helps users practice presentations, defenses,
 - Framework, database, model/provider, RAG method, speech stack, hosting, and evaluation methodology remain under research/architecture review.
 
 ## Current Workstreams
-- Research: READY
-- Literature review: READY
-- Research-gap challenge: READY
-- Architecture: BLOCKED until preliminary research evidence exists
-- Engineering/Codex: NOT STARTED
-- Verification: NOT STARTED
-- Documentation: NOT STARTED
-- Defense preparation: NOT STARTED
+- Research: IN PROGRESS — initial academic discovery searches executed; screening required.
+- Literature review: IN PROGRESS — Project 001 literature matrix created in Drive; entries not yet validated.
+- Research-gap challenge: WAITING for screened evidence.
+- Architecture: BLOCKED until preliminary research evidence is screened.
+- Engineering/Codex: NOT STARTED.
+- Verification: NOT STARTED.
+- Documentation: NOT STARTED.
+- Defense preparation: NOT STARTED.
 
 ## Current Claims
 No product-performance, novelty, educational-outcome, accuracy, usability, or confidence-improvement claims are verified.
 
+## Evidence Created
+- Project 001 research brief in GitHub.
+- Project 001 research search log in GitHub.
+- Project 001 literature matrix in Google Drive.
+- Project 001 research & scope brief in Google Drive.
+
+## Current Research Observation
+Initial searches confirm that the relevant literature spans automatic question generation, retrieval-augmented educational dialogue, intelligent tutoring, assessment, interview/public-speaking coaching, and automated feedback. Search precision is uneven, so discovery results are not yet treated as validated evidence.
+
 ## Blockers
-- Preliminary literature and comparable-system review not yet completed.
-- MVP architecture not yet approved.
+- Preliminary literature sources have not yet been screened into evidence-quality tiers.
+- Comparable product/system review has not yet been completed.
+- MVP architecture is therefore not yet approved.
 
 ## Next Gate
-Research Agent and Literature Reviewer produce evidence; Research Gap Reviewer challenges novelty; Architect proposes bounded MVP architecture for AJ/Orchestrator review.
+Screen the first literature set and comparable systems, hand the evidence to the Research Gap Reviewer, then let the Architect propose a bounded MVP architecture for approval before substantive Engineering/Codex implementation begins.

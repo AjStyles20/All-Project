@@ -50,3 +50,69 @@ All verification evidence should be reproducible where practical. Do not record 
 
 ### TE-004 — Codex shared-state handoff
 - Status: NOT RUN
+
+### TE-005 — Feature 011 Windows regression suite
+- Date: 2026-09-08
+- Feature/subsystem: Project 001 — Multi-Provider AI Foundation
+- Test type: Regression / User
+- Environment: Windows 10, Python 3.14, project `.venv`, branch `p001/feature-multi-provider-ai`
+- Preconditions: Groq selected as runtime AI provider; OpenAI disabled.
+- Procedure: Run `python -m pytest -q`.
+- Expected result: Existing and Feature 011 tests pass without failures.
+- Observed result: `126 passed, 2 warnings in 56.90s`.
+- Status: PASS
+- Evidence: User-supplied PowerShell output in verification session.
+- Performed by: AJ
+- Notes: Warnings are existing Starlette/AnyIO deprecation warnings; no test failures.
+
+### TE-006 — Feature 011 Groq grounded question generation
+- Date: 2026-09-08
+- Feature/subsystem: Project 001 — Groq question generation
+- Test type: Live / User / Integration
+- Environment: Windows local Uvicorn at `127.0.0.1:8000`; `P001_AI_PROVIDER=groq`; model `openai/gpt-oss-20b`; OpenAI disabled.
+- Preconditions: Workspace `Test 001` contains extracted `Computer Networks - Complete Study Guide.pdf`.
+- Procedure: Generate a technical-review question for topic `TCP reliability mechanisms` with hybrid requested while semantic embeddings are unavailable.
+- Expected result: Application truthfully falls back to lexical retrieval, sends bounded evidence to Groq, returns one grounded question, persists it, and displays provenance.
+- Observed result: Generated question: `What reliability mechanisms does TCP use to ensure ordered, error-free delivery, as described in the evidence?` Retrieval shown as lexical. Evidence displayed from the uploaded PDF with page provenance including pages 7 and 6.
+- Status: PASS
+- Evidence: User-supplied browser screenshots and page text.
+- Performed by: AJ
+- Notes: Semantic retrieval remained `not configured`, as required by the Feature 011 contract.
+
+### TE-007 — Feature 011 Groq answer evaluation
+- Date: 2026-09-08
+- Feature/subsystem: Project 001 — Groq answer evaluation
+- Test type: Live / User / Integration
+- Environment: Same environment as TE-006.
+- Preconditions: Grounded question from TE-006 exists with authoritative evidence references.
+- Procedure: Submit answer `I am not sure.` for qualitative feedback.
+- Expected result: Groq returns all five required qualitative feedback categories, evidence references validate, result persists, and no numeric grade is invented.
+- Observed result: Evaluation persisted and displayed with summary plus `source_content_correctness`, `completeness`, `evidence_use`, `reasoning_clarity`, and `uncertainty_unsupported_statements`; evaluator identity displayed as `groq / openai/gpt-oss-20b`; no overall numeric score was claimed.
+- Status: PASS
+- Evidence: User-supplied browser screenshot and rendered evaluation text.
+- Performed by: AJ
+
+### TE-008 — Feature 011 sanitized provider failure behavior
+- Date: 2026-09-08
+- Feature/subsystem: Project 001 — Provider error handling
+- Test type: Live / Security
+- Environment: Windows local Uvicorn during Groq verification.
+- Procedure: Observe application behavior for failed live question-provider requests before successful generation.
+- Expected result: User-facing failure is sanitized and does not disclose credential or remote response body.
+- Observed result: Application displayed only `Question provider failed`; Uvicorn showed the redirect/error flow and no API key or remote provider body.
+- Status: PASS
+- Evidence: User-supplied browser screenshot and PowerShell output.
+- Performed by: AJ
+- Notes: Exact upstream failure cause was not established from the sanitized application output and is not inferred.
+
+### TE-009 — Feature 011 GitHub CI and dependency audit
+- Date: 2026-09-08
+- Feature/subsystem: Project 001 — Multi-Provider AI Foundation
+- Test type: CI / Regression / Security
+- Environment: GitHub Actions, Ubuntu 24.04, Python 3.12.14
+- Procedure: Compile application/tests, run full pytest suite, run `pip-audit -r requirements.txt`.
+- Expected result: Compilation succeeds, all tests pass, dependency audit reports no known vulnerabilities.
+- Observed result: `126 passed, 2 warnings in 2.68s`; `No known vulnerabilities found`.
+- Status: PASS
+- Evidence: GitHub Actions workflow run 34272670176, job `test-and-audit`.
+- Performed by: GitHub Actions

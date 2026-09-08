@@ -6,19 +6,22 @@ The underlying `app.main` remains provider-neutral and testable without secrets.
 
 from . import main as runtime
 from .openai_followup import OpenAIFollowUpGenerator
-from .openai_provider import build_openai_providers_from_env, load_openai_settings_from_env
+from .openai_provider import load_openai_settings_from_env
 from .openai_speech_output import OpenAISpeechSynthesizer
 from .openai_transcription import OpenAITranscriber
+from .provider_selection import build_ai_provider_bundle_from_env
 from .session_routes import build_session_router
 from .speech_output_routes import build_speech_output_router
 from .speech_routes import build_speech_router
 
 
-embedding_provider, question_generator, answer_evaluator = build_openai_providers_from_env()
-runtime.embedding_provider = embedding_provider
-runtime.question_generator = question_generator
-runtime.answer_evaluator = answer_evaluator
+_ai_bundle = build_ai_provider_bundle_from_env()
+runtime.embedding_provider = _ai_bundle.embedding_provider
+runtime.question_generator = _ai_bundle.question_generator
+runtime.answer_evaluator = _ai_bundle.answer_evaluator
 
+# Speech and the existing multi-turn follow-up adapter remain independently OpenAI-backed
+# for now. This preserves Features 007-010 without silently pretending Groq supports them.
 _openai_settings = load_openai_settings_from_env()
 follow_up_generator = OpenAIFollowUpGenerator(_openai_settings) if _openai_settings is not None else None
 speech_transcriber = OpenAITranscriber(_openai_settings) if _openai_settings is not None else None

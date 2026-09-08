@@ -21,7 +21,25 @@ _openai_settings = load_openai_settings_from_env()
 follow_up_generator = OpenAIFollowUpGenerator(_openai_settings) if _openai_settings is not None else None
 speech_transcriber = OpenAITranscriber(_openai_settings) if _openai_settings is not None else None
 
+# Template disclosure is intentionally provider identity only; no credential/config internals are exposed.
+runtime.templates.env.globals["speech_provider_name"] = (
+    str(speech_transcriber.provider_name) if speech_transcriber is not None else None
+)
+runtime.templates.env.globals["speech_model_name"] = (
+    str(speech_transcriber.model_name) if speech_transcriber is not None else None
+)
+
 runtime.app.include_router(build_session_router(runtime, follow_up_generator))
 runtime.app.include_router(build_speech_router(runtime, speech_transcriber))
+
+
+@runtime.app.middleware("http")
+async def same_origin_microphone_policy(request, call_next):
+    response = await call_next(request)
+    # Feature 006 denied microphone globally. Feature 009 relaxes only microphone to same-origin;
+    # camera/geolocation remain disabled and browser permission is still required per recording.
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(self), geolocation=()"
+    return response
+
 
 app = runtime.app

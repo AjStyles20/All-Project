@@ -59,20 +59,73 @@
   - no real LLM provider/model is configured
   - no live AI question generation claim
   - no multi-turn follow-up logic yet
-  - no answer evaluation/grading yet
   - no autonomous tools/web actions
   - prompt-injection defenses are foundational, not a claim of universal immunity
 - User-device/runtime verification: NOT RUN
 - User verification: NOT RUN
 
-## Still Not Implemented
+## Feature 005 — Secure Evidence-Aware Answer Evaluation Foundation
+- Status: CI VERIFIED WITH TEST-ONLY ANSWER EVALUATOR; REAL AI EVALUATOR NOT LIVE VERIFIED
+- Branch: `p001/feature-answer-evaluation`
+- Pull request: #5
+- Implemented:
+  - provider-neutral `AnswerEvaluator` interface
+  - explicit HTTP 503 unavailable state when no evaluator is configured
+  - trusted evaluation policy separated from untrusted question, answer, and source evidence
+  - answer length and evaluator-output bounds
+  - authoritative question/workspace ownership checks
+  - authoritative evidence reconstruction from stored question chunk IDs
+  - provenance tampering detection for document ID, filename, and locator
+  - fixed five-category qualitative feedback rubric
+  - fixed qualitative status allowlist
+  - explicit prohibition on an objective overall numeric score in this feature
+  - feedback evidence-reference confinement to the authoritative evaluation context
+  - bounded provider/model/version metadata
+  - persistence of answer, feedback, evidence provenance, policy ID, and provider/model metadata
+  - ownership recheck immediately before persistence
+  - end-to-end FastAPI test of document -> question -> answer -> feedback loop with test-only providers
+- Verification evidence:
+  - GitHub Actions checked-out PR merge ref: PASS
+  - Ubuntu 24.04 / Python 3.12.14 compile check: PASS
+  - full regression + Feature 005 suite: 52 passed
+  - prompt/instruction separation: PASS at request-structure level
+  - cross-workspace question rejection: PASS
+  - provenance-tampering rejection: PASS
+  - invalid category/status rejection: PASS
+  - invalid/out-of-context evidence-reference rejection: PASS
+  - oversized answer/summary/provider metadata rejection: PASS
+  - full test-only API practice loop: PASS
+  - dependency audit: no known vulnerabilities found at verification time
+- Explicit limitations:
+  - no real evaluator/LLM provider/model is configured
+  - no live AI evaluation-quality claim
+  - no objective/high-stakes grading claim
+  - no speech/delivery/confidence/emotion evaluation
+  - no public/multi-user deployment hardening claim
+  - prompt-injection controls are foundational, not universal immunity
+- User-device/runtime verification: NOT RUN
+- User verification: NOT RUN
+
+## Core Text Practice Loop Status
+The provider-neutral backend now supports the complete bounded text workflow:
+1. ingest user documents with provenance;
+2. retrieve workspace-scoped evidence;
+3. generate a source-grounded reviewer question through a configured provider interface;
+4. accept the user's text answer;
+5. evaluate that answer against authoritative source evidence through a configured evaluator interface;
+6. return five-category qualitative feedback with evidence provenance.
+
+The workflow is verified with test-only AI providers. Real AI providers are still not configured and must not be represented as live.
+
+## Still Not Implemented / Not Live Verified
 - real configured semantic embedding provider/model
 - real configured LLM question-generation provider/model
+- real configured answer-evaluation provider/model
 - multi-turn challenge/follow-up behavior
-- answer evaluation / evidence-aware feedback
 - speech services
-- server-rendered UI screens
+- first usable server-rendered web UI
 - authentication/multi-user behavior
+- public deployment hardening
 
 ## Important Boundary
-No external AI or embedding provider is configured. Test-only fake providers exist solely for verification and must never be represented as production AI. Semantic retrieval and question generation are live only after a real provider/model is configured and verified. Public-deployment security, authentication, answer evaluation, speech, OCR, and complex visual understanding remain unverified or unimplemented.
+No external AI or embedding provider is configured. Test-only fake providers exist solely for verification and must never be represented as production AI. Semantic retrieval, question generation, and answer evaluation are live only after real providers/models are configured and separately verified. Public-deployment security, authentication, speech, OCR, and complex visual understanding remain unverified or unimplemented.

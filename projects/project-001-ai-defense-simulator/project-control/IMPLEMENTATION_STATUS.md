@@ -3,7 +3,7 @@
 ## Feature 001 — Document Ingestion + Provenance-Aware Retrieval
 - Status: INTEGRATION TESTED + LIVE API VERIFIED IN VERIFIER ENVIRONMENT; NOT USER VERIFIED
 - Branch: `p001/feature-document-ingestion-retrieval`
-- Draft PR: #1
+- Pull request: #1
 - Scope implemented:
   - FastAPI application skeleton
   - SQLite schema initialization
@@ -30,7 +30,7 @@
   - FTS5 known-query retrieval: PASS
   - workspace isolation: PASS
   - API integration suite: PASS
-  - full local reconstructed-source suite: 14 passed in 0.37s
+  - full verifier-environment suite: 14 passed in 0.37s
   - live Uvicorn workspace/upload/search smoke test: PASS
 - Environment limitation:
   - verifier container could not resolve GitHub for direct `git clone`; exact branch files were fetched through the authenticated connector and reconstructed locally for execution.

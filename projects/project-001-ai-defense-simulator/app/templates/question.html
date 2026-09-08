@@ -30,9 +30,28 @@
 <section class="panel" aria-labelledby="answer-title">
   <h2 id="answer-title">Your answer</h2>
   {% if evaluation_configured %}
-    <form method="post" action="/ui/workspaces/{{ workspace.id }}/questions/{{ question.id }}/answers">
+    <form method="post" action="/ui/workspaces/{{ workspace.id }}/questions/{{ question.id }}/answers" id="answer-form">
       <label for="answer">Answer the reviewer question</label>
       <textarea id="answer" name="answer" maxlength="8000" rows="10" required></textarea>
+
+      <div class="speech-controls"
+           data-speech-controls
+           data-endpoint="/api/workspaces/{{ workspace.id }}/questions/{{ question.id }}/transcriptions"
+           data-configured="{{ 'true' if speech_provider_name else 'false' }}">
+        <h3>Optional microphone answer</h3>
+        {% if speech_provider_name %}
+          <p class="hint">Recording is optional. When you choose to transcribe, the captured audio is sent to {{ speech_provider_name }}{% if speech_model_name %} ({{ speech_model_name }}){% endif %}. Raw audio is not stored by this application. The transcript is placed in the answer box for you to review and edit before submission.</p>
+        {% else %}
+          <p class="hint">Speech transcription is not configured. You can continue using the text answer box.</p>
+        {% endif %}
+        <div class="button-row">
+          <button type="button" data-record-start {% if not speech_provider_name %}disabled{% endif %}>Start recording</button>
+          <button type="button" data-record-stop disabled>Stop recording</button>
+          <button type="button" data-record-cancel disabled>Cancel recording</button>
+        </div>
+        <p data-record-status role="status" aria-live="polite">Microphone is idle.</p>
+      </div>
+
       <p class="hint">Feedback is qualitative and evidence-aware. No validated objective overall grade is claimed.</p>
       <button type="submit">Submit for feedback</button>
     </form>
@@ -70,4 +89,7 @@
     <p class="muted">No answer evaluations yet.</p>
   {% endif %}
 </section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/speech.js" defer></script>
 {% endblock %}

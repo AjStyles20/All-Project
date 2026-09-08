@@ -1,7 +1,10 @@
+import json
 from pathlib import Path
 
+from fastapi.testclient import TestClient
 import pytest
 
+from app import main
 from app.db import Database
 from app.evaluation import (
     FEEDBACK_CATEGORIES,
@@ -61,6 +64,17 @@ class InvalidCategoryEvaluator(FakeAnswerEvaluator):
         return EvaluationResult(summary="Invalid structured result.", feedback=tuple(items))
 
 
+class InvalidStatusEvaluator(FakeAnswerEvaluator):
+    def evaluate(self, request):
+        items = list(super().evaluate(request).feedback)
+        items[0] = FeedbackItem(
+            category=FEEDBACK_CATEGORIES[0],
+            status="99_percent",
+            explanation="Invalid status.",
+        )
+        return EvaluationResult(summary="Invalid status result.", feedback=tuple(items))
+
+
 class InvalidEvidenceReferenceEvaluator(FakeAnswerEvaluator):
     def evaluate(self, request):
         items = list(super().evaluate(request).feedback)
@@ -77,6 +91,10 @@ class OversizedSummaryEvaluator(FakeAnswerEvaluator):
     def evaluate(self, request):
         valid = super().evaluate(request)
         return EvaluationResult(summary="S" * 3001, feedback=valid.feedback)
+
+
+class OversizedProviderMetadataEvaluator(FakeAnswerEvaluator):
+    provider_name = "p" * 101
 
 
 def seed_question(database: Database, workspace_id: str) -> dict:
@@ -173,6 +191,33 @@ def test_cross_workspace_question_cannot_be_evaluated(tmp_path: Path):
         )
 
 
+def test_evidence_provenance_tampering_is_rejected(tmp_path: Path):
+    database = Database(tmp_path / "tamper.db")
+    database.initialize()
+    workspace = database.create_workspace("A")
+    question = seed_question(database, workspace["id"])
+
+    with database.connect() as connection:
+        row = connection.execute(
+            "SELECT evidence_json FROM generated_questions WHERE id = ?",
+            (question["id"],),
+        ).fetchone()
+        payload = json.loads(row["evidence_json"])
+        payload[0]["filename"] = "forged.md"
+        connection.execute(
+            "UPDATE generated_questions SET evidence_json = ? WHERE id = ?",
+            (json.dumps(payload), question["id"]),
+        )
+
+    with pytest.raises(ValueError):
+        build_evaluation_request(
+            database,
+            workspace_id=workspace["id"],
+            question_id=question["id"],
+            answer="A bounded answer.",
+        )
+
+
 def test_evaluator_cannot_invent_feedback_category(tmp_path: Path):
     database = Database(tmp_path / "category.db")
     database.initialize()
@@ -186,6 +231,22 @@ def test_evaluator_cannot_invent_feedback_category(tmp_path: Path):
             question_id=question["id"],
             answer="A bounded answer.",
             provider=InvalidCategoryEvaluator(),
+        )
+
+
+def test_evaluator_cannot_invent_numeric_status(tmp_path: Path):
+    database = Database(tmp_path / "status.db")
+    database.initialize()
+    workspace = database.create_workspace("A")
+    question = seed_question(database, workspace["id"])
+
+    with pytest.raises(ValueError):
+        evaluate_and_store_answer(
+            database,
+            workspace_id=workspace["id"],
+            question_id=question["id"],
+            answer="A bounded answer.",
+            provider=InvalidStatusEvaluator(),
         )
 
 
@@ -221,13 +282,28 @@ def test_oversized_evaluator_output_fails_before_persistence(tmp_path: Path):
         )
 
     with database.connect() as connection:
-        # The schema may not have been created because validation failed before persistence.
         table = connection.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='answer_evaluations'"
         ).fetchone()
         if table is not None:
             count = connection.execute("SELECT COUNT(*) FROM answer_evaluations").fetchone()[0]
             assert count == 0
+
+
+def test_oversized_provider_metadata_fails_closed(tmp_path: Path):
+    database = Database(tmp_path / "provider-bound.db")
+    database.initialize()
+    workspace = database.create_workspace("A")
+    question = seed_question(database, workspace["id"])
+
+    with pytest.raises(ValueError):
+        evaluate_and_store_answer(
+            database,
+            workspace_id=workspace["id"],
+            question_id=question["id"],
+            answer="A bounded answer.",
+            provider=OversizedProviderMetadataEvaluator(),
+        )
 
 
 def test_answer_length_is_bounded(tmp_path: Path):
@@ -259,3 +335,58 @@ def test_validate_evaluation_result_requires_exact_fixed_categories():
     )
     with pytest.raises(ValueError):
         validate_evaluation_result(result, allowed_evidence_chunk_ids=[])
+
+
+def test_full_question_answer_evaluation_api_loop_with_test_only_providers(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    database = Database(tmp_path / "api-loop.db")
+    database.initialize()
+    monkeypatch.setattr(main, "db", database)
+    monkeypatch.setattr(main, "MAX_UPLOAD_BYTES", 1024)
+    monkeypatch.setattr(main, "embedding_provider", None)
+    monkeypatch.setattr(main, "question_generator", FakeQuestionGenerator())
+    monkeypatch.setattr(main, "answer_evaluator", FakeAnswerEvaluator())
+
+    with TestClient(main.app) as client:
+        workspace = client.post("/api/workspaces", data={"name": "Practice"})
+        assert workspace.status_code == 200
+        workspace_id = workspace.json()["id"]
+
+        upload = client.post(
+            f"/api/workspaces/{workspace_id}/documents",
+            files={
+                "file": (
+                    "evidence.md",
+                    b"Rainfall threshold evidence is derived from river-level observations.",
+                    "text/markdown",
+                )
+            },
+        )
+        assert upload.status_code == 200
+
+        question = client.post(
+            f"/api/workspaces/{workspace_id}/questions",
+            data={
+                "topic": "rainfall",
+                "reviewer_role": "evidence",
+                "retrieval_mode": "lexical",
+            },
+        )
+        assert question.status_code == 200
+        question_id = question.json()["id"]
+
+        evaluation = client.post(
+            f"/api/workspaces/{workspace_id}/questions/{question_id}/answers",
+            data={
+                "answer": "The threshold is supported by rainfall and river-level observations in the source material."
+            },
+        )
+        assert evaluation.status_code == 200
+        payload = evaluation.json()
+        assert payload["question_id"] == question_id
+        assert payload["workspace_id"] == workspace_id
+        assert payload["grading"]["overall_numeric_score"] is None
+        assert len(payload["feedback"]) == len(FEEDBACK_CATEGORIES)
+        assert payload["evaluator"]["provider"] == "test-only"

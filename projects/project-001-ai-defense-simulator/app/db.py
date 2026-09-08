@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+import json
 from pathlib import Path
 import sqlite3
 import uuid
+
+from .embeddings import validate_vector
 
 
 SCHEMA = """
@@ -45,6 +48,25 @@ CREATE VIRTUAL TABLE IF NOT EXISTS document_chunks_fts USING fts5(
     locator UNINDEXED,
     text
 );
+
+CREATE TABLE IF NOT EXISTS chunk_embeddings (
+    chunk_id TEXT NOT NULL,
+    workspace_id TEXT NOT NULL,
+    content_hash TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    model TEXT NOT NULL,
+    model_version TEXT,
+    dimension INTEGER NOT NULL CHECK (dimension > 0 AND dimension <= 4096),
+    vector_json TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (chunk_id, provider, model),
+    FOREIGN KEY (chunk_id) REFERENCES document_chunks(id) ON DELETE CASCADE,
+    FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_chunk_embeddings_workspace
+ON chunk_embeddings(workspace_id, provider, model);
 """
 
 
@@ -174,3 +196,126 @@ class Database:
             ).fetchall()
 
         return [dict(row) for row in rows]
+
+    def list_workspace_chunks(self, *, workspace_id: str, limit: int = 5000) -> list[dict]:
+        safe_limit = max(1, min(int(limit), 5000))
+        with self.connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT
+                    dc.id AS chunk_id,
+                    dc.document_id,
+                    sd.original_filename AS filename,
+                    dc.locator,
+                    dc.text,
+                    dc.content_hash
+                FROM document_chunks AS dc
+                JOIN source_documents AS sd ON sd.id = dc.document_id
+                WHERE sd.workspace_id = ?
+                ORDER BY sd.created_at ASC, dc.chunk_index ASC
+                LIMIT ?
+                """,
+                (workspace_id, safe_limit),
+            ).fetchall()
+        return [dict(row) for row in rows]
+
+    def upsert_embedding(
+        self,
+        *,
+        workspace_id: str,
+        chunk_id: str,
+        content_hash: str,
+        provider: str,
+        model: str,
+        model_version: str | None,
+        vector,
+    ) -> None:
+        values = validate_vector(vector)
+        serialized = json.dumps(values, separators=(",", ":"), allow_nan=False)
+        with self.connect() as connection:
+            owned = connection.execute(
+                """
+                SELECT 1
+                FROM document_chunks AS dc
+                JOIN source_documents AS sd ON sd.id = dc.document_id
+                WHERE dc.id = ? AND sd.workspace_id = ?
+                """,
+                (chunk_id, workspace_id),
+            ).fetchone()
+            if owned is None:
+                raise ValueError("chunk does not belong to workspace")
+
+            connection.execute(
+                """
+                INSERT INTO chunk_embeddings
+                    (chunk_id, workspace_id, content_hash, provider, model, model_version,
+                     dimension, vector_json, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(chunk_id, provider, model) DO UPDATE SET
+                    workspace_id = excluded.workspace_id,
+                    content_hash = excluded.content_hash,
+                    model_version = excluded.model_version,
+                    dimension = excluded.dimension,
+                    vector_json = excluded.vector_json,
+                    updated_at = CURRENT_TIMESTAMP
+                """,
+                (
+                    chunk_id,
+                    workspace_id,
+                    content_hash,
+                    provider,
+                    model,
+                    model_version,
+                    len(values),
+                    serialized,
+                ),
+            )
+
+    def get_embeddings(
+        self,
+        *,
+        workspace_id: str,
+        provider: str,
+        model: str,
+        limit: int = 5000,
+    ) -> list[dict]:
+        safe_limit = max(1, min(int(limit), 5000))
+        with self.connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT
+                    ce.chunk_id,
+                    ce.content_hash AS embedding_content_hash,
+                    ce.provider,
+                    ce.model,
+                    ce.model_version,
+                    ce.dimension,
+                    ce.vector_json,
+                    dc.document_id,
+                    sd.original_filename AS filename,
+                    dc.locator,
+                    dc.text,
+                    dc.content_hash AS current_content_hash
+                FROM chunk_embeddings AS ce
+                JOIN document_chunks AS dc ON dc.id = ce.chunk_id
+                JOIN source_documents AS sd ON sd.id = dc.document_id
+                WHERE ce.workspace_id = ?
+                  AND sd.workspace_id = ?
+                  AND ce.provider = ?
+                  AND ce.model = ?
+                LIMIT ?
+                """,
+                (workspace_id, workspace_id, provider, model, safe_limit),
+            ).fetchall()
+
+        results: list[dict] = []
+        for row in rows:
+            item = dict(row)
+            try:
+                raw = json.loads(item.pop("vector_json"))
+                item["vector"] = validate_vector(raw, expected_dimension=item["dimension"])
+            except (TypeError, ValueError, json.JSONDecodeError) as exc:
+                raise ValueError("stored embedding is malformed") from exc
+            item["stale"] = item["embedding_content_hash"] != item["current_content_hash"]
+            results.append(item)
+        return results

@@ -55,18 +55,53 @@
   - DOCX physical page reconstruction: NOT CLAIMED
   - password-protected Office documents: NOT VERIFIED
   - exact layout reconstruction: NOT IMPLEMENTED
-- Environment limitation:
-  - verifier container could not resolve GitHub for direct `git clone`; exact authenticated branch contents were reconstructed locally for execution.
+- User-device/runtime verification: NOT RUN
+- User verification: NOT RUN
+
+## Feature 003 — Secure Hybrid Retrieval Foundation
+- Status: CI VERIFIED WITH TEST-ONLY EMBEDDING PROVIDER; REAL SEMANTIC PROVIDER NOT LIVE VERIFIED
+- Branch: `p001/feature-hybrid-retrieval`
+- Pull request: #3
+- Scope implemented:
+  - `EmbeddingProvider` abstraction
+  - strict finite/vector-dimension validation
+  - workspace-scoped SQLite embedding storage
+  - provider/model/version/content-hash metadata
+  - stale-embedding detection and recomputation
+  - cosine semantic similarity
+  - explainable reciprocal-rank-fusion style lexical/semantic merge
+  - explicit lexical-only fallback when no semantic provider is configured
+  - retrieval component metadata in API responses
+  - input bounds for workspace names, filenames, search query length, result count, vector dimension and semantic chunk scan
+  - cross-workspace embedding write rejection
+  - CI compile/test/dependency-audit gate
+- Verification evidence:
+  - GitHub Actions checked-out PR merge ref: PASS
+  - Python 3.12 compile check: PASS
+  - full regression + Feature 003 suite: 32 passed
+  - workspace isolation tests: PASS
+  - stale embedding test: PASS
+  - malformed/non-finite/dimension mismatch vector tests: PASS
+  - explicit no-provider lexical fallback test: PASS
+  - dependency audit (`pip-audit -r requirements.txt`): no known vulnerabilities found at verification time
+  - CI workflow completed successfully after updating to Node-24-based action majors
+- Explicit limitations:
+  - no real embedding provider/model is configured
+  - semantic retrieval is NOT LIVE VERIFIED against an external/local production provider
+  - fake deterministic vectors exist only in tests and must not be represented as production embeddings
+  - hybrid weights are implementation defaults, not empirically optimal
+  - authentication/multi-user authorization remains unimplemented
+  - public-deployment hardening remains incomplete
 - User-device/runtime verification: NOT RUN
 - User verification: NOT RUN
 
 ## Still Not Implemented
-- semantic embeddings/hybrid merge
-- LLM question generation
-- answer evaluation
+- real configured semantic embedding provider/model
+- grounded LLM question generation
+- answer evaluation / evidence-aware feedback
 - speech services
 - server-rendered UI screens
 - authentication/multi-user behavior
 
 ## Important Boundary
-No external AI provider is configured. The system must not display or document semantic retrieval, AI question generation, answer evaluation, speech input/output, OCR, complex visual document understanding, or UI completion as implemented.
+No external AI or embedding provider is configured. The application must not represent semantic retrieval as live when it is operating in lexical-only fallback mode. It must not display or document AI question generation, answer evaluation, speech input/output, OCR, complex visual document understanding, authentication, or public-deployment security as implemented.

@@ -65,10 +65,15 @@ def chunk_text(
             body = "\n\n".join(current).strip()
             staged.append((start_paragraph, paragraph_number - 1, body))
 
-            overlap = body[-overlap_chars:].strip() if overlap_chars else ""
+            # Restrict overlap to the immediately preceding paragraph. This keeps
+            # the locator truthful even when the previous chunk contains several
+            # short paragraphs; a raw tail of the whole chunk could otherwise
+            # include text from an earlier paragraph that the locator omits.
+            previous_paragraph = current[-1]
+            overlap = previous_paragraph[-overlap_chars:].strip() if overlap_chars else ""
             current = [overlap, paragraph] if overlap else [paragraph]
             current_len = sum(len(item) for item in current) + 2 * (len(current) - 1)
-            start_paragraph = max(1, paragraph_number - 1) if overlap else paragraph_number
+            start_paragraph = paragraph_number - 1 if overlap else paragraph_number
         else:
             if not current:
                 start_paragraph = paragraph_number

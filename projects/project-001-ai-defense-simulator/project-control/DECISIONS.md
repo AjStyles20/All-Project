@@ -26,3 +26,19 @@
 - Decision: Feature 001 passed independent logic tests, API integration tests, and a live Uvicorn workspace/upload/search smoke test in the verifier environment. It may move to review-ready status.
 - Evidence: `project-control/TEST_EVIDENCE.md` and `verification/FEATURE_001_VERIFICATION_REPORT.md`.
 - Limitation: direct Git checkout was unavailable in the verifier container because GitHub DNS resolution failed; exact branch files were fetched through the authenticated connector and reconstructed locally. AJ-device/runtime and user verification remain outstanding.
+
+## P001-DR-004 — Primary language, framework, and delivery platform
+- Date: 2026-09-08
+- Status: APPROVED
+- Authority level: A3
+- Decision:
+  - Primary language: Python.
+  - Backend framework: FastAPI.
+  - Primary delivery platform: web application.
+  - Initial frontend: server-rendered HTML + CSS + lightweight JavaScript.
+  - Database: SQLite for the current MVP, with PostgreSQL as the preferred upgrade path if hosted multi-user concurrency or scale requires it.
+  - React: not required for the current MVP; may be introduced later if the interaction model becomes sufficiently stateful/complex or AJ deliberately chooses React as a learning objective.
+- Rationale: The project is document-, session-, AI-, and review-workflow-centric and therefore fits browser delivery well. Python aligns with AJ’s preference and the AI/document-processing ecosystem. A lightweight frontend minimizes unnecessary build complexity while preserving a clear migration path to React/TypeScript if later requirements justify it.
+- Clarification: The web platform is the intended full application form for Project 001, not a temporary or inferior version of a future desktop product. Native desktop/mobile packaging is only justified later if a concrete OS/device capability requirement appears.
+- Approved by: AJ
+- Approval evidence: AJ stated a preference for Python, described familiarity with C/C++/C#/Java/JavaScript/HTML/CSS and limited React comfort, and instructed the project to continue.

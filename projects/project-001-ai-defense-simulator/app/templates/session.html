@@ -18,12 +18,21 @@
 <section class="panel" aria-labelledby="turns-title">
   <h2 id="turns-title">Session turns</h2>
   {% if session.turns %}
+    <p class="hint">Review navigation only moves among turns that already exist. It does not skip an unanswered examiner question or generate a new turn.</p>
     <ol class="question-history">
       {% for turn in session.turns %}
-        <li>
+        <li id="turn-{{ turn.turn_index }}" tabindex="-1">
           <p><strong>Turn {{ turn.turn_index }}</strong> <span class="badge">{{ turn.follow_up_type }}</span></p>
           <p>{{ turn.question_text }}</p>
           <p class="muted">{{ turn.rationale }}</p>
+          <div class="button-row" aria-label="Review navigation for turn {{ turn.turn_index }}">
+            {% if not loop.first %}
+              <a href="#turn-{{ session.turns[loop.index0 - 1].turn_index }}">← Previous turn</a>
+            {% endif %}
+            {% if not loop.last %}
+              <a href="#turn-{{ session.turns[loop.index0 + 1].turn_index }}">Next turn →</a>
+            {% endif %}
+          </div>
           <p>
             <a href="/workspaces/{{ workspace.id }}/questions/{{ turn.question_id }}" target="_blank" rel="noopener">
               {% if turn.answered %}View answer and feedback in new tab{% else %}Answer this question in new tab{% endif %}

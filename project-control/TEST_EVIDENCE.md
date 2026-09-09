@@ -156,3 +156,30 @@ All verification evidence should be reproducible where practical. Do not record 
 - Evidence: User-supplied screenshots and Uvicorn POST/redirect log for question `14c89793-47b6-4129-b163-3efd49757bed`.
 - Performed by: AJ
 - Notes: The evaluator/follow-up pair exposed an evidence-framing inconsistency around negative claims. A Groq follow-up grounding guard was added afterward to prevent absence-as-negation reasoning in future follow-ups.
+
+### TE-013 — Feature 015A Windows regression suite
+- Date: 2026-09-09
+- Feature/subsystem: Project 001 — defense playback and review controls
+- Test type: Regression / User
+- Environment: Windows 10, Python 3.14, project `.venv`, branch `p001/feature-defense-playback-review`
+- Procedure: Run `python -m pytest -q`.
+- Expected result: Existing suite plus Feature 015A tests pass without failures.
+- Observed result: `146 passed, 2 warnings in 62.97s`.
+- Status: PASS
+- Evidence: User-supplied PowerShell output.
+- Performed by: AJ
+- Notes: The two warnings are Starlette/AnyIO deprecation warnings; zero tests failed.
+
+### TE-014 — Feature 015A local playback and rate control
+- Date: 2026-09-09
+- Feature/subsystem: Project 001 — browser reviewer playback
+- Test type: Live / User / Accessibility
+- Environment: Windows browser against local Uvicorn at `127.0.0.1:8000`; local browser speech fallback.
+- Preconditions: Reviewer question page with written authoritative question; server TTS not required.
+- Procedure: Open the question page, inspect Play / Replay, Pause, Resume, Stop and bounded rate options; select `0.75×`; start playback.
+- Expected result: Control set is present, no autoplay occurs, and selected rate is applied to browser speech.
+- Observed result: UI displayed Play / Replay, Pause, Resume, Stop and rates `0.75×`, `1×`, `1.25×`, `1.5×`; status displayed `Playing reviewer question with local browser speech at 0.75×.`
+- Status: PASS
+- Evidence: User-supplied browser screenshots.
+- Performed by: AJ
+- Notes: This record does not by itself verify Pause, Resume, Stop interruption behavior or Previous/Next existing-turn navigation; those remain separate live checks.

@@ -1,135 +1,216 @@
 # Project 002 Research Dossier — AI-Powered Virtual Classroom and Adaptive Learning Environment
 
 ## Research status
-DISCOVERY / EVIDENCE BUILD — preliminary evidence only. No novelty conclusion and no implementation approval.
+DISCOVERY / EVIDENCE BUILD — expanded second pass. No novelty conclusion and no implementation approval.
 
 ## 1. Working concept under investigation
 A virtual learning environment in which a learner can provide course/learning materials and interact with configurable AI teacher/tutor/classroom roles. Candidate capabilities include structured lessons, explanations, questioning, discussion, multiple pedagogical/persona roles, speech, resource-grounded answers, adaptive support, and later richer classroom/audience simulation.
 
 This description is a hypothesis about a useful product, not evidence that the combination is novel or educationally effective.
 
-## 2. Preliminary historical lineage
+## 2. Historical and technical lineage
 ### 2.1 Mechanical and programmed instruction
-- Historical evidence establishes that automated/technology-mediated instruction predates modern computers. The Smithsonian records American teaching-machine experimentation from the 1920s and Sidney Pressey's proposed machine in 1925, followed later by B. F. Skinner's teaching-machine work.
-- A 1988 historical review, surfaced during discovery, traces teaching-machine history further back to patented educational devices in the nineteenth century. This means Project 002's historical review should not begin with ChatGPT, MOOCs, or even computer-assisted instruction.
-- Programmed instruction is important because the instructional sequence/program—not merely the machine—became central to the teaching-machine movement.
+- Technology-mediated instruction predates electronic computers. Discovery evidence includes twentieth-century teaching-machine work and historical scholarship tracing patented educational devices into the nineteenth century.
+- The relevant historical contribution is not merely the physical machine: programmed instruction formalized sequenced learner interaction, feedback, pacing, and instructional logic. Project 002 must therefore treat “adaptive sequence” and “automated feedback” as historically deep ideas rather than generative-AI inventions.
 
-**Claim state:** VERIFIED at discovery level; primary/historical sources still to be expanded.
+**Claim state:** SUPPORTED; nineteenth-century primary patent/device review remains incomplete.
 
-### 2.2 Computer-assisted instruction and interactive educational software
-- Historical educational-software literature identifies automated teaching, IBM instructional systems, PLATO, microcomputer-era computer-assisted instruction, interactive video, simulation, and later software refinement as part of the transition from mechanical/programmed instruction to richer computer-mediated learning.
+### 2.2 PLATO and generalized computer-assisted instruction
+- University of Illinois and ERIC historical records establish PLATO as a major early computer-based learning environment originating around 1959–1960. PLATO developed from a small classroom system into a geographically distributed educational network and supported courseware across numerous disciplines.
+- PLATO is particularly relevant because it weakens any simplistic claim that a networked “virtual classroom” is new. Historical PLATO systems combined computer-delivered instruction with communication/community capabilities; later PLATO environments included chat and bulletin-board functions.
+- A 1977 University of Illinois final report documents a large geographically dispersed PLATO IV network, educational programs, teacher/author training, curriculum planning, materials development, field testing, and evaluation planning.
+- Historical assessments are not uniformly celebratory. A later review of PLATO and TICCIT describes both as foundational to later computer-based teaching while also stating that neither large demonstration project proved successful. This is important counterevidence against technological determinism.
 
-**Claim state:** SUPPORTED, but detailed chronology and primary sources remain to be collected.
+**Claim state:** VERIFIED for PLATO's existence, broad chronology and educational-network role; detailed outcome claims require source-specific treatment.
 
-### 2.3 Intelligent tutoring systems and conversational tutoring
-- By 2001, Graesser et al. described intelligent tutoring systems using mixed-initiative conversational dialogue. AutoTutor supported typed natural-language interaction and guided learners through multi-turn construction of answers rather than functioning as a simple information-delivery system.
-- AutoTutor literature describes feedback, prompts, hints, misconception correction, learner questions, and answer summarization. Therefore, conversational tutoring, adaptive dialogue, and animated/talking tutor concepts are established prior art and cannot by themselves constitute Project 002 novelty.
+### 2.3 Intelligent tutoring and cognitive tutors
+- Intelligent tutoring predates LLMs by decades. The field moved beyond fixed computer-assisted instruction toward systems representing domain knowledge, learner state and instructional strategy.
+- Anderson, Corbett, Koedinger and Pelletier's *Cognitive Tutors: Lessons Learned* reviews roughly a decade of tutor development based on ACT cognitive models, including tutors for LISP, geometry and algebra. This establishes model-based adaptive tutoring as mature prior art by the 1990s.
+- Therefore, learner modeling, skill tracking, adaptive problem selection and individualized hints cannot by themselves constitute Project 002 novelty.
 
-**Claim state:** VERIFIED.
+**Claim state:** VERIFIED at publication-summary level; foundational ITS architecture and SCHOLAR/Carbonell primary-source extraction remains pending.
 
-### 2.4 Evidence of ITS learning effects
+### 2.4 Conversational tutoring
+- By 2001, Graesser et al. described intelligent tutoring systems using mixed-initiative conversational dialogue. AutoTutor supported typed natural-language interaction and guided learners through multi-turn construction of answers rather than functioning as simple information delivery.
+- AutoTutor literature includes feedback, prompts, hints, misconception correction, learner questions and answer summarization.
+
+**Claim state:** VERIFIED. Conversational tutoring and talking/animated tutor concepts are established prior art.
+
+### 2.5 Pedagogical agents and virtual learning environments
+- Pedagogical-agent research predates contemporary generative AI. A 2023 peer-reviewed historical review explicitly surveys roughly 25 years of pedagogical-agent research and describes on-screen agents facilitating learning in virtual or mixed-reality settings.
+- Earlier literature surveyed intelligent agents in virtual learning environments for personalization, cognitive/metacognitive teaching functions, embodied agents and virtual humans.
+- A retrospective on animated pedagogical agents notes that benefits are not uniform across learning problems, applications and learner populations. This is counterevidence against assuming that adding visible teacher/student avatars or “classroom realism” improves learning.
+
+**Claim state:** VERIFIED at review level.
+
+### 2.6 Contemporary RAG / generative-AI tutoring
+- Contemporary research includes RAG-based tutors grounded in instructor/course materials. Recent educational RAG work still reports or reviews problems such as incorrect answers, hallucination, stale knowledge and limited multimodality.
+- Lightweight/resource-constrained RAG tutoring is already an explicit research direction. Project 002 therefore cannot claim novelty merely from combining user/course materials, retrieval grounding, AI tutoring and low-resource operation.
+
+**Claim state:** VERIFIED at source-summary level; deeper comparative extraction continues.
+
+### 2.7 LLM multi-agent classroom simulation
+- SimClass (NAACL 2025) describes an LLM-powered multi-agent classroom simulation with representative classroom roles, automatic classroom control, real-user participation and teacher-student/student-student interaction.
+- This directly threatens novelty claims based only on “AI teacher + AI students,” “multiple classroom personas,” or “simulated classroom interaction.”
+
+**Claim state:** VERIFIED from published record; full-paper feature/evaluation matrix remains pending.
+
+## 3. Evidence on educational effectiveness — do not flatten into one claim
+### 3.1 Established ITS evidence
 - Ma et al. (2014) meta-analyzed 107 effect sizes involving 14,321 participants. ITS use was associated with greater achievement than teacher-led large-group instruction, non-ITS computer instruction, and textbooks/workbooks in that analysis, while differences versus individualized human tutoring and small-group instruction were not significant.
-- This supports the proposition that intelligent tutoring can be educationally useful, but does not prove that every AI tutor, LLM tutor, virtual classroom, or proposed Project 002 design will improve learning.
+- Other ITS reviews/meta-analyses report different effect magnitudes depending on population, comparator, outcome measure, duration and implementation. This heterogeneity is itself evidence that “AI tutors work” is too broad a claim.
 
-**Claim state:** VERIFIED for the cited meta-analysis; generalization to Project 002 is NOT ESTABLISHED.
+### 3.2 Generative-AI tutor evidence
+- A 2025 randomized controlled trial in an undergraduate physics course (N=194) reported greater learning in less time and higher engagement/motivation for a research-informed AI tutor compared with an in-class active-learning condition using the same material.
+- This is meaningful positive evidence for a particular carefully designed tutor in a particular setting. It is not proof that generic LLM chat, multi-agent classrooms, avatars, or Project 002 will outperform classroom instruction.
+- A 2024 study of mathematics help (N=274) found ChatGPT-generated help could produce learning gains comparable to human tutor-authored help in the tested design. Again, this supports a bounded instructional use, not unrestricted replacement of human teaching.
 
-### 2.5 Retrieval-augmented / generative AI tutoring
-- Contemporary research includes RAG-based tutors grounded in instructor/course materials. A 2025 higher-education pilot across four courses reported generally positive student/lecturer experiences while still finding incorrect answers and answers outside the provided knowledge base.
-- A 2025 systematic survey of educational RAG synthesized 51 studies and identified continuing challenges including hallucination, outdated knowledge, and limited multimodality.
-- A 2025 PMLR workshop paper proposed a lightweight RAG tutor designed for offline/resource-constrained use. This is a direct novelty threat to any claim that Project 002 would be distinctive merely because it combines user/course materials, RAG, low-resource operation, and AI tutoring.
+**Claim state:** VERIFIED for cited studies; external validity to Project 002 NOT ESTABLISHED.
 
-**Claim state:** VERIFIED at source-summary level; deeper quality/applicability screening pending.
+## 4. Commercial/current-practice novelty threats
+### 4.1 Khanmigo / Khan Academy
+- Current Khan Academy materials describe Khanmigo as an AI tutor and teaching assistant. Learner-facing behavior is explicitly framed around guiding students rather than simply giving direct answers.
+- Teacher capabilities include lesson planning, classroom activities, student-work summaries, learning objectives, rubrics, exit tickets, differentiation and student grouping.
+- Student access is governed more tightly than ordinary consumer chatbot access; current Khan Academy materials describe parent/school/district controls for minors and moderation/safety mechanisms.
+- In 2026, Google and Khan Academy publicly described classroom AI tooling using Gemini, including adaptive visual aids and teacher-controlled assignment/practice tooling.
 
-### 2.6 LLM multi-agent classroom simulation
-- SimClass (NAACL 2025) describes an LLM-empowered multi-agent classroom simulation with representative classroom roles, automatic classroom control, real user participation, and teacher-student/student-student interactions evaluated in two real-world courses.
-- This is a major novelty threat. Project 002 cannot defensibly claim novelty merely from “multiple AI classroom roles/personas,” “AI teacher plus AI students,” or “simulated classroom interaction.”
+**Novelty implication:** “AI tutor,” “teacher assistant,” “Socratic guidance,” “teacher planning tools,” “student progress summaries,” “content-library grounding,” and “AI in real classrooms” are not defensible novelty claims by themselves.
 
-**Claim state:** VERIFIED from the published ACL Anthology record; full-paper extraction pending.
+**Claim state:** VERIFIED from current official product/help materials; feature landscape remains non-exhaustive.
 
-## 3. Preliminary prior-art / novelty-threat register
-| Threat | What it already establishes | What remains unknown for Project 002 |
+## 5. Open-source implementation evidence
+### 5.1 OATutor
+- CAHLR's OATutor is a public open-source adaptive tutoring system created years before Project 002. Its repository describes Bayesian Knowledge Tracing for mastery estimation, adaptive item selection, modular hints/scaffolding, multiple content sources, data logging, optional LMS integration, optional text-to-speech and Section 508 accessibility compliance.
+- The repository cites a CHI 2023 OATutor paper and a later journal study involving LLM-generated help. It uses React and can operate largely as a static frontend with optional Firebase/middleware components.
+- As inspected on 2026-09-09, the upstream public repository is active and materially developed; repository metadata showed hundreds of stars/forks and a same-day push. Popularity is not scientific evidence, but this confirms it is a real, inspectable implementation rather than a paper-only concept.
+
+**Novelty implication:** Open-source adaptive tutoring, skill mastery estimation, scaffolding/hints, content-source modularity, LMS integration, accessibility work and optional speech already exist in a concrete system. Project 002 must differentiate at a deeper problem/architecture/evaluation level.
+
+### 5.2 Broader GitHub discovery
+- GitHub discovery also surfaces multiple repositories explicitly describing LLM tutoring, RAG tutoring or intelligent tutoring. Discovery results alone are not treated as proof of quality or equivalence; candidate repositories require direct inspection before entering the evidence matrix.
+
+**Claim state:** OATutor VERIFIED by repository inspection; broader repository landscape UNDER REVIEW.
+
+## 6. Prior-art / novelty-threat register
+| Threat | What it already establishes | What remains open |
 |---|---|---|
-| Teaching machines / programmed instruction | Automated individualized instructional sequencing has deep historical roots. | Which pedagogical mechanisms remain useful in modern generative systems. |
-| Intelligent Tutoring Systems | Adaptive computer tutoring and learner modeling are established fields. | Whether our proposed architecture adds a meaningful capability/problem solution. |
-| AutoTutor and conversational ITS | Natural-language, multi-turn tutoring, feedback, hints and talking-agent concepts predate LLMs. | Whether source-grounded multi-role classroom orchestration yields a defensible contribution. |
-| RAG educational tutors | Grounding AI tutoring in validated course material is already being researched and deployed experimentally. | Whether Project 002 can improve provenance, pedagogy, offline operation, role orchestration, assessment, accessibility, or another bounded dimension. |
-| Lightweight/offline RAG tutor | Resource-constrained/offline tutoring is already an explicit research direction. | Whether a distinct low-resource contribution exists. |
-| SimClass | Multi-agent LLM classroom simulation with real-user participation exists in research. | Exact feature/architecture/evaluation overlap after full-paper review; potential gaps in grounding, user-owned materials, provenance, accessibility, deployment, teacher control, longitudinal learning, etc. |
+| Teaching machines / programmed instruction | Automated sequencing, pacing and feedback have deep roots. | Which principles transfer effectively to generative systems. |
+| PLATO / CAI | Networked computer-based learning, broad courseware and educational communication predate the web/LLMs. | Which modern constraints/problems remain unsolved. |
+| Cognitive Tutors / ITS | Learner modeling, domain models, adaptive tutoring and skill-sensitive support are established. | Whether modern generative orchestration adds measurable value. |
+| AutoTutor | Multi-turn natural-language tutoring, hints and feedback predate LLMs. | Reliability/provenance and broader role orchestration remain possible research areas. |
+| Pedagogical agents | Virtual/embodied instructional agents have decades of research. | When embodiment or social presence adds learning value rather than distraction. |
+| Educational RAG | Course/source-grounded AI tutoring already exists in research. | Stronger provenance, source-bound uncertainty and orchestration may remain open. |
+| SimClass | Multi-agent LLM classroom simulation with user participation exists. | Exact overlap/gaps after full-paper extraction. |
+| Khanmigo | Current commercial/nonprofit AI tutor + teacher assistant with classroom workflows and safety controls exists. | Different deployment contexts, provenance, multi-role simulation, offline/local control, research transparency. |
+| OATutor | Open-source adaptive tutor with BKT, scaffolding, content sources, accessibility and LMS integration exists. | Multi-role generative classroom and source-provenance questions remain, but require proof of value. |
 
-## 4. Preliminary evidence matrix
-| ID | Claim | Evidence | State | Limits |
-|---|---|---|---|---|
-| P002-C001 | Technology-mediated teaching machines were investigated by the 1920s. | Smithsonian teaching-machine collection/history. | VERIFIED | Does not establish the complete global history. |
-| P002-C002 | Educational teaching-device history extends into the nineteenth century. | Benjamin, 1988 historical review surfaced in discovery. | SUPPORTED | Primary patent records not yet individually checked. |
-| P002-C003 | Conversational ITS existed well before modern LLMs. | Graesser et al., AI Magazine 2001; AutoTutor literature. | VERIFIED | Does not imply modern LLM systems add nothing. |
-| P002-C004 | ITS have demonstrated learning benefits in aggregate in some meta-analyses. | Ma et al., 2014, 107 effect sizes / 14,321 participants. | VERIFIED | Effect depends on comparator/context; not proof of Project 002 efficacy. |
-| P002-C005 | RAG tutors grounded in course materials are existing prior art. | 2025 higher-education RAG pilot; 2025 educational RAG survey; RAG statistics tutor literature. | VERIFIED | Product/practice landscape still incomplete. |
-| P002-C006 | Multi-agent LLM classroom simulation with real user participation exists. | SimClass, NAACL 2025. | VERIFIED | Full implementation/evaluation comparison pending. |
-| P002-C007 | Project 002 is unique. | None. | UNSUPPORTED | Must not be claimed. |
-| P002-C008 | Project 002 will improve learning. | None specific to our design. | UNSUPPORTED | Requires an evaluation design and empirical evidence. |
-
-## 5. Contradictions and caution
-- Positive ITS meta-analytic findings should not be flattened into “AI tutors work.” Different reviews, populations, comparators, outcomes, intervention durations, and implementations can produce materially different effects.
-- Contemporary RAG grounding reduces some knowledge/reliability problems but does not eliminate incorrect or out-of-context answers.
-- A classroom-like interface is not itself evidence of better pedagogy.
-- Multiple agents/personas may increase realism or interaction, but may also add cost, latency, distraction, inconsistent instruction, and additional hallucination pathways. These are hypotheses requiring evidence.
-
-## 6. Candidate gaps — UNDER REVIEW, not novelty claims
-The following are research questions generated after the first discovery pass:
-1. Can a classroom simulation combine instructor-controlled/user-owned source grounding with explicit per-claim provenance across multiple classroom roles?
-2. Can role orchestration be pedagogically constrained so teacher/student personas do more than stylistic role-play?
-3. Can the system operate acceptably on low-cost/low-bandwidth hardware while retaining transparent source grounding?
-4. Can it provide a useful offline-first or degraded-connectivity mode without falsely presenting stale/model-generated information as course evidence?
-5. Can teacher/user controls make pedagogical strategy, source boundaries, uncertainty, and AI-role behavior inspectable rather than hidden in prompts?
-6. Is there evidence that simulated peer/classroom interaction adds learning value beyond a single conversational tutor?
-7. How should accessibility, privacy, minors' data, assessment integrity, and AI dependency be handled?
-8. Should Project 002 be a learning platform, a simulation environment, a tutor, or a research prototype? Combining all four without evidence could create scope inflation.
+## 7. Candidate gaps — UNDER REVIEW, not novelty claims
+1. **Evidence/provenance across roles:** Can every teacher/peer/tutor claim be traced to authoritative user/course material, with source-bound uncertainty visible to the learner?
+2. **Pedagogically constrained multi-role orchestration:** Can AI roles have explicit instructional functions and state transitions rather than merely different personalities/prompts?
+3. **Inspectable pedagogy:** Can teachers/users see and configure why a role asks, hints, challenges, remediates or advances rather than having pedagogy hidden inside prompts?
+4. **Multi-agent value test:** Does simulated peer/classroom interaction produce measurable benefit over a single high-quality tutor, or is it mostly interface theater and additional cost/latency/hallucination surface?
+5. **Low-resource trustworthy degradation:** Can the platform retain useful source-grounded learning on modest hardware/connectivity while clearly marking unavailable generative functions?
+6. **Human-teacher augmentation boundary:** Which functions should remain teacher-controlled or human-reviewed instead of being delegated to agents?
+7. **Longitudinal learning and dependency:** Does repeated use improve retention/transfer, or encourage overreliance/cognitive offloading?
+8. **Accessibility by design:** Can multimodal interaction remain optional and equivalent, rather than making voice/avatars/VR prerequisites?
+9. **Evaluation transparency:** Can the project expose what was measured, what evidence supports feedback/adaptation, and what remains uncertain?
 
 None of these is yet an established gap.
 
-## 7. Search log — first pass
-### Web/source discovery
-- `history intelligent tutoring systems teaching machines programmed instruction Skinner Pressey 1920s 1950s`
-- `AutoTutor conversational intelligent tutoring system Graesser 2001`
-- `retrieval augmented generation AI tutoring education 2024 2025`
-- `AI virtual classroom LLM tutor multi agent classroom education`
+## 8. Claims registry
+| ID | Claim | State | Evidence boundary |
+|---|---|---|---|
+| P002-C001 | Technology-mediated teaching predates electronic computers. | SUPPORTED | Historical review/collections; primary patent expansion pending. |
+| P002-C002 | PLATO provided generalized/networked computer-assisted learning beginning around 1960. | VERIFIED | Illinois/ERIC historical records. |
+| P002-C003 | Model-based adaptive/cognitive tutoring was mature prior art by the 1990s. | VERIFIED | Cognitive Tutor literature. |
+| P002-C004 | Conversational ITS existed before modern LLMs. | VERIFIED | AutoTutor/ITS literature. |
+| P002-C005 | Pedagogical/virtual agents have decades of educational research. | VERIFIED | Historical/review literature. |
+| P002-C006 | ITS can improve learning in some contexts. | VERIFIED | Meta-analytic evidence, with heterogeneity caveat. |
+| P002-C007 | A research-informed generative AI tutor has outperformed an active-learning condition in one 2025 RCT. | VERIFIED | Specific N=194 undergraduate physics study only. |
+| P002-C008 | Course/source-grounded RAG tutoring is existing prior art. | VERIFIED | Contemporary educational RAG literature. |
+| P002-C009 | Multi-agent LLM classroom simulation exists. | VERIFIED | SimClass NAACL 2025. |
+| P002-C010 | Current Khanmigo overlaps several tutor/teacher-assistant functions. | VERIFIED | Official current product/help material. |
+| P002-C011 | A substantial open-source adaptive tutoring implementation exists in OATutor. | VERIFIED | Direct GitHub repository inspection. |
+| P002-C012 | Project 002 is unique. | UNSUPPORTED | Must not be claimed. |
+| P002-C013 | Project 002 will improve learning. | UNSUPPORTED | Requires Project 002-specific evaluation. |
+| P002-C014 | Multiple AI classroom roles improve learning over a single tutor. | UNKNOWN | Direct comparative evidence not yet established. |
 
-### Independent academic discovery
-- Consensus search: `intelligent tutoring systems learning outcomes meta-analysis`
-- Elicit was attempted for a broad Project 002 literature search, but the connected account reported that its current plan does not include API access. This is recorded as a tool limitation, not as absence of literature.
+## 9. Contradictions and caution
+- PLATO and later computer-learning systems are historically influential, but historical influence is not equivalent to demonstrated educational superiority.
+- Positive ITS meta-analysis and positive recent generative-AI experiments coexist with heterogeneous effects, implementation dependence and population/context limits.
+- A classroom-like interface, avatars, speech or social presence are not evidence of better pedagogy.
+- Multiple agents can increase interaction richness while simultaneously increasing latency, cost, inconsistency, privacy surface and hallucination pathways.
+- Grounding/RAG can reduce some knowledge errors but does not make generated claims automatically correct.
+- Commercial product claims are evidence of product capabilities/positioning, not independent proof of learning effectiveness.
+- GitHub popularity/activity is evidence that an implementation is real and maintained, not that its pedagogical claims are true.
 
-## 8. Initial sources screened
-1. Smithsonian Institution / National Museum of American History — Teaching Machines and Mechanical Learning.
-2. Benjamin, L. T. Jr. (1988), *A History of Teaching Machines*, American Psychologist — discovery record; primary-source expansion pending.
-3. Graesser, A. C., VanLehn, K., Rose, C. P., Jordan, P. W., & Harter, D. (2001), *Intelligent Tutoring Systems with Conversational Dialogue*, AI Magazine, DOI 10.1609/aimag.v22i4.1591.
-4. AutoTutor natural-language dialogue literature, DOI 10.3758/BF03195563.
-5. Ma, W., Adesope, O. O., Nesbit, J., & Liu, Q. (2014), *Intelligent tutoring systems and learning outcomes: A meta-analysis*, Journal of Educational Psychology, 106, 901–918.
-6. 2025 higher-education RAG tutoring pilot, DOI 10.1016/j.ssaho.2025.101751.
-7. 2025 systematic survey of RAG in educational applications, DOI 10.1016/j.caeai.2025.100417.
-8. Hevia, Arredondo & Kumar (2025), *Towards an Efficient, Customizable, and Accessible AI Tutor*, PMLR 273.
-9. Zhang et al. (2025), *Simulating Classroom Education with LLM-Empowered Agents (SimClass)*, NAACL 2025.
+## 10. Search / inspection log — pass 2
+### Historical / scholarly web discovery
+- `PLATO computer assisted instruction history intelligent tutoring systems 1960s 1970s`
+- `SCHOLAR intelligent tutoring systems history SCHOLAR Carbonell 1970`
+- `Cognitive Tutor Anderson Koedinger intelligent tutoring systems history`
+- `pedagogical agents virtual learning environments history intelligent agents education`
 
-## 9. Coverage audit after pass 1
+### Current evidence / counterevidence discovery
+- `generative AI tutoring cognitive offloading learning overreliance students 2024 2025`
+- `LLM tutor hallucination education risks systematic review 2025`
+- `AI tutor human teacher role student learning randomized trial generative AI tutor`
+- `Khanmigo AI tutor pedagogy guardrails teacher classroom official`
+
+### GitHub prior-art discovery and inspection
+- Repository searches for `AI tutor RAG education classroom LLM` and `intelligent tutoring system LLM`.
+- Direct inspection of `CAHLR/OATutor` repository metadata and README.
+
+### Academic plugin discovery
+- Consensus previously used for ITS meta-analysis discovery and record verification.
+- Elicit API access was unavailable on the connected plan; this remains a tool limitation, not a literature finding.
+
+## 11. Sources screened / retained so far
+Historical and foundational:
+1. Smithsonian teaching-machine historical collection.
+2. Benjamin (1988), *A History of Teaching Machines* — deeper primary-source expansion pending.
+3. University of Illinois / ERIC PLATO historical records and 1977 PLATO IV final report.
+4. Cope & Kalantzis (2023), historical analysis of PLATO 1959–1976.
+5. Anderson, Corbett, Koedinger & Pelletier, *Cognitive Tutors: Lessons Learned*, Journal of the Learning Sciences.
+6. Graesser et al. (2001), *Intelligent Tutoring Systems with Conversational Dialogue*, AI Magazine.
+7. AutoTutor natural-language dialogue literature.
+8. Siegle et al. (2023), *Twenty-five Years of Learning with Pedagogical Agents: History, Barriers, and Opportunities*.
+
+Effectiveness / contemporary research:
+9. Ma et al. (2014), *Intelligent tutoring systems and learning outcomes: A meta-analysis*.
+10. 2025 systematic review of AI-driven ITS in K–12 education.
+11. 2025 Scientific Reports RCT of a research-informed generative AI tutor in undergraduate physics, DOI 10.1038/s41598-025-97652-6.
+12. Pardos & Bhandari (2024), ChatGPT-generated versus human-authored mathematics help.
+13. Contemporary educational RAG studies/surveys previously logged.
+14. Hevia, Arredondo & Kumar (2025), lightweight/customizable/accessible AI tutor work.
+15. Zhang et al. (2025), SimClass, NAACL 2025.
+
+Current systems / implementations:
+16. Khan Academy official Khanmigo product, teacher and safety materials (current 2025–2026 pages).
+17. Google/Khan Academy 2026 classroom AI partnership announcement.
+18. CAHLR/OATutor GitHub repository and cited CHI 2023 implementation paper.
+
+## 12. Coverage audit after pass 2
 Still missing or insufficient:
-- nineteenth-century primary patents/devices and broader international historical lineage;
-- PLATO and other major CAI systems from primary/authoritative sources;
-- foundational ITS architecture/student-model literature;
-- adaptive learning and cognitive tutor lineage;
-- LMS/MOOC relationship and whether they are directly relevant or merely adjacent;
-- virtual classroom / virtual-world classroom research before LLMs;
-- social/peer learning and pedagogical-agent research;
-- modern commercial AI education products and their exact capabilities;
-- current open-source implementations and code-level evidence;
-- patents potentially overlapping multi-agent tutoring/classroom simulation;
-- privacy/child-safety/education regulation by intended deployment region;
-- accessibility standards and multimodal learning evidence;
-- costs, model/provider dependencies, offline constraints;
-- empirical evidence comparing single-agent tutoring with multi-agent/classroom simulation;
-- failure studies and evidence of negative/null effects;
-- longitudinal outcomes, overreliance, cognitive offloading, academic integrity;
-- precise user/problem validation.
+- nineteenth-century primary patent/device verification;
+- Carbonell/SCHOLAR and other foundational ITS primary-source extraction;
+- fuller TICCIT and non-US CAI history;
+- LMS/MOOC relationship and whether directly relevant;
+- pre-LLM virtual classroom/virtual-world systems beyond pedagogical-agent reviews;
+- direct empirical comparisons of single-agent vs multi-agent/classroom simulation;
+- stronger literature on social/peer learning mechanisms that could justify simulated peers;
+- systematic negative/null/failure evidence for generative AI tutoring;
+- cognitive offloading, overreliance, retention and transfer evidence;
+- child/minor privacy and educational regulation for candidate deployment regions;
+- accessibility standards and evidence for multimodal designs;
+- broader current commercial comparison (not only Khanmigo);
+- deeper open-source comparison beyond OATutor;
+- patent search for multi-agent tutoring/classroom orchestration and adaptive AI learning;
+- cost/provider/local-model feasibility;
+- actual user/problem validation with learners/teachers;
+- explicit comparison matrix against Project 001 to prevent conceptual duplication.
 
-## 10. Current decision
+## 13. Current decision
 **MORE RESEARCH.**
 
-There is already enough evidence to reject several simplistic novelty claims. There is not enough evidence to reject the project itself. The next phase must deliberately search both for stronger prior art that could collapse the concept and for empirically supported gaps that could narrow it into a defensible project.
+The second pass makes the concept harder to defend using superficial feature novelty, which is desirable. AI tutoring, adaptive learning, learner modeling, conversational guidance, pedagogical agents, source-grounded tutoring, teacher-assistant functions, open-source adaptive tutoring and multi-agent classroom simulation all have meaningful prior art. Project 002 remains alive only if a narrower problem and contribution survives direct comparison and can be empirically evaluated.

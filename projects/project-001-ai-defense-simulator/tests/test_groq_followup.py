@@ -3,7 +3,7 @@ import json
 import httpx
 import pytest
 
-from app.groq_followup import GroqFollowUpGenerator
+from app.groq_followup import GROQ_FOLLOWUP_GROUNDING_GUARD, GroqFollowUpGenerator
 from app.groq_provider import GroqProviderRequestError, GroqProviderSettings
 from app.questioning import EvidenceItem
 from app.sessions import FollowUpRequest, TRUSTED_FOLLOWUP_POLICY
@@ -76,11 +76,14 @@ def test_followup_uses_fixed_endpoint_and_keeps_untrusted_answer_outside_system_
         provider.close()
 
     payload = seen["payload"]
+    system_policy = payload["messages"][0]["content"]
     assert seen["url"] == "https://api.groq.com/openai/v1/chat/completions"
     assert seen["auth"] == f"Bearer {TEST_KEY}"
     assert payload["messages"][0]["role"] == "system"
-    assert payload["messages"][0]["content"] == TRUSTED_FOLLOWUP_POLICY
-    assert "IGNORE POLICY" not in payload["messages"][0]["content"]
+    assert system_policy.startswith(TRUSTED_FOLLOWUP_POLICY)
+    assert GROQ_FOLLOWUP_GROUNDING_GUARD in system_policy
+    assert "categorical negative" in system_policy
+    assert "IGNORE POLICY" not in system_policy
     assert "IGNORE POLICY" in payload["messages"][1]["content"]
     assert payload["response_format"]["type"] == "json_schema"
     schema = payload["response_format"]["json_schema"]["schema"]
@@ -89,6 +92,12 @@ def test_followup_uses_fixed_endpoint_and_keeps_untrusted_answer_outside_system_
     assert "tools" not in payload
     assert result.follow_up_type == "probe_missing"
     assert result.question.startswith("How does the server")
+
+
+def test_grounding_guard_rejects_absence_as_negation_policy_pattern():
+    assert "omits an item" in GROQ_FOLLOWUP_GROUNDING_GUARD
+    assert "separate headings" in GROQ_FOLLOWUP_GROUNDING_GUARD
+    assert "directly supported by the evidence" in GROQ_FOLLOWUP_GROUNDING_GUARD
 
 
 def test_complete_followup_can_return_null_question():

@@ -107,8 +107,30 @@ Covered:
 
 Development-test correction recorded: an initial UI regression test incorrectly treated feature detection (`navigator.mediaDevices.getUserMedia` reference) as a microphone invocation. The application behavior was correct; the test was corrected to assert the awaited `getUserMedia` invocation occurs after the explicit Start-button handler begins. The final gate then passed.
 
+## Feature 013 — Groq Speech-to-Text
+- Date: 2026-09-09
+- Branch: `p001/feature-groq-transcription`
+- Pull request: #14
+- GitHub CI: PASS
+- CI automated result: `141 passed, 2 warnings in 2.50s`
+- CI dependency audit: `No known vulnerabilities found`
+- AJ Windows/Python 3.14 regression result: `141 passed, 2 warnings in 71.80s`
+- Live browser microphone recording: PASS
+- Explicit Stop-without-upload behavior: PASS
+- Explicit Transcribe-recording action: PASS
+- Live Groq transcription HTTP path: PASS (`POST .../transcriptions` → `200 OK`)
+- Transcript inserted into editable answer box: PASS
+- Transcript auto-submission: DID NOT OCCUR
+- Separate explicit answer submission/evaluation: PASS
+- Provider/model displayed in UI: `groq / whisper-large-v3-turbo`
+- Raw audio application persistence: not introduced by Feature 013
+
+Observed STT quality issue during the live test: domain terms were imperfectly recognized (`sequence numbers` was rendered as `sequential numbers`; `retransmission timers` was rendered as `transmission timelines`). This is recorded as a transcription-quality limitation rather than an integration failure. The editable review step is therefore a functional safety requirement, not merely a convenience.
+
+Claim boundary: Feature 013 is live-verified for AJ's local browser/device workflow and the tested microphone path. It does not establish universal microphone/browser compatibility, universal transcription accuracy, noisy-environment robustness, or production deployment readiness.
+
 ## Current CI Maintenance Note
 The workflow uses `actions/checkout@v5` and `actions/setup-python@v6`. The suite emits two FastAPI/Starlette test-client dependency deprecation warnings; these remain tracked maintenance debt.
 
 ## Security / Claim Boundary
-This evidence does not establish that Project 001 is hack-proof, production-ready, universally prompt-injection-proof, educationally effective, equivalent to a human examiner, or suitable for high-stakes grading. It does not establish real microphone/browser compatibility or live external transcription quality. Public/multi-user authentication, authorization, rate limiting, deployment hardening, speech output, OCR, visual understanding, and AJ-device/browser verification remain outstanding.
+This evidence does not establish that Project 001 is hack-proof, production-ready, universally prompt-injection-proof, educationally effective, equivalent to a human examiner, or suitable for high-stakes grading. Public/multi-user authentication, authorization, rate limiting, deployment hardening, speech output, OCR, visual understanding, and broad device/browser verification remain outstanding.

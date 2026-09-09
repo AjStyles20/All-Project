@@ -25,6 +25,13 @@ _FOLLOWUP_SCHEMA: dict[str, Any] = {
     },
 }
 
+GROQ_FOLLOWUP_GROUNDING_GUARD = (
+    "Do not infer a categorical negative or exclusion merely because the evidence omits an item or "
+    "places concepts under separate headings. When the evidence only distinguishes or separately labels "
+    "concepts, ask the user to compare or distinguish those concepts rather than asserting that one is not "
+    "part of another. A negative premise in a follow-up question must itself be directly supported by the evidence."
+)
+
 
 def _followup_input(request: FollowUpRequest) -> str:
     data = {
@@ -69,10 +76,11 @@ class GroqFollowUpGenerator:
         self._http.close()
 
     def generate_follow_up(self, request: FollowUpRequest) -> FollowUpResult:
+        system_policy = f"{request.trusted_policy} {GROQ_FOLLOWUP_GROUNDING_GUARD}"
         payload = {
             "model": self.model_name,
             "messages": [
-                {"role": "system", "content": request.trusted_policy},
+                {"role": "system", "content": system_policy},
                 {"role": "user", "content": _followup_input(request)},
             ],
             "max_completion_tokens": 700,

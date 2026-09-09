@@ -4,7 +4,11 @@ Run `uvicorn app.configured_app:app` when provider configuration should be appli
 The underlying `app.main` remains provider-neutral and testable without secrets.
 """
 
+import os
+
 from . import main as runtime
+from .groq_provider import load_groq_settings_from_env
+from .groq_transcription import GroqTranscriber
 from .openai_provider import load_openai_settings_from_env
 from .openai_speech_output import OpenAISpeechSynthesizer
 from .openai_transcription import OpenAITranscriber
@@ -20,10 +24,28 @@ runtime.question_generator = _ai_bundle.question_generator
 runtime.answer_evaluator = _ai_bundle.answer_evaluator
 follow_up_generator = _ai_bundle.follow_up_generator
 
-# Speech remains independently OpenAI-backed for now. This preserves Features 009-010
-# without silently claiming that the selected text provider supplies STT or TTS.
+
+def _build_speech_transcriber():
+    selected = os.getenv("P001_SPEECH_PROVIDER", "auto").strip().lower()
+    if selected not in {"auto", "disabled", "openai", "groq"}:
+        raise ValueError("P001_SPEECH_PROVIDER must be one of: auto, disabled, groq, openai")
+    if selected == "disabled":
+        return None
+    if selected == "groq" or (selected == "auto" and _ai_bundle.selected_text_provider == "groq"):
+        return GroqTranscriber(load_groq_settings_from_env())
+
+    openai_settings = load_openai_settings_from_env()
+    if selected == "openai":
+        if openai_settings is None:
+            raise ValueError("OpenAI speech was selected but P001_OPENAI_ENABLED is not set to 1")
+        return OpenAITranscriber(openai_settings)
+    return OpenAITranscriber(openai_settings) if openai_settings is not None else None
+
+
+speech_transcriber = _build_speech_transcriber()
+
+# Feature 010 TTS remains independently OpenAI-backed. Feature 013 changes STT only.
 _openai_settings = load_openai_settings_from_env()
-speech_transcriber = OpenAITranscriber(_openai_settings) if _openai_settings is not None else None
 speech_synthesizer = OpenAISpeechSynthesizer(_openai_settings) if _openai_settings is not None else None
 
 # Template disclosure is intentionally provider identity only; no credential/config internals are exposed.

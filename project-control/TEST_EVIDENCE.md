@@ -122,38 +122,37 @@ All verification evidence should be reproducible where practical. Do not record 
 - Feature/subsystem: Project 001 — Groq bounded multi-turn defense
 - Test type: Regression / User
 - Environment: Windows 10, Python 3.14, project `.venv`, branch `p001/feature-groq-multiturn`
-- Preconditions: `P001_AI_PROVIDER=groq`, Groq key present, model `openai/gpt-oss-20b`, OpenAI disabled.
-- Procedure: Run `python -m pytest -q` after switching to Feature 012 branch.
+- Preconditions: Groq selected; OpenAI disabled.
+- Procedure: Run `python -m pytest -q`.
 - Expected result: Existing and Feature 012 tests pass without failures.
 - Observed result: `130 passed, 2 warnings in 44.30s`.
 - Status: PASS
 - Evidence: User-supplied PowerShell output.
 - Performed by: AJ
-- Notes: Same existing Starlette/AnyIO deprecation warnings; no test failures.
 
-### TE-011 — Feature 012 live bounded-session setup and answer evaluation
+### TE-011 — Feature 012 live Groq follow-up generation
 - Date: 2026-09-09
-- Feature/subsystem: Project 001 — Groq bounded multi-turn defense
+- Feature/subsystem: Project 001 — bounded multi-turn defense
 - Test type: Live / User / Integration
-- Environment: Windows local Uvicorn at `127.0.0.1:8000`; Groq selected; OpenAI disabled.
-- Preconditions: Workspace `Test 001` with extracted Computer Networks source; Feature 012 branch active.
-- Procedure: Start a bounded defense session for `TCP reliability mechanisms`, technical reviewer, maximum 5 turns; open Turn 1; submit answer `It uses reliability, congestion control, and flow control mechanisms.`; allow Groq evaluation to persist.
-- Expected result: Session starts, Turn 1 is attached, follow-up remains blocked until an answer exists, answer evaluation succeeds, and the session remains active awaiting an explicit follow-up request.
-- Observed result: Session page showed `Status: active`, `Maximum turns: 5`, Turn 1 with `Answer this question`, and `Answer the current question before requesting a follow-up.` before answering. After submission, Groq qualitative evaluation persisted and correctly identified that the answer conflated reliability with congestion/flow control and omitted sequence numbers, ACKs, and retransmission timers.
+- Environment: Windows local Uvicorn at `127.0.0.1:8000`; Groq model `openai/gpt-oss-20b`.
+- Preconditions: Active defense session for `TCP reliability mechanisms`; Turn 1 answered and evaluated.
+- Procedure: Return to the defense-session page and select `Generate evidence-grounded follow-up`.
+- Expected result: A second turn is generated from authoritative session context and the session blocks further follow-up until Turn 2 is answered.
+- Observed result: Turn 2 was generated with type `challenge_unsupported` and question `Can you clarify why congestion control and flow control are not considered reliability mechanisms according to the evidence?`; rationale was persisted and displayed; the page then displayed `Answer the current question before requesting a follow-up.`
 - Status: PASS
-- Evidence: User-supplied browser screenshots and Uvicorn/PowerShell logs.
+- Evidence: User-supplied browser screenshots and Uvicorn log showing POST to `/sessions/.../follow-up` followed by `Follow-up question generated.`
 - Performed by: AJ
-- Notes: This verifies session creation, turn gating, and evaluation. It does NOT yet verify a Groq-generated Turn 2 follow-up.
+- Notes: This establishes live provider-backed multi-turn operation. A quality limitation was also discovered: the follow-up phrased a categorical negative more strongly than the evidence directly supports; this is tracked separately and does not invalidate the transport/session/live-integration PASS.
 
-### TE-012 — Feature 012 live Groq follow-up generation
+### TE-012 — Feature 012 Turn 2 answer evaluation
 - Date: 2026-09-09
-- Feature/subsystem: Project 001 — Groq bounded multi-turn defense
+- Feature/subsystem: Project 001 — multi-turn evaluation continuity
 - Test type: Live / User / Integration
 - Environment: Same as TE-011.
-- Preconditions: TE-011 completed; current session remains active; Turn 1 has a persisted evaluation.
-- Procedure: Return to the defense-session page and request the next follow-up.
-- Expected result: Groq generates one bounded evidence-grounded Turn 2 follow-up (or explicitly completes the session), with allowed follow-up type and preserved parent/evidence provenance.
-- Observed result: Not yet supplied.
-- Status: NOT RUN
-- Evidence: —
+- Procedure: Answer Turn 2 and submit for qualitative feedback.
+- Expected result: The follow-up question can be answered and evaluated through the same evidence-aware evaluator path.
+- Observed result: Turn 2 answer was accepted and evaluated; feedback persisted and displayed.
+- Status: PASS
+- Evidence: User-supplied screenshots and Uvicorn POST/redirect log for question `14c89793-47b6-4129-b163-3efd49757bed`.
 - Performed by: AJ
+- Notes: The evaluator/follow-up pair exposed an evidence-framing inconsistency around negative claims. A Groq follow-up grounding guard was added afterward to prevent absence-as-negation reasoning in future follow-ups.

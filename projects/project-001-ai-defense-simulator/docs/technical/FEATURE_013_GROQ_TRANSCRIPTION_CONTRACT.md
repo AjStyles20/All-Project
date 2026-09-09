@@ -49,4 +49,16 @@ Feature 013 does not add:
 4. Live browser microphone test with explicit record → stop → transcribe flow.
 5. Verify transcript appears in the editable text answer box and is not submitted automatically.
 
-Until gate 4-5 pass, Groq STT is implemented and CI-verified only, not live-browser verified.
+## Verification result — 2026-09-09
+- GitHub CI: PASS — `141 passed, 2 warnings`; dependency audit reported no known vulnerabilities.
+- AJ Windows/Python 3.14: PASS — `141 passed, 2 warnings in 71.80s`.
+- Live browser microphone recording: PASS.
+- Stop-recording consent boundary: PASS — UI reported recording stopped and required the separate **Transcribe recording** action before upload.
+- Live Groq transcription request: PASS — application log recorded `POST .../transcriptions` with HTTP `200 OK`.
+- Transcript-to-editable-answer behavior: PASS — returned text populated the answer textarea for review/editing.
+- No automatic answer submission: PASS — transcription completion did not trigger the separate `/answers` route; submission occurred only after the user explicitly selected **Submit for feedback**.
+- Raw audio persistence claim remains unchanged: application response/path does not persist raw audio.
+
+Observed transcription-quality limitation during the live test: a spoken answer intended to contain terms equivalent to `sequence numbers` and `retransmission timers` was transcribed as `sequential numbers` and `transmission timelines`. This does not invalidate the transport/consent integration, but it demonstrates that STT output must remain editable and must not be treated as authoritative user intent without review.
+
+Feature 013 is therefore **LIVE VERIFIED for the bounded local prototype workflow**, not verified for universal transcription accuracy, all microphones/browsers, noisy environments, or production deployment.

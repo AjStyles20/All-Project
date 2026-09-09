@@ -3,9 +3,9 @@
 ## Project Identity
 - Project name: AJ Project OS
 - Project type: Reusable AI-assisted project-development operating system
-- Current stage: Starter kit operational; Project 001 active
+- Current stage: Portfolio research foundation
 - Project owner: AJ
-- Last verified date: 2026-09-08
+- Last verified date: 2026-09-09
 
 ## Approved Scope
 Create a reusable project operating system that coordinates research, engineering, verification, documentation, and defense preparation through shared project-control files and explicit authority rules.
@@ -16,61 +16,51 @@ Create a reusable project operating system that coordinates research, engineerin
 - ChatGPT: command, review, synthesis, connected-source access
 - ChatGPT Work: intended orchestration environment for long-running multi-step work
 - Codex: intended engineering execution environment using the same GitHub repository/project state
+- Additional research plugins/tools may be used according to purpose; material conclusions should be cross-checked when independent corroboration is reasonably available.
 
-## Implemented
-- GitHub repository initialized and live write access verified
-- Governance, project-control registries, agent-role instructions, reusable templates, Work master prompt, technical documentation templates, and Drive Project OS workspace created
-- Project 001 approved by AJ as the AI Virtual Audience / Presentation & Defense Simulator
-- Project 001 GitHub workspace instantiated under `projects/project-001-ai-defense-simulator/`
-- Project 001 canonical state, requirements, research brief, claims registry, and research search log created
-- Project 001 Google Drive workspace created with Research, Dissertation, Defense, and Diagrams folders
-- Project 001 literature matrix created in Drive from the Project OS template
-- Project 001 research & scope brief created and populated in Drive
-- Initial academic discovery searches started and logged
+## Current Portfolio Direction
+AJ approved a portfolio-wide research-first phase before further substantial implementation. Candidate projects will receive canonical structures and structured research covering genuine historical lineage, academic evidence where applicable, commercial/open-source prior art, patents/standards/regulation where relevant, competing approaches, novelty threats, gap analysis, feasibility, security/privacy/ethics, costs/dependencies, and bounded go/park/kill recommendations.
 
-## In Progress
-- Project 001 preliminary literature screening
-- Comparable-system review
-- Research-gap assessment
+The objective is not to claim that a project is literally impossible to dismiss. The objective is to make claims maximally defensible by exposing evidence, counterevidence, limitations, uncertainty, and the exact boundaries of novelty.
 
-## Not Started
-- Project 001 approved architecture
-- Project 001 substantive Engineering/Codex implementation
-- Full ChatGPT Work orchestration test on a real implementation task
-- Independent verification cycle on a real Project 001 feature
-- Documentation-to-implementation synchronization test on Project 001
-- AJ Tutor defense-readiness cycle on Project 001
+## Project 001 Pause State
+- Project: Source-Grounded AI Presentation, Interview and Defense Simulator
+- Decision: PAUSED by AJ on 2026-09-09 pending portfolio-wide research foundation.
+- This is a pause, not abandonment and not a restart.
+- Preserve existing implementation, tests, research, decisions, and verification evidence.
+- Major implemented/live-tested areas include document ingestion/provenance, lexical retrieval, provider-backed grounded question generation and qualitative evaluation, bounded multi-turn questioning, microphone transcription, local browser reviewer speech, and reviewer playback controls.
+- Latest user-reported Windows regression result at pause: `146 passed, 2 warnings` with zero test failures.
+- Playback UI live-tested at least for Play/Replay and speed selection; Pause/Resume/Stop behavior was under direct user verification around the pause.
+- Known UX gap at pause: workspace Question History exists, but no obvious Defense Session History is exposed for reopening complete multi-turn sessions. Session-level Previous/Next navigation requires proper implementation/verification.
+- Semantic retrieval must not be assumed live-verified merely because Hybrid can be requested; prior operation included truthful lexical fallback when embeddings were unavailable.
 
-## Current Blockers
-- Project 001 architecture is intentionally blocked until preliminary research evidence and comparable-system review are screened.
+## Canonical Portfolio Files
+- `project-control/PROJECT_PORTFOLIO_CATALOGUE.md` — short-form definition and status of each candidate project.
+- `project-control/PORTFOLIO_RESEARCH_TRACKER.md` — portfolio research coverage and decision-readiness matrix.
+- `project-control/PROJECT_RULES.md` — governing authority, security, evidence, implementation, and verification rules.
+- `project-control/TEST_EVIDENCE.md` — reproducible verification records.
+
+## Current Work
+- Preserve Project 001 exactly enough to resume from its current state later.
+- Instantiate the remaining project workspaces without implying research conclusions.
+- Begin portfolio-wide research and evidence screening before choosing the next substantive implementation target.
+- Cross-check important claims across suitable source classes/tools rather than depending unnecessarily on one tool.
 
 ## Verification Status
 - Repository access: LIVE VERIFIED
 - GitHub write operations: LIVE VERIFIED
 - Google Drive connection: LIVE VERIFIED
-- Google Drive folder/file creation: LIVE VERIFIED
 - Project OS governance/control layer: IMPLEMENTED
-- Specialist agent instruction layer: IMPLEMENTED
-- Work master prompt: IMPLEMENTED
-- Project 001 instantiation: LIVE VERIFIED
-- Project 001 research phase: IN PROGRESS
-- End-to-end Project OS workflow: NOT YET VERIFIED
-- ChatGPT Work orchestration: NOT TESTED
-- Codex shared-state workflow: NOT TESTED
+- Portfolio catalogue: IMPLEMENTED
+- Portfolio research tracker: IMPLEMENTED
+- Project 001: PAUSED IMPLEMENTATION; substantial local/live verification evidence exists, but it is not declared complete, production-ready, or fully security-verified.
+- Projects 002–010: RESEARCH FOUNDATION / STRUCTURE PHASE; no novelty conclusions yet.
+- End-to-end portfolio research cycle: NOT YET VERIFIED
 
 ## Current Verified Repository
 - Repository: AjStyles20/All-Project
 - Default branch: main
 
-## Current Drive Workspaces
-- `AJ Projects / Project OS`
-- `AJ Projects / Project 001 - AI Defense Simulator`
-
-## Approved Project 001
-- Working name: AI Virtual Audience / Presentation & Defense Simulator
-- Decision: DR-004
-- Status: ACTIVE / RESEARCH PHASE
-
 ## Decisions Awaiting AJ
-- None required before continuing preliminary research and evidence screening.
-- Architecture and any A3 scope expansion will be brought back for approval when evidence is sufficient.
+- None required to create non-destructive project research structures and begin evidence discovery.
+- A3 changes to project identity, core scope, or major implementation architecture still require AJ approval.

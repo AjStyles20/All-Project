@@ -15,15 +15,16 @@
     <div class="speech-controls"
          data-tts-controls
          data-endpoint="/api/workspaces/{{ workspace.id }}/questions/{{ question.id }}/speech"
-         data-configured="{{ 'true' if tts_provider_name else 'false' }}">
+         data-server-configured="{{ 'true' if tts_provider_name else 'false' }}"
+         data-question-text="{{ question.question_text | e }}">
       <div class="button-row">
-        <button type="button" data-tts-listen {% if not tts_provider_name %}disabled{% endif %}>Listen to reviewer</button>
+        <button type="button" data-tts-listen>Listen to reviewer</button>
         <button type="button" data-tts-stop disabled>Stop audio</button>
       </div>
       {% if tts_provider_name %}
-        <p class="hint">Optional generated audio: {{ tts_provider_name }}{% if tts_model_name %} / {{ tts_model_name }}{% endif %}{% if tts_voice_name %} · voice {{ tts_voice_name }}{% endif %}. Audio is generated only when you select Listen and is not stored by this application.</p>
+        <p class="hint">Optional generated audio: {{ tts_provider_name }}{% if tts_model_name %} / {{ tts_model_name }}{% endif %}{% if tts_voice_name %} · voice {{ tts_voice_name }}{% endif %}. Audio is generated only when you select Listen and is not stored by this application. If server audio is unavailable, the browser may use its local speech engine as a fallback.</p>
       {% else %}
-        <p class="hint">Reviewer speech output is not configured. The written question remains fully available.</p>
+        <p class="hint">Optional local reviewer speech uses your browser/device speech engine when available. The visible written question remains authoritative, no reviewer speech is started automatically, and this local fallback does not send the question to a Project 001 TTS provider.</p>
       {% endif %}
       <p data-tts-status role="status" aria-live="polite">Reviewer audio is idle.</p>
     </div>

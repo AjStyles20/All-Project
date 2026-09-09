@@ -129,8 +129,27 @@ Observed STT quality issue during the live test: domain terms were imperfectly r
 
 Claim boundary: Feature 013 is live-verified for AJ's local browser/device workflow and the tested microphone path. It does not establish universal microphone/browser compatibility, universal transcription accuracy, noisy-environment robustness, or production deployment readiness.
 
+## Feature 014 — Zero-Cost Browser Reviewer TTS
+- Date: 2026-09-09
+- Branch: `p001/feature-browser-tts`
+- Pull request: #15
+- GitHub CI: PASS
+- CI automated result: `145 passed, 2 warnings in 9.40s`
+- CI dependency audit: `No known vulnerabilities found`
+- AJ Windows/Python 3.14 regression result: `145 passed, 2 warnings in 59.03s`
+- Live local/browser reviewer speech: PASS
+- Explicit Listen-to-reviewer start: PASS
+- Stop-audio interruption: PASS
+- Written reviewer question remained visible/authoritative: PASS
+- No additional TTS API key or subscription required for local browser speech: PASS
+- Existing server/OpenAI TTS path: PRESERVED
+
+Observed browser speech edge case: one live attempt displayed `Local reviewer speech could not be played. Read the question text above.` after another successful playback attempt. This is tracked as a browser/device speech-engine reliability limitation rather than a failed Feature 014 gate, because AJ independently confirmed successful audible playback and successful Stop-audio interruption on the same local environment.
+
+Claim boundary: Feature 014 is live-verified on AJ's current Windows/browser environment for explicit local speech playback and interruption. It does not establish identical voice availability, quality, pronunciation, or reliability across all browsers/devices.
+
 ## Current CI Maintenance Note
-The workflow uses `actions/checkout@v5` and `actions/setup-python@v6`. The suite emits two FastAPI/Starlette test-client dependency deprecation warnings; these remain tracked maintenance debt.
+The workflow uses `actions/checkout@v5` and `actions/setup-python@v6`. The suite emits two FastAPI/Starlette test-client dependency deprecation warnings; these remain tracked maintenance debt. They are warnings, not failed tests.
 
 ## Security / Claim Boundary
-This evidence does not establish that Project 001 is hack-proof, production-ready, universally prompt-injection-proof, educationally effective, equivalent to a human examiner, or suitable for high-stakes grading. Public/multi-user authentication, authorization, rate limiting, deployment hardening, speech output, OCR, visual understanding, and broad device/browser verification remain outstanding.
+This evidence does not establish that Project 001 is hack-proof, production-ready, universally prompt-injection-proof, educationally effective, equivalent to a human examiner, or suitable for high-stakes grading. Public/multi-user authentication, authorization, rate limiting, deployment hardening, OCR, visual understanding, and broad device/browser verification remain outstanding.

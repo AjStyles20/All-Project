@@ -18,7 +18,7 @@
          data-server-configured="{{ 'true' if tts_provider_name else 'false' }}"
          data-question-text="{{ question.question_text | e }}">
       <div class="button-row" aria-label="Reviewer speech playback controls">
-        <button type="button" data-tts-listen>Play / Replay</button>
+        <button type="button" data-tts-listen aria-label="Listen to reviewer">Play / Replay</button>
         <button type="button" data-tts-pause disabled>Pause</button>
         <button type="button" data-tts-resume disabled>Resume</button>
         <button type="button" data-tts-stop disabled>Stop</button>

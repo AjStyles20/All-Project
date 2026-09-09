@@ -30,6 +30,7 @@ def test_unset_selector_preserves_disabled_legacy_default(monkeypatch: pytest.Mo
     assert bundle.embedding_provider is None
     assert bundle.question_generator is None
     assert bundle.answer_evaluator is None
+    assert bundle.follow_up_generator is None
 
 
 def test_unset_selector_preserves_existing_openai_enablement(monkeypatch: pytest.MonkeyPatch):
@@ -41,7 +42,9 @@ def test_unset_selector_preserves_existing_openai_enablement(monkeypatch: pytest
     assert bundle.embedding_provider is not None
     assert bundle.question_generator is not None
     assert bundle.answer_evaluator is not None
+    assert bundle.follow_up_generator is not None
     assert bundle.question_generator.provider_name == "openai"
+    assert bundle.follow_up_generator.provider_name == "openai"
 
 
 def test_explicit_disabled_overrides_legacy_openai_setting(monkeypatch: pytest.MonkeyPatch):
@@ -52,6 +55,7 @@ def test_explicit_disabled_overrides_legacy_openai_setting(monkeypatch: pytest.M
     bundle = build_ai_provider_bundle_from_env()
     assert bundle.selected_text_provider == "disabled"
     assert bundle.question_generator is None
+    assert bundle.follow_up_generator is None
 
 
 def test_explicit_openai_requires_existing_openai_enablement(monkeypatch: pytest.MonkeyPatch):
@@ -61,7 +65,7 @@ def test_explicit_openai_requires_existing_openai_enablement(monkeypatch: pytest
         build_ai_provider_bundle_from_env()
 
 
-def test_groq_selection_builds_text_providers_without_claiming_embeddings(monkeypatch: pytest.MonkeyPatch):
+def test_groq_selection_builds_text_and_followup_providers_without_claiming_embeddings(monkeypatch: pytest.MonkeyPatch):
     clear_provider_env(monkeypatch)
     monkeypatch.setenv("P001_AI_PROVIDER", "groq")
     monkeypatch.setenv("P001_GROQ_API_KEY", GROQ_TEST_KEY)
@@ -70,8 +74,11 @@ def test_groq_selection_builds_text_providers_without_claiming_embeddings(monkey
     assert bundle.embedding_provider is None
     assert bundle.question_generator is not None
     assert bundle.answer_evaluator is not None
+    assert bundle.follow_up_generator is not None
     assert bundle.question_generator.provider_name == "groq"
     assert bundle.question_generator.model_name == DEFAULT_GROQ_TEXT_MODEL
+    assert bundle.follow_up_generator.provider_name == "groq"
+    assert bundle.follow_up_generator.model_name == DEFAULT_GROQ_TEXT_MODEL
 
 
 def test_invalid_provider_name_fails_closed(monkeypatch: pytest.MonkeyPatch):

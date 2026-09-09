@@ -116,3 +116,43 @@ All verification evidence should be reproducible where practical. Do not record 
 - Status: PASS
 - Evidence: GitHub Actions workflow run 34272670176, job `test-and-audit`.
 - Performed by: GitHub Actions
+
+### TE-010 — Feature 012 Windows regression suite
+- Date: 2026-09-09
+- Feature/subsystem: Project 001 — Groq bounded multi-turn defense
+- Test type: Regression / User
+- Environment: Windows 10, Python 3.14, project `.venv`, branch `p001/feature-groq-multiturn`
+- Preconditions: Groq selected; OpenAI disabled.
+- Procedure: Run `python -m pytest -q`.
+- Expected result: Existing and Feature 012 tests pass without failures.
+- Observed result: `130 passed, 2 warnings in 44.30s`.
+- Status: PASS
+- Evidence: User-supplied PowerShell output.
+- Performed by: AJ
+
+### TE-011 — Feature 012 live Groq follow-up generation
+- Date: 2026-09-09
+- Feature/subsystem: Project 001 — bounded multi-turn defense
+- Test type: Live / User / Integration
+- Environment: Windows local Uvicorn at `127.0.0.1:8000`; Groq model `openai/gpt-oss-20b`.
+- Preconditions: Active defense session for `TCP reliability mechanisms`; Turn 1 answered and evaluated.
+- Procedure: Return to the defense-session page and select `Generate evidence-grounded follow-up`.
+- Expected result: A second turn is generated from authoritative session context and the session blocks further follow-up until Turn 2 is answered.
+- Observed result: Turn 2 was generated with type `challenge_unsupported` and question `Can you clarify why congestion control and flow control are not considered reliability mechanisms according to the evidence?`; rationale was persisted and displayed; the page then displayed `Answer the current question before requesting a follow-up.`
+- Status: PASS
+- Evidence: User-supplied browser screenshots and Uvicorn log showing POST to `/sessions/.../follow-up` followed by `Follow-up question generated.`
+- Performed by: AJ
+- Notes: This establishes live provider-backed multi-turn operation. A quality limitation was also discovered: the follow-up phrased a categorical negative more strongly than the evidence directly supports; this is tracked separately and does not invalidate the transport/session/live-integration PASS.
+
+### TE-012 — Feature 012 Turn 2 answer evaluation
+- Date: 2026-09-09
+- Feature/subsystem: Project 001 — multi-turn evaluation continuity
+- Test type: Live / User / Integration
+- Environment: Same as TE-011.
+- Procedure: Answer Turn 2 and submit for qualitative feedback.
+- Expected result: The follow-up question can be answered and evaluated through the same evidence-aware evaluator path.
+- Observed result: Turn 2 answer was accepted and evaluated; feedback persisted and displayed.
+- Status: PASS
+- Evidence: User-supplied screenshots and Uvicorn POST/redirect log for question `14c89793-47b6-4129-b163-3efd49757bed`.
+- Performed by: AJ
+- Notes: The evaluator/follow-up pair exposed an evidence-framing inconsistency around negative claims. A Groq follow-up grounding guard was added afterward to prevent absence-as-negation reasoning in future follow-ups.

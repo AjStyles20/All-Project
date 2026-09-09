@@ -5,9 +5,12 @@ import os
 
 from .embeddings import EmbeddingProvider
 from .evaluation import AnswerEvaluator
-from .groq_provider import build_groq_text_providers_from_env
-from .openai_provider import build_openai_providers_from_env
+from .groq_followup import GroqFollowUpGenerator
+from .groq_provider import build_groq_text_providers_from_env, load_groq_settings_from_env
+from .openai_followup import OpenAIFollowUpGenerator
+from .openai_provider import build_openai_providers_from_env, load_openai_settings_from_env
 from .questioning import QuestionGenerator
+from .sessions import FollowUpGenerator
 
 
 SUPPORTED_AI_PROVIDERS = {"disabled", "openai", "groq"}
@@ -23,6 +26,7 @@ class AIProviderBundle:
     embedding_provider: EmbeddingProvider | None
     question_generator: QuestionGenerator | None
     answer_evaluator: AnswerEvaluator | None
+    follow_up_generator: FollowUpGenerator | None
 
 
 def _selected_provider() -> str | None:
@@ -37,38 +41,50 @@ def _selected_provider() -> str | None:
 
 
 def build_ai_provider_bundle_from_env() -> AIProviderBundle:
-    """Build provider adapters without weakening legacy OpenAI configuration.
+    """Build provider adapters while preserving legacy OpenAI configuration.
 
     If P001_AI_PROVIDER is unset, the existing P001_OPENAI_ENABLED behavior is preserved.
-    Groq currently supplies text generation/evaluation only; semantic embeddings remain
-    unavailable unless a separate embedding adapter is added later.
+    Groq supplies question generation, answer evaluation, and bounded follow-up generation;
+    semantic embeddings remain unavailable unless a separate embedding adapter is configured.
     """
     selected = _selected_provider()
 
     if selected is None:
         embedding, question, evaluator = build_openai_providers_from_env()
+        openai_settings = load_openai_settings_from_env()
+        follow_up = OpenAIFollowUpGenerator(openai_settings) if openai_settings is not None else None
         return AIProviderBundle(
             selected_text_provider="openai" if question is not None else "disabled",
             embedding_provider=embedding,
             question_generator=question,
             answer_evaluator=evaluator,
+            follow_up_generator=follow_up,
         )
 
     if selected == "disabled":
-        return AIProviderBundle("disabled", None, None, None)
+        return AIProviderBundle("disabled", None, None, None, None)
 
     if selected == "openai":
         embedding, question, evaluator = build_openai_providers_from_env()
-        if question is None or evaluator is None:
+        openai_settings = load_openai_settings_from_env()
+        if question is None or evaluator is None or openai_settings is None:
             raise AIProviderSelectionError(
                 "OpenAI was selected but P001_OPENAI_ENABLED is not set to 1"
             )
-        return AIProviderBundle("openai", embedding, question, evaluator)
+        return AIProviderBundle(
+            "openai",
+            embedding,
+            question,
+            evaluator,
+            OpenAIFollowUpGenerator(openai_settings),
+        )
 
     question, evaluator = build_groq_text_providers_from_env()
+    groq_settings = load_groq_settings_from_env()
     return AIProviderBundle(
         selected_text_provider="groq",
         embedding_provider=None,
         question_generator=question,
         answer_evaluator=evaluator,
+        follow_up_generator=GroqFollowUpGenerator(groq_settings),
     )

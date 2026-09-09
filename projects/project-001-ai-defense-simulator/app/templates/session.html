@@ -25,13 +25,14 @@
           <p>{{ turn.question_text }}</p>
           <p class="muted">{{ turn.rationale }}</p>
           <p>
-            <a href="/workspaces/{{ workspace.id }}/questions/{{ turn.question_id }}">
-              {% if turn.answered %}View answer and feedback{% else %}Answer this question{% endif %}
+            <a href="/workspaces/{{ workspace.id }}/questions/{{ turn.question_id }}" target="_blank" rel="noopener">
+              {% if turn.answered %}View answer and feedback in new tab{% else %}Answer this question in new tab{% endif %}
             </a>
           </p>
         </li>
       {% endfor %}
     </ol>
+    <p class="hint">Session questions open in a new tab so this defense-session page stays available. After submitting feedback, return to this tab and refresh if needed to continue to the next turn.</p>
   {% else %}
     <p class="muted">No turns are recorded.</p>
   {% endif %}

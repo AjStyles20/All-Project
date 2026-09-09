@@ -3,7 +3,10 @@
   if (!root) return;
 
   const listen = root.querySelector("[data-tts-listen]");
+  const pause = root.querySelector("[data-tts-pause]");
+  const resume = root.querySelector("[data-tts-resume]");
   const stop = root.querySelector("[data-tts-stop]");
+  const rate = root.querySelector("[data-tts-rate]");
   const status = root.querySelector("[data-tts-status]");
   const endpoint = root.dataset.endpoint;
   const serverConfigured = root.dataset.serverConfigured === "true";
@@ -15,8 +18,21 @@
   let audio = null;
   let objectUrl = null;
   let utterance = null;
+  let mode = null;
+  let paused = false;
+
+  const selectedRate = () => {
+    const value = Number.parseFloat(rate?.value || "1");
+    return [0.75, 1, 1.25, 1.5].includes(value) ? value : 1;
+  };
 
   const setStatus = (message) => { status.textContent = message; };
+
+  const setPlaybackButtons = ({ active = false, isPaused = false } = {}) => {
+    stop.disabled = !active;
+    pause.disabled = !active || isPaused;
+    resume.disabled = !active || !isPaused;
+  };
 
   const cleanupServerAudio = () => {
     if (audio) {
@@ -40,7 +56,9 @@
   const cleanup = () => {
     cleanupServerAudio();
     stopBrowserSpeech();
-    stop.disabled = true;
+    mode = null;
+    paused = false;
+    setPlaybackButtons();
   };
 
   const playBrowserSpeech = () => {
@@ -49,18 +67,25 @@
     }
     stopBrowserSpeech();
     utterance = new window.SpeechSynthesisUtterance(questionText);
+    utterance.rate = selectedRate();
+    mode = "browser";
+    paused = false;
     utterance.addEventListener("end", () => {
       utterance = null;
-      stop.disabled = true;
+      mode = null;
+      paused = false;
+      setPlaybackButtons();
       setStatus("Reviewer audio finished.");
     }, { once: true });
     utterance.addEventListener("error", () => {
       utterance = null;
-      stop.disabled = true;
+      mode = null;
+      paused = false;
+      setPlaybackButtons();
       setStatus("Local reviewer speech could not be played. Read the question text above.");
     }, { once: true });
-    stop.disabled = false;
-    setStatus("Playing reviewer question with local browser speech.");
+    setPlaybackButtons({ active: true, isPaused: false });
+    setStatus(`Playing reviewer question with local browser speech at ${selectedRate()}×.`);
     window.speechSynthesis.speak(utterance);
   };
 
@@ -76,18 +101,25 @@
     if (blob.type && blob.type !== "audio/mpeg") throw new Error("Unexpected audio format.");
     objectUrl = URL.createObjectURL(blob);
     audio = new Audio(objectUrl);
+    audio.playbackRate = selectedRate();
+    mode = "server";
+    paused = false;
     audio.addEventListener("ended", () => {
       cleanupServerAudio();
-      stop.disabled = true;
+      mode = null;
+      paused = false;
+      setPlaybackButtons();
       setStatus("Reviewer audio finished.");
     }, { once: true });
     audio.addEventListener("error", () => {
       cleanupServerAudio();
-      stop.disabled = true;
+      mode = null;
+      paused = false;
+      setPlaybackButtons();
       setStatus("Reviewer audio could not be played.");
     }, { once: true });
-    stop.disabled = false;
-    setStatus("Playing reviewer question.");
+    setPlaybackButtons({ active: true, isPaused: false });
+    setStatus(`Playing reviewer question at ${selectedRate()}×.`);
     await audio.play();
   };
 
@@ -117,6 +149,46 @@
       setStatus("Reviewer audio is unavailable. Read the question text above.");
     } finally {
       listen.disabled = false;
+    }
+  });
+
+  pause.addEventListener("click", () => {
+    if (mode === "server" && audio && !audio.paused) {
+      audio.pause();
+      paused = true;
+    } else if (mode === "browser" && browserSpeechAvailable && window.speechSynthesis.speaking) {
+      window.speechSynthesis.pause();
+      paused = true;
+    } else {
+      return;
+    }
+    setPlaybackButtons({ active: true, isPaused: true });
+    setStatus("Reviewer audio paused.");
+  });
+
+  resume.addEventListener("click", async () => {
+    if (mode === "server" && audio && paused) {
+      audio.playbackRate = selectedRate();
+      await audio.play();
+      paused = false;
+    } else if (mode === "browser" && browserSpeechAvailable && paused) {
+      window.speechSynthesis.resume();
+      paused = false;
+    } else {
+      return;
+    }
+    setPlaybackButtons({ active: true, isPaused: false });
+    setStatus(`Reviewer audio resumed at ${selectedRate()}×.`);
+  });
+
+  rate.addEventListener("change", () => {
+    if (mode === "server" && audio) {
+      audio.playbackRate = selectedRate();
+      setStatus(`Reviewer audio speed changed to ${selectedRate()}×.`);
+      return;
+    }
+    if (mode === "browser" && utterance) {
+      setStatus("Speed change will apply the next time you replay this browser-spoken question.");
     }
   });
 

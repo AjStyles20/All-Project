@@ -136,3 +136,21 @@ def test_session_history_is_workspace_scoped(client):
 
     denied = http.get(f"/api/workspaces/{other}/sessions/{session_id}")
     assert denied.status_code == 404
+
+
+def test_session_question_link_preserves_session_tab(client):
+    http, database = client
+    workspace_id = seed(database)
+    started = http.post(
+        f"/api/workspaces/{workspace_id}/sessions",
+        data={"topic": "provenance", "reviewer_role": "technical", "retrieval_mode": "lexical"},
+    )
+    assert started.status_code == 200
+    session_id = started.json()["id"]
+
+    page = http.get(f"/workspaces/{workspace_id}/sessions/{session_id}")
+    assert page.status_code == 200
+    assert 'target="_blank"' in page.text
+    assert 'rel="noopener"' in page.text
+    assert "Answer this question in new tab" in page.text
+    assert "this defense-session page stays available" in page.text

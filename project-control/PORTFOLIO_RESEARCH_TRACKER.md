@@ -23,14 +23,14 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 | P009 | P006 | Screen Memory | Personal-first | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; Passes 001–003 complete; H5 task-resumption-constrained selective capture survives; PARKED FOR COMPARISON |
 | P010 | P005 | Chess Platform | General/Product | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; corrected voice-enabled chess + contextual AI arbiter framing; H5 survives; PARKED FOR COMPARISON |
 | P011 | P001 | AI Defense Simulator | General/Product | PAUSED IMPLEMENTATION | Preserve prototype; strict portfolio review later |
-| P012 | P009 | AI Virtual Audience | General/Product provisional | NOT STARTED | NEXT RESEARCH CANDIDATE / possible merge into P011 |
+| P012 | P009 | AI Virtual Audience | General/Product provisional | EVIDENCE BUILD | Pass 001 complete; generic configurable AI-audience novelty rejected; NEXT: Pass 002 adaptive-challenge and transfer prior-art attack |
 | P013 | P008 | Independent Earbud Routing | Personal-first | NOT STARTED | Feasibility first |
 | P014 | P010 | Fantasy Action RPG | Creative/Entertainment | NOT STARTED | Creative track / lower FYP priority |
 
 ## Current priority interpretation
 For ranked general/FYP work, the current order is P001 → P003 → P004 → P005 → P006 → P007 → P008 → P009 → P010 → P011 → P012 → P013 → P014. P002 is deliberately outside that competition because it is AJ's personal LLM project.
 
-P001, P003, P004, P006, P007, P009 and P010 have reached bounded research gates and are parked for later portfolio comparison. P005 and P008 were killed as research-novelty candidates after adversarial review. P011 remains a preserved prototype. P012 is the next untouched general/FYP candidate.
+P001, P003, P004, P006, P007, P009 and P010 have reached bounded research gates and are parked for later portfolio comparison. P005 and P008 were killed as research-novelty candidates after adversarial review. P011 remains a preserved prototype. P012 is now in evidence build after Pass 001.
 
 ## P007 research gate checkpoint
 Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded hypothesis is:
@@ -54,15 +54,29 @@ Passes 001–003 eliminated generic novelty claims around personal screen memory
 ## P010 corrected final gate checkpoint
 The initial coaching-centric interpretation was corrected after AJ restated the original project: a more real-world-like online chess platform beginning with player-to-player voice communication and an automated arbiter/moderator, with possible later video supervision.
 
-Passes 002–003 eliminated novelty claims around voice/video chess, speech-to-text, profanity/toxicity detection, generic contextual moderation, chess-rules QA, generic anti-cheat detection and automated warnings. FIDE online regulations already treat microphones, cameras, outside assistance, player conduct, sanctions and appeals as arbiter concerns, and modern moderation systems already use multimodal/contextual signals.
-
-The surviving bounded hypothesis is:
+Passes 002–003 eliminated novelty claims around voice/video chess, speech-to-text, profanity/toxicity detection, generic contextual moderation, chess-rules QA, generic anti-cheat detection and automated warnings.
 
 **H5 — Contextual Voice Arbitration:** incorporating chess-board state, speaker role, game phase and explicit match rules into live-speech adjudication may improve classification of permitted conduct, misconduct, prohibited assistance and uncertain cases while reducing false penalties relative to generic speech-only moderation.
 
-The proposed system must support graded evidence states and abstention/escalation rather than equating model confidence with certain cheating. Candidate baselines range from keyword moderation through speech-only and board-aware models to full speech + board + speaker + phase + match-contract context. False-penalty rate, severe-violation miss rate, appropriate abstention and policy consistency are mandatory metrics.
+**Final P010 decision: CONDITIONAL GO TO FORMAL SPECIFICATION; PARKED FOR PORTFOLIO COMPARISON.**
 
-**Final P010 Pass 003 decision: CONDITIONAL GO TO FORMAL SPECIFICATION; PARKED FOR PORTFOLIO COMPARISON.** A formal next pass, if authorized, must freeze benchmark scenarios, contracts, annotation protocol, ASR error handling, baselines, metrics, penalty thresholds, human review, privacy/retention and safeguarding rules before implementation.
+## P012 Pass 001 checkpoint
+AJ's original concept is a configurable simulated audience for speeches, presentations, interviews and other high-pressure communication scenarios, intended primarily for confidence-building, communication practice and repeated rehearsal. Clinical treatment claims are not assumed.
+
+Generic novelty is heavily occupied. Virtual-reality public-speaking exposure has randomized-trial evidence going back many years; research has manipulated audience size/reaction and studied self-guided exposure; current products provide configurable AI scenarios/personas, interview simulation, dynamic follow-up questions, pressure/challenging interactions, presentation Q&A and multi-persona panels.
+
+Claims rejected as novelty include virtual audiences, interview/presentation simulation, AI audience questions, configurable personas/scenarios, multi-persona panels, generic confidence training and generic speech analytics.
+
+Provisional survivors:
+- H1 adaptive audience challenge calibration — survives but strongly threatened by adaptive exposure/personalization literature;
+- H2 transfer-calibrated practice — evaluate later unseen/independent performance rather than in-simulation scores alone;
+- H3 audience-model fidelity versus training utility — provisional;
+- H4 evidence-bounded audience questioning — supporting mechanism, not novelty yet;
+- H5 stressor-to-skill matching — provisional and threatened.
+
+Strongest current direction: whether a controlled/adaptive audience-challenge policy improves transfer to unseen presentation/interview scenarios relative to static or self-selected simulations, without excessive distress or overfitting to familiar audience behaviours.
+
+**Pass 001 decision: MORE RESEARCH / EVIDENCE BUILD.** Pass 002 must attack adaptive challenge calibration, graduated exposure, stress inoculation, transfer-of-training and generalization. No implementation is authorized.
 
 ## Required dossier before a general/FYP project is decision-ready
 1. Bounded problem and origin.

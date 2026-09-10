@@ -18,8 +18,8 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 | P004 | P012 | Internet Compression Proxy | General/Product | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; bounded net-benefit optimization/evaluation hypothesis survives; PARKED FOR COMPARISON |
 | P005 | P014 | Log Analysis & Root Cause | General/Product | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; engineering implementation remains PARKED as optional portfolio work |
 | P006 | P002 | Personal Learning World | General/Product + personal-first | DECISION READY | CONDITIONAL GO / PARKED FOR COMPARISON |
-| P007 | P004 | School Points Economy | General/Product | EVIDENCE BUILD | Pass 001 complete; generic digital token/reward platform novelty rejected; NEXT: Pass 002 fairness/incentive-integrity/governance prior-art attack |
-| P008 | P013 | StartupMatch | General/Product | NOT STARTED | PENDING |
+| P007 | P004 | School Points Economy | General/Product | DECISION READY | CONDITIONAL GO TO RESEARCH IMPLEMENTATION DESIGN; Passes 001–004 complete; H5 contextual reward-policy outcome audit frozen; PARKED FOR COMPARISON |
+| P008 | P013 | StartupMatch | General/Product | NOT STARTED | NEXT UNTOUCHED GENERAL/FYP CANDIDATE |
 | P009 | P006 | Screen Memory | Personal-first | NOT STARTED | PENDING |
 | P010 | P005 | Chess Platform | General/Product | NOT STARTED | PENDING |
 | P011 | P001 | AI Defense Simulator | General/Product | PAUSED IMPLEMENTATION | Preserve prototype; strict portfolio review later |
@@ -30,17 +30,14 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 ## Current priority interpretation
 For ranked general/FYP work, the current order is P001 → P003 → P004 → P005 → P006 → P007 → P008 → P009 → P010 → P011 → P012 → P013 → P014. P002 is deliberately outside that competition because it is AJ's personal LLM project.
 
-P001, P003, P004 and P006 have reached bounded research gates and are parked for later portfolio comparison. P005 was killed as a research-novelty candidate after three adversarial passes, although it remains potentially strong engineering work. P007 is now the active general/FYP research target; Pass 001 is complete and Pass 002 is next.
+P001, P003, P004, P006 and P007 have reached bounded research gates and are parked for later portfolio comparison. P005 was killed as a research-novelty candidate after three adversarial passes, although it remains potentially strong engineering work. P008 is now the next untouched general/FYP research candidate.
 
-## P007 Pass 001 checkpoint
-Generic school token economies, digital points, balances, redemption stores, badges/leaderboards and administrative reporting are established mechanisms and are not novelty claims. The surviving hypotheses are intentionally provisional:
+## P007 research gate checkpoint
+Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded hypothesis is:
 
-- H1 — opportunity-normalized reward fairness;
-- H2 — reward-system fairness audit;
-- H3 — incentive-integrity / anti-gaming mechanisms;
-- H4 — sustainable school-economy governance.
+**H5 — Contextual Reward-Policy Outcome Audit:** a contextual transaction-level governance audit may improve detection of predefined reward-policy failure modes while reducing false positives and unsupported fairness/gaming conclusions relative to simpler baselines.
 
-No H1–H4 novelty claim is approved yet. Pass 002 must attack them against fairness-aware educational gamification, token-economy governance, incentive/mechanism design, reward gaming, bias/fairness auditing and related prior art.
+Pass 004 froze the formal experiment: controlled scenarios S0–S8, baselines B0–B4, mandatory unsupported-claim and insufficiency metrics, falsification criteria, privacy/ethics boundaries and a lightweight implementation architecture. Full product implementation remains parked pending portfolio comparison or explicit authorization.
 
 ## Required dossier before a general/FYP project is decision-ready
 1. Bounded problem and origin.

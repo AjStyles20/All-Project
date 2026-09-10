@@ -12,10 +12,10 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 ## Current portfolio matrix
 | New ID | Previous ID | Short name | Class | Overall status | Decision / next state |
 |---|---:|---|---|---|---|
-| P001 | P007 | Intelligent Coding Examination | General/Product | ACTIVE RESEARCH | Continue prior-art/security/assessment investigation |
+| P001 | P007 | Intelligent Coding Examination | General/Product | DECISION READY | PROVISIONAL GO TO FORMAL SPECIFICATION; park for portfolio comparison |
 | P002 | P003 | AJ Educational LLM | Personal Mastery | DISCOVERY / EVIDENCE BUILD | Build regardless of novelty; personal research may continue independently |
-| P003 | P011 | Geopolitical Economic Risk | General/Product | NOT STARTED | Next high-priority research after P001 |
-| P004 | P012 | Internet Compression Proxy | General/Product | NOT STARTED | High-priority feasibility research |
+| P003 | P011 | Geopolitical Economic Risk | General/Product | DECISION READY | CONDITIONAL GO; formal ETEC research/experiment specification complete; PARKED FOR COMPARISON; no implementation authorized |
+| P004 | P012 | Internet Compression Proxy | General/Product | NOT STARTED | NEXT: historical lineage, feasibility, modern protocol constraints and prior-art attack |
 | P005 | P014 | Log Analysis & Root Cause | General/Product | NOT STARTED | High-priority research |
 | P006 | P002 | Personal Learning World | General/Product + personal-first | DECISION READY | CONDITIONAL GO / PARKED FOR COMPARISON |
 | P007 | P004 | School Points Economy | General/Product | NOT STARTED | PENDING |
@@ -29,6 +29,8 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 
 ## Current priority interpretation
 For ranked general/FYP work, the current order is P001 → P003 → P004 → P005 → P006 → P007 → P008 → P009 → P010 → P011 → P012 → P013 → P014. P002 is deliberately outside that competition because it is AJ's personal LLM project.
+
+P001 and P003 have now reached bounded research gates and should not consume further broad novelty-search effort before portfolio comparison. P004 is the next active general/FYP research target.
 
 ## Required dossier before a general/FYP project is decision-ready
 1. Bounded problem and origin.

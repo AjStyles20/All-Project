@@ -20,7 +20,7 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 | P006 | P002 | Personal Learning World | General/Product + personal-first | DECISION READY | CONDITIONAL GO / PARKED FOR COMPARISON |
 | P007 | P004 | School Points Economy | General/Product | DECISION READY | CONDITIONAL GO TO RESEARCH IMPLEMENTATION DESIGN; Passes 001–004 complete; H5 contextual reward-policy outcome audit frozen; PARKED FOR COMPARISON |
 | P008 | P013 | StartupMatch | General/Product | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; transparent investor-matching product remains PARKED as optional engineering work |
-| P009 | P006 | Screen Memory | Personal-first | NOT STARTED | NEXT RESEARCH CANDIDATE |
+| P009 | P006 | Screen Memory | Personal-first | EVIDENCE BUILD | Pass 001 complete; generic screen-memory novelty rejected; NEXT: Pass 002 selective capture/task-state reconstruction prior-art attack |
 | P010 | P005 | Chess Platform | General/Product | NOT STARTED | PENDING |
 | P011 | P001 | AI Defense Simulator | General/Product | PAUSED IMPLEMENTATION | Preserve prototype; strict portfolio review later |
 | P012 | P009 | AI Virtual Audience | General/Product provisional | NOT STARTED | PENDING / possible merge into P011 |
@@ -30,7 +30,7 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 ## Current priority interpretation
 For ranked general/FYP work, the current order is P001 → P003 → P004 → P005 → P006 → P007 → P008 → P009 → P010 → P011 → P012 → P013 → P014. P002 is deliberately outside that competition because it is AJ's personal LLM project.
 
-P001, P003, P004, P006 and P007 have reached bounded research gates and are parked for later portfolio comparison. P005 and P008 were killed as research-novelty candidates after adversarial review, while each remains potentially useful engineering/product work. P009 is now the next research candidate.
+P001, P003, P004, P006 and P007 have reached bounded research gates and are parked for later portfolio comparison. P005 and P008 were killed as research-novelty candidates after adversarial review, while each remains potentially useful engineering/product work. P009 is now in evidence build after Pass 001.
 
 ## P007 research gate checkpoint
 Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded hypothesis is:
@@ -45,6 +45,17 @@ Three passes eliminated generic founder-investor marketplace novelty, ML compati
 The strongest surviving Pass 002 hypothesis — evidence-calibrated investor recommendation — was directly undermined by mature recommender-system confidence/uncertainty research, uncertainty-aware venture analytics, and current private-market products that already separate fit from source confidence, attach evidence/provenance, degrade confidence for missing data, and avoid treating match relevance as confirmed investor appetite.
 
 **Final P008 decision: KILL as research-novelty candidate; PARK as optional engineering/product work.** No formal research specification is authorized.
+
+## P009 Pass 001 checkpoint
+Generic personal screen memory is heavily occupied. Microsoft Recall already provides local snapshot capture, semantic search, timeline navigation, filtering/deletion and privacy controls on supported Copilot+ PCs. Research lineage extends from MyLifeBits and Stuff I've Seen through screenshot-history retrieval, lifelog search, ScreenTrack, screenomics, semantic desktop work, OmniQuery and IRCHIVER. Current open-source systems such as Screenpipe also provide local continuous screen memory and AI retrieval.
+
+The provisional surviving research directions are:
+- H1 — task-state reconstruction from sparse evidence;
+- H2 — utility-constrained selective capture, minimizing captured personal data/storage while preserving later retrieval or task-resumption utility;
+- H3 — explicit observed/derived/inferred/unknown evidence boundaries in reconstructed context;
+- H4 — privacy-risk-aware capture policy.
+
+H2 is currently strongest. Pass 002 must attack selective capture + task-state reconstruction against task-resumption, activity-based PIM, adaptive sensing, sparse lifelogging, privacy-aware capture and evidence-grounded personal-memory research. No novelty claim is approved yet.
 
 ## Required dossier before a general/FYP project is decision-ready
 1. Bounded problem and origin.

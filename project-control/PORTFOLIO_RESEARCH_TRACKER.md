@@ -23,14 +23,14 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 | P009 | P006 | Screen Memory | Personal-first | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; Passes 001–003 complete; H5 task-resumption-constrained selective capture survives; PARKED FOR COMPARISON |
 | P010 | P005 | Chess Platform | General/Product | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; corrected voice-enabled chess + contextual AI arbiter framing; H5 survives; PARKED FOR COMPARISON |
 | P011 | P001 | AI Defense Simulator | General/Product | PAUSED IMPLEMENTATION | Preserve prototype; strict portfolio review later |
-| P012 | P009 | AI Virtual Audience | General/Product provisional | EVIDENCE BUILD | Pass 001 complete; generic configurable AI-audience novelty rejected; NEXT: Pass 002 adaptive-challenge and transfer prior-art attack |
+| P012 | P009 | AI Virtual Audience | General/Product provisional | EVIDENCE BUILD | Passes 001–002 complete; generic adaptive difficulty rejected; H6 transfer-constrained stressor matching survives provisionally; NEXT: Pass 003 direct collision/final gate |
 | P013 | P008 | Independent Earbud Routing | Personal-first | NOT STARTED | Feasibility first |
 | P014 | P010 | Fantasy Action RPG | Creative/Entertainment | NOT STARTED | Creative track / lower FYP priority |
 
 ## Current priority interpretation
 For ranked general/FYP work, the current order is P001 → P003 → P004 → P005 → P006 → P007 → P008 → P009 → P010 → P011 → P012 → P013 → P014. P002 is deliberately outside that competition because it is AJ's personal LLM project.
 
-P001, P003, P004, P006, P007, P009 and P010 have reached bounded research gates and are parked for later portfolio comparison. P005 and P008 were killed as research-novelty candidates after adversarial review. P011 remains a preserved prototype. P012 is now in evidence build after Pass 001.
+P001, P003, P004, P006, P007, P009 and P010 have reached bounded research gates and are parked for later portfolio comparison. P005 and P008 were killed as research-novelty candidates after adversarial review. P011 remains a preserved prototype. P012 remains in evidence build after Pass 002.
 
 ## P007 research gate checkpoint
 Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded hypothesis is:
@@ -60,23 +60,25 @@ Passes 002–003 eliminated novelty claims around voice/video chess, speech-to-t
 
 **Final P010 decision: CONDITIONAL GO TO FORMAL SPECIFICATION; PARKED FOR PORTFOLIO COMPARISON.**
 
-## P012 Pass 001 checkpoint
+## P012 Pass 001–002 checkpoint
 AJ's original concept is a configurable simulated audience for speeches, presentations, interviews and other high-pressure communication scenarios, intended primarily for confidence-building, communication practice and repeated rehearsal. Clinical treatment claims are not assumed.
 
-Generic novelty is heavily occupied. Virtual-reality public-speaking exposure has randomized-trial evidence going back many years; research has manipulated audience size/reaction and studied self-guided exposure; current products provide configurable AI scenarios/personas, interview simulation, dynamic follow-up questions, pressure/challenging interactions, presentation Q&A and multi-persona panels.
+Pass 001 rejected generic novelty around virtual audiences, interview/presentation simulation, configurable personas, audience questions, multi-persona panels, generic confidence training and generic speech analytics.
 
-Claims rejected as novelty include virtual audiences, interview/presentation simulation, AI audience questions, configurable personas/scenarios, multi-persona panels, generic confidence training and generic speech analytics.
+Pass 002 found that graded exposure, supportive/hostile audience manipulation, audience-size manipulation, self-guided progression, physiological/arousal-based personalization, generic adaptive difficulty, adaptive interview questioning and performance-contingent coaching are all established. Transfer from virtual practice to later real/in-vivo performance has also been studied, so transfer evaluation alone is not novelty.
 
-Provisional survivors:
-- H1 adaptive audience challenge calibration — survives but strongly threatened by adaptive exposure/personalization literature;
-- H2 transfer-calibrated practice — evaluate later unseen/independent performance rather than in-simulation scores alone;
-- H3 audience-model fidelity versus training utility — provisional;
-- H4 evidence-bounded audience questioning — supporting mechanism, not novelty yet;
-- H5 stressor-to-skill matching — provisional and threatened.
+Hypothesis migration:
+- H1 adaptive audience challenge calibration — DEMOTED / not novelty;
+- H2 transfer-calibrated practice — survives as an evaluation requirement only;
+- H3 audience-model fidelity — DEMOTED;
+- H4 evidence-bounded questioning — supporting architecture;
+- H5 stressor-to-skill matching — SURVIVES, NARROWED.
 
-Strongest current direction: whether a controlled/adaptive audience-challenge policy improves transfer to unseen presentation/interview scenarios relative to static or self-selected simulations, without excessive distress or overfitting to familiar audience behaviours.
+**H6 — Transfer-Constrained Stressor Matching (provisional):** a communication-practice system that selects audience stressors from observed performance deficits may improve performance on unseen high-pressure speaking scenarios relative to static, self-selected and generic difficulty-adaptive audiences, without unacceptable loss of task completion or tolerability.
 
-**Pass 001 decision: MORE RESEARCH / EVIDENCE BUILD.** Pass 002 must attack adaptive challenge calibration, graduated exposure, stress inoculation, transfer-of-training and generalization. No implementation is authorized.
+Targeted search did not identify a direct study of the exact conjunction of observable weakness inference + matched audience stressor selection + deliberately unfamiliar transfer evaluation against static/self-selected/generic adaptive baselines. This is NOT-FOUND evidence, not proof of uniqueness.
+
+**Pass 002 decision: MORE RESEARCH.** Pass 003 must directly attack weakness-specific scenario prescription, deliberate practice, stress inoculation, adaptive scenario selection and transfer/generalization. If direct collision is found, kill rather than manufacture novelty.
 
 ## Required dossier before a general/FYP project is decision-ready
 1. Bounded problem and origin.

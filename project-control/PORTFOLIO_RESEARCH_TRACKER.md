@@ -19,8 +19,8 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 | P005 | P014 | Log Analysis & Root Cause | General/Product | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; engineering implementation remains PARKED as optional portfolio work |
 | P006 | P002 | Personal Learning World | General/Product + personal-first | DECISION READY | CONDITIONAL GO / PARKED FOR COMPARISON |
 | P007 | P004 | School Points Economy | General/Product | DECISION READY | CONDITIONAL GO TO RESEARCH IMPLEMENTATION DESIGN; Passes 001–004 complete; H5 contextual reward-policy outcome audit frozen; PARKED FOR COMPARISON |
-| P008 | P013 | StartupMatch | General/Product | NOT STARTED | NEXT UNTOUCHED GENERAL/FYP CANDIDATE |
-| P009 | P006 | Screen Memory | Personal-first | NOT STARTED | PENDING |
+| P008 | P013 | StartupMatch | General/Product | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; transparent investor-matching product remains PARKED as optional engineering work |
+| P009 | P006 | Screen Memory | Personal-first | NOT STARTED | NEXT RESEARCH CANDIDATE |
 | P010 | P005 | Chess Platform | General/Product | NOT STARTED | PENDING |
 | P011 | P001 | AI Defense Simulator | General/Product | PAUSED IMPLEMENTATION | Preserve prototype; strict portfolio review later |
 | P012 | P009 | AI Virtual Audience | General/Product provisional | NOT STARTED | PENDING / possible merge into P011 |
@@ -30,7 +30,7 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 ## Current priority interpretation
 For ranked general/FYP work, the current order is P001 → P003 → P004 → P005 → P006 → P007 → P008 → P009 → P010 → P011 → P012 → P013 → P014. P002 is deliberately outside that competition because it is AJ's personal LLM project.
 
-P001, P003, P004, P006 and P007 have reached bounded research gates and are parked for later portfolio comparison. P005 was killed as a research-novelty candidate after three adversarial passes, although it remains potentially strong engineering work. P008 is now the next untouched general/FYP research candidate.
+P001, P003, P004, P006 and P007 have reached bounded research gates and are parked for later portfolio comparison. P005 and P008 were killed as research-novelty candidates after adversarial review, while each remains potentially useful engineering/product work. P009 is now the next research candidate.
 
 ## P007 research gate checkpoint
 Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded hypothesis is:
@@ -38,6 +38,13 @@ Passes 001–003 eliminated generic novelty claims around digital token economie
 **H5 — Contextual Reward-Policy Outcome Audit:** a contextual transaction-level governance audit may improve detection of predefined reward-policy failure modes while reducing false positives and unsupported fairness/gaming conclusions relative to simpler baselines.
 
 Pass 004 froze the formal experiment: controlled scenarios S0–S8, baselines B0–B4, mandatory unsupported-claim and insufficiency metrics, falsification criteria, privacy/ethics boundaries and a lightweight implementation architecture. Full product implementation remains parked pending portfolio comparison or explicit authorization.
+
+## P008 final gate checkpoint
+Three passes eliminated generic founder-investor marketplace novelty, ML compatibility matching, explainable/two-sided recommendation, positive-unlabeled handling, fairness-aware recommendation, temporal investment-history modelling, confidence/reliability scoring, stale-data handling, source provenance and selective/abstaining recommendation as novelty claims.
+
+The strongest surviving Pass 002 hypothesis — evidence-calibrated investor recommendation — was directly undermined by mature recommender-system confidence/uncertainty research, uncertainty-aware venture analytics, and current private-market products that already separate fit from source confidence, attach evidence/provenance, degrade confidence for missing data, and avoid treating match relevance as confirmed investor appetite.
+
+**Final P008 decision: KILL as research-novelty candidate; PARK as optional engineering/product work.** No formal research specification is authorized.
 
 ## Required dossier before a general/FYP project is decision-ready
 1. Bounded problem and origin.

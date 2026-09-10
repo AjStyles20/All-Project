@@ -20,8 +20,8 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 | P006 | P002 | Personal Learning World | General/Product + personal-first | DECISION READY | CONDITIONAL GO / PARKED FOR COMPARISON |
 | P007 | P004 | School Points Economy | General/Product | DECISION READY | CONDITIONAL GO TO RESEARCH IMPLEMENTATION DESIGN; Passes 001–004 complete; H5 contextual reward-policy outcome audit frozen; PARKED FOR COMPARISON |
 | P008 | P013 | StartupMatch | General/Product | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; transparent investor-matching product remains PARKED as optional engineering work |
-| P009 | P006 | Screen Memory | Personal-first | EVIDENCE BUILD | Passes 001–002 complete; H2 utility-constrained selective capture survives in narrowed form; NEXT: Pass 003 final privacy–utility/task-recovery novelty attack |
-| P010 | P005 | Chess Platform | General/Product | NOT STARTED | PENDING |
+| P009 | P006 | Screen Memory | Personal-first | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; Passes 001–003 complete; H5 task-resumption-constrained selective capture survives; PARKED FOR COMPARISON |
+| P010 | P005 | Chess Platform | General/Product | NOT STARTED | NEXT RESEARCH CANDIDATE |
 | P011 | P001 | AI Defense Simulator | General/Product | PAUSED IMPLEMENTATION | Preserve prototype; strict portfolio review later |
 | P012 | P009 | AI Virtual Audience | General/Product provisional | NOT STARTED | PENDING / possible merge into P011 |
 | P013 | P008 | Independent Earbud Routing | Personal-first | NOT STARTED | Feasibility first |
@@ -30,7 +30,7 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 ## Current priority interpretation
 For ranked general/FYP work, the current order is P001 → P003 → P004 → P005 → P006 → P007 → P008 → P009 → P010 → P011 → P012 → P013 → P014. P002 is deliberately outside that competition because it is AJ's personal LLM project.
 
-P001, P003, P004, P006 and P007 have reached bounded research gates and are parked for later portfolio comparison. P005 and P008 were killed as research-novelty candidates after adversarial review, while each remains potentially useful engineering/product work. P009 remains in evidence build after Pass 002.
+P001, P003, P004, P006, P007 and P009 have reached bounded research gates and are parked for later portfolio comparison. P005 and P008 were killed as research-novelty candidates after adversarial review, while each remains potentially useful engineering/product work. P010 is now the next untouched general/FYP candidate.
 
 ## P007 research gate checkpoint
 Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded hypothesis is:
@@ -46,18 +46,16 @@ The strongest surviving Pass 002 hypothesis — evidence-calibrated investor rec
 
 **Final P008 decision: KILL as research-novelty candidate; PARK as optional engineering/product work.** No formal research specification is authorized.
 
-## P009 Pass 002 checkpoint
-Generic personal screen memory, task-context restoration, screenshot resumption cues, privacy-aware lifelogging, and event-triggered capture are established and are not novelty claims.
+## P009 final gate checkpoint
+Passes 001–003 eliminated generic novelty claims around personal screen memory, screenshot timelines/search, semantic retrieval, task-context restoration, privacy-aware lifelogging, event-triggered capture, local-first storage and privacy filtering. Current products already implement event-driven capture and task-resumption-oriented screen memory, and 2026 privacy-aware visual-agent/lifelogging work directly studies privacy–utility trade-offs.
 
-Hypothesis migration:
-- H1 task-state reconstruction from sparse evidence → DEMOTED TO SUPPORTING CAPABILITY;
-- H2 utility-constrained selective capture → SURVIVES, NARROWED;
-- H3 observed/derived/inferred/unknown boundaries → DEMOTED TO GOVERNANCE/DESIGN REQUIREMENT;
-- H4 privacy-risk-aware capture → SURVIVES ONLY AS PART OF H2.
+The surviving bounded hypothesis is:
 
-The surviving research question is whether a lightweight selective capture policy can preserve task-resumption/retrieval utility within a predefined tolerance of dense screenshot capture while materially reducing retained visual data, storage growth, system overhead and sensitive-screen exposure. Candidate baselines are dense fixed-interval, sparse fixed-interval, visual-change-triggered, activity/event-triggered, and the proposed utility/privacy-aware policy.
+**H5 — Task-Resumption-Constrained Selective Capture:** a selective desktop-memory capture policy may reduce retained visual data, sensitive-screen exposure, storage growth and processing overhead relative to dense capture while preserving human task-resumption performance within a predeclared acceptable degradation margin.
 
-Pass 003 must directly attack the exact joint privacy–utility objective against adaptive sensing, privacy-utility optimization, selective lifelogging and minimization-aware personal-memory prior art. No novelty claim is approved yet and full implementation is not authorized.
+This is a design/evaluation contribution, not a claim to invent adaptive capture or privacy–utility optimization. Targeted search did not identify a direct study evaluating the exact conjunction of selective desktop capture + later human task-resumption utility + privacy exposure + resource cost with dense and ordinary event-triggered baselines. Absence is not proof of uniqueness.
+
+**Final P009 Pass 003 decision: CONDITIONAL GO TO FORMAL SPECIFICATION; PARKED FOR COMPARISON.** Pass 004, if authorized, must freeze task scenarios, capture policies B0–B4, privacy labeling, metrics, tolerances, participant design, reproducibility controls and ethics before implementation.
 
 ## Required dossier before a general/FYP project is decision-ready
 1. Bounded problem and origin.

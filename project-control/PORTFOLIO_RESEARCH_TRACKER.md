@@ -12,31 +12,50 @@ This tracker prevents implementation enthusiasm from outrunning evidence. A proj
 - FEASIBILITY REVIEW — technical/cost/platform/security constraints being tested.
 - DECISION READY — sufficient evidence exists for a bounded go/park/kill decision.
 - PAUSED IMPLEMENTATION — implementation exists but is intentionally frozen pending portfolio review.
+- CONDITIONAL GO — bounded theory/specification survives current review, but implementation/evaluation has not yet verified it.
 - GO / PARK / KILL — AJ-approved portfolio decision.
 
 ## Evidence discipline
-For every material claim, distinguish:
-- VERIFIED FACT — directly supported by identified evidence.
-- REASONED INFERENCE — conclusion derived from identified evidence; reasoning must be visible.
-- UNVERIFIED HYPOTHESIS — plausible proposition still requiring evidence.
-- UNKNOWN — evidence presently insufficient.
-
-Do not convert “not found” into “does not exist.” Novelty claims must be bounded by the searches and evidence actually reviewed.
+For every material claim, distinguish VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYPOTHESIS, and UNKNOWN. Do not convert “not found” into “does not exist.” Novelty claims must be bounded by the searches and evidence actually reviewed.
 
 ## Portfolio matrix
 
-| ID | Short name | Overall status | Historical lineage | Academic literature | Commercial prior art | Open source | Patents / standards / regulation | Gap / novelty threats | Feasibility | Security / privacy / ethics | Cost / dependencies | Decision |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P001 | AI Defense Simulator | PAUSED IMPLEMENTATION | PARTIAL | PARTIAL | PARTIAL | NOT COMPLETE | NOT COMPLETE | PARTIAL | IMPLEMENTATION EVIDENCE EXISTS | PARTIAL | PARTIAL | PENDING PORTFOLIO REVIEW |
-| P002 | AI Virtual Classroom | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
-| P003 | Educational LLM | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
-| P004 | School Points Economy | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
-| P005 | Chess Platform | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
-| P006 | Screen Memory | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
-| P007 | Coding Examination | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
-| P008 | Independent Earbud Routing | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
-| P009 | AI Virtual Audience | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
-| P010 | Fantasy Action RPG | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| ID | Short name | Class | Overall status | Historical lineage | Academic literature | Commercial prior art | Open source | Patents / standards / regulation | Gap / novelty threats | Feasibility | Security / privacy / ethics | Cost / dependencies | Decision |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| P001 | AI Defense Simulator | General/Product | PAUSED IMPLEMENTATION | PARTIAL | PARTIAL | PARTIAL | NOT COMPLETE | NOT COMPLETE | PARTIAL | IMPLEMENTATION EVIDENCE EXISTS | PARTIAL | PARTIAL | PENDING STRICT PORTFOLIO REVIEW |
+| P002 | Personal Learning World | General/Product + personal-first origin | DECISION READY | SUBSTANTIAL | SUBSTANTIAL | SUBSTANTIAL | SUBSTANTIAL | PARTIAL | SUBSTANTIAL | SPECIFIED | SUBSTANTIAL | PARTIAL | CONDITIONAL GO / PARKED FOR COMPARISON |
+| P003 | AJ Educational LLM | Personal Mastery | DISCOVERY / EVIDENCE BUILD | PARTIAL | ACTIVE | ACTIVE | ACTIVE | NOT CENTRAL YET | ACTIVE | PARTIAL | PARTIAL | ACTIVE | BUILD REGARDLESS OF NOVELTY; RESEARCH CONTRIBUTION UNKNOWN |
+| P004 | School Points Economy | General/Product | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| P005 | Chess Platform | General/Product | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| P006 | Screen Memory | Personal-first | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| P007 | Coding Examination | General/Product | NEXT RESEARCH TARGET | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| P008 | Independent Earbud Routing | Personal-first | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| P009 | AI Virtual Audience | General/Product provisional | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING / POSSIBLE P001 MERGE |
+| P010 | Fantasy Action RPG | Creative/Entertainment | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | IP REVIEW NEEDED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| P011 | Geopolitical Economic Risk | General/Product | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| P012 | Internet Compression Proxy | General/Product | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| P013 | StartupMatch | General/Product | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+| P014 | Log Analysis & Root Cause | General/Product | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PENDING |
+
+## Priority policy
+Numeric project IDs are identifiers, not execution order. Opportunity and feasibility are scored separately because an attractive project may still be infeasible, while a feasible project may offer weak differentiation. Uncertainty should remain visible rather than be hidden by a single score.
+
+### Current provisional general/FYP research order
+1. P007 — Intelligent Coding Examination Platform
+2. P011 — Geopolitical Risk to Economic Impact
+3. P012 — Internet Compression Proxy
+4. P014 — Log Analysis & Root Cause
+5. P002 — Personal Learning World (already conditionally researched)
+6. P004 — School Points & Digital Economy
+7. P013 — StartupMatch
+8. P006 — Personal Screen Memory
+9. P005 — Intelligent Chess Platform
+10. P001 — AI Defense Simulator
+11. P009 — AI Virtual Audience
+12. P008 — Independent Earbud Routing
+13. P010 — Fantasy Action RPG
+
+P003 is outside this ranking because it is a personal mastery project. Its continued existence does not depend on FYP priority, market adoption, or novelty.
 
 ## Required dossier for a decision-ready project
 1. Project identity and bounded problem statement.

@@ -24,13 +24,13 @@ Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYP
 | P010 | P005 | Chess Platform | General/Product | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; corrected voice-enabled chess + contextual AI arbiter framing; H5 survives; PARKED FOR COMPARISON |
 | P011 | P001 | AI Defense Simulator | General/Product | PAUSED IMPLEMENTATION | Preserve prototype; strict portfolio review later |
 | P012 | P009 | AI Virtual Audience | General/Product provisional | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; virtual audience/product implementation remains PARKED as optional engineering work |
-| P013 | P008 | Independent Earbud Routing | Personal-first | FEASIBILITY REVIEW | Passes 001–002 complete; ordinary Android app path strongly constrained; system-level/controlled LE Audio prototype remains plausible; NEXT: direct prior-art/patent/product collision attack |
-| P014 | P010 | Fantasy Action RPG | Creative/Entertainment | NOT STARTED | Creative track / lower FYP priority |
+| P013 | P008 | Independent Earbud Routing | Personal-first | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; split/coupled LE Audio implementation remains PARKED as optional advanced engineering work |
+| P014 | P010 | Fantasy Action RPG | Creative/Entertainment | NOT STARTED | NEXT RESEARCH CANDIDATE; creative track / lower FYP priority |
 
 ## Current priority interpretation
 For ranked general/FYP work, the current order is P001 → P003 → P004 → P005 → P006 → P007 → P008 → P009 → P010 → P011 → P012 → P013 → P014. P002 is deliberately outside that competition because it is AJ's personal LLM project.
 
-P001, P003, P004, P006, P007, P009 and P010 have reached bounded research gates and are parked for later portfolio comparison. P005, P008 and P012 were killed as research-novelty candidates after adversarial review. P011 remains a preserved prototype. P013 remains in feasibility review after Pass 002.
+P001, P003, P004, P006, P007, P009 and P010 have reached bounded research gates and are parked for later portfolio comparison. P005, P008, P012 and P013 were killed as research-novelty candidates after adversarial review. P011 remains a preserved prototype. P014 is the next untouched candidate.
 
 ## P007 research gate checkpoint
 Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded hypothesis is:
@@ -71,24 +71,16 @@ The exact conjunction of automatically inferred weakness + specifically matched 
 
 **Final P012 decision: KILL as research-novelty/FYP candidate; PARK as optional engineering/product project.** No formal research specification or implementation is authorized under the research-shortlist workflow.
 
-## P013 Passes 001–002 checkpoint
-AJ's original concept is stronger than ordinary left/right balance: when desired, each physical earbud should act as an independently useful endpoint, e.g. Spotify/media on one ear while a phone call uses the other, with an explicit coupled mode restoring ordinary stereo. Independent per-ear mute/attenuation is a secondary convenience feature.
+## P013 final gate checkpoint
+AJ's original concept is stronger than ordinary left/right balance: left and right earbuds should be able to act as independently useful endpoints when requested, such as media in one ear and a call or other service in the other, while retaining ordinary coordinated stereo and per-ear mute/attention modes.
 
-Pass 001 established that Bluetooth LE Audio can support multiple synchronized streams to physically separate left/right sinks, but transport capability does not imply arbitrary application-level service routing. Multipoint and ordinary TWS behaviour do not provide the desired one-service-per-ear semantics.
+Passes 001–002 established that Bluetooth LE Audio can physically support independent streams to separate left/right sinks, while ordinary Android applications cannot arbitrarily reroute third-party media and cellular telephony and coordinated-set mechanisms intentionally preserve pair semantics.
 
-Pass 002 verified the platform boundary. Public Android APIs allow an app to choose a preferred device for an AudioTrack it owns, and communication apps can request an available communication device. This does not give a normal app arbitrary control over Spotify's playback or the system telephony path. Strategy-level multi-device routing is exposed through system/privileged audio-policy APIs. Active voice calls also receive privileged treatment in Android's capture/routing policy.
+Pass 003 found decisive direct prior art. Bose patent family US11916988B2 / US20220103607 explicitly describes independent wireless earbuds receiving different LE Audio sources, including left and right buds tuned to different broadcasts, per-ear mono downmix, mobile-interface source selection, and examples involving one program in one ear and phone-call-related audio in the other. Additional patent and standards evidence includes Huawei-related separate left/right ISO-channel transmission, Google multi-source earbud switching work, Samsung Bluetooth multi-streaming, Qualcomm simultaneous multi-source headset prior art, and Bluetooth LE Audio Multi-Stream itself.
 
-Bluetooth LE Audio coordinated-set mechanisms intentionally make independent physical left/right members behave as one logical set for common use cases. Bluetooth's LE Audio architecture explicitly describes coordinated transitions as preventing a new source being applied only to a subset of the pair, such as one source taking the right earbud while another source takes the left. Therefore an arbitrary commodity-earbud + ordinary-app implementation is strongly threatened even though independent physical streams exist underneath.
+The lack of widespread consumer exposure of this exact user experience does not create research novelty. Narrowing the claim to split/coupled transition policy, one media/call combination, per-ear mute, or implementation latency would risk manufactured novelty because multi-source assignment and switching are already established.
 
-Current feasibility positions:
-- ordinary Android app + arbitrary commercial TWS: STRONGLY THREATENED;
-- privileged/system-level Android audio-policy prototype: PLAUSIBLE;
-- controlled LE Audio endpoint/custom firmware prototype: PLAUSIBLE TO STRONG;
-- per-ear mute: feasible/useful but weak novelty.
-
-Provisional systems question: can a controllable LE Audio architecture support dynamic transitions between coordinated stereo and independently assigned service streams with acceptable latency, continuity, synchronization and microphone behaviour?
-
-**Pass 002 decision: MORE RESEARCH / FEASIBILITY REVIEW.** Pass 003 must attack commercial products, patents, research prototypes and LE Audio multi-service prior art for split/coupled member-level routing before any novelty decision.
+**Final P013 decision: KILL as research-novelty/FYP candidate; PARK as optional advanced engineering/embedded-systems project.** A future controlled LE Audio prototype may still be valuable as implementation/integration work, but no formal research specification is authorized under the novelty shortlist.
 
 ## Required dossier before a general/FYP project is decision-ready
 1. Bounded problem and origin.

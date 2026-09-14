@@ -27,6 +27,12 @@ AJ Project OS coordinates research, engineering, verification, documentation, an
 - `tests/` — automated and manual verification assets.
 - `defense/` — defense preparation materials.
 
+## Canonical Project Identity
+
+Project IDs were renumbered on 10 September 2026 while historical GitHub and Google Drive folder names were preserved for provenance. Before interpreting any historical `P###` folder or document, read `project-control/CANONICAL_PROJECT_INDEX.md`. That index is the authoritative old-ID → current-ID migration map and records the latest verified documentation state and important evidence warnings.
+
+Do not infer current project identity from a historical folder name alone.
+
 ## Authority Levels
 
 - **A0 Observe** — inspect, research, review.

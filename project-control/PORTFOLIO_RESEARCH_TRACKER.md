@@ -3,90 +3,83 @@
 ## Purpose
 This tracker prevents implementation enthusiasm from outrunning evidence. IDs were renumbered on 10 September 2026. Historical files/commits retain old IDs; `CANONICAL_PROJECT_INDEX.md` is the authority for current identity and documentation state.
 
-## Status vocabulary
-NOT STARTED; DISCOVERY; SCREENING; EVIDENCE BUILD; GAP REVIEW; FEASIBILITY REVIEW; DECISION READY; PAUSED IMPLEMENTATION; CONDITIONAL GO; GO; PARK; KILL.
-
 ## Evidence discipline
-Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYPOTHESIS, or UNKNOWN. “Not found” must never be converted into “does not exist.” Implementation does not imply verification. Drive presence does not imply audit/freeze.
+Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYPOTHESIS, or UNKNOWN. “Not found” must never be converted into “does not exist.” Implementation does not imply verification. Drive presence does not imply audit/freeze. Final Portfolio Gate narrowing supersedes broader contribution language prospectively without rewriting historical research lineage.
 
-## Current portfolio matrix — reconciled 16 September 2026
-| New ID | Previous ID | Short name | Class | Overall status | Decision / next state |
-|---|---:|---|---|---|---|
-| P001 | P007 | Intelligent Coding Examination | General/Product | DECISION READY | PROVISIONAL GO; EGPCV; parked for final adversarial portfolio comparison; no implementation authorized |
-| P002 | P003 | AJ Educational LLM | Personal Mastery | DISCOVERY / EVIDENCE BUILD | Build regardless of novelty; outside FYP competition |
-| P003 | P011 | Geopolitical Economic Risk | General/Product | DECISION READY | CONDITIONAL GO; ETEC specification complete; parked for comparison; no implementation authorized |
-| P004 | P012 | Internet Compression Proxy | General/Product | DECISION READY | CONDITIONAL GO; Verifiable Net-Benefit Optimization survives; v4 present but audit/freeze incomplete; NOT FROZEN |
-| P005 | P014 | Log Analysis & Root Cause | General/Product | KILL | Remove from research-novelty shortlist; optional engineering work parked |
-| P006 | P002 | Personal Learning World | General/Product + personal-first | DECISION READY | CONDITIONAL GO; MEC; v2 reliable baseline; v3 BROKEN and must not be used/frozen; parked for comparison |
-| P007 | P004 | School Points Economy | General/Product | DECISION READY | CONDITIONAL GO; RPOA; parked for comparison |
-| P008 | P013 | StartupMatch | General/Product | KILL | Remove from research-novelty shortlist; product engineering parked |
-| P009 | P006 | Screen Memory | Personal-first | DECISION READY | CONDITIONAL GO; TRCSC; parked for comparison |
-| P010 | P005 | Chess Platform | General/Product | DECISION READY | CONDITIONAL GO; CVA; v3 present but render/QA reverification required before high-integrity freeze; parked for comparison |
-| P011 | P001 | AI Defense Simulator | General/Product | PARK / MERGE | PARK as independent FYP; CDER retained as P001 evidence-gap verification application/evaluation domain; reported v2 Chapters 1–2 audit preserved but GitHub/Drive synchronization/freeze NOT VERIFIED |
-| P012 | P009 | AI Virtual Audience | General/Product provisional | KILL | Remove from research-novelty shortlist; optional product/creative implementation parked |
-| P013 | P008 | Independent Earbud Routing | Personal-first | KILL | Remove from research-novelty shortlist; optional advanced engineering work parked |
-| P014 | P010 | Fantasy Action RPG | Creative/Entertainment | PARK | Creative/non-FYP track |
+## Current portfolio matrix — Final Portfolio Research Gate, 16 September 2026
+
+| ID | Project | Research-gate status | Residual gate | Frozen residual contribution / consequence |
+|---|---|---|---|---|
+| P001 | Intelligent Coding Examination | **SURVIVES** | **STRONG** | Competence-gap-driven **minimum independent evidence acquisition**; not adaptive viva/code-conditioned questioning generally |
+| P002 | AJ Educational LLM | Outside FYP competition | — | Personal mastery; build regardless of novelty |
+| P003 | Geopolitical Economic Risk | **SURVIVES** | **STRONG** | **Typed transmission-edge evidence sufficiency + weakest-link downstream claim progression**; not generic evidence contracts/RAG/abstention |
+| P004 | Internet Compression Proxy | **PROVISIONAL SURVIVOR** | **FRAGILE** | **Modern empirical systems evaluation** under already-compressed content, modern codecs, protocol/security constraints and low-resource deployment; scientific materiality remains uncertain |
+| P005 | Log Analysis & Root Cause | KILL | — | Research novelty closed; engineering optional/parked |
+| P006 | Personal Learning World | **PARK AS INDEPENDENT FYP** | **COLLAPSES** | MEC failed final same-engine/prior-art attack; preserve Personal Learning World as product/project concept; no further narrowing during this gate |
+| P007 | School Points Economy | **SURVIVES** | **ADEQUATE** | **Policy/opportunity-relative reward-governance diagnosis + independently validated benchmark**; not generic contextual fairness auditing |
+| P008 | StartupMatch | KILL | — | Product engineering parked |
+| P009 | Screen Memory | **SURVIVES** | **STRONG** | Empirical **privacy/resource/selective-capture trade-off constrained by measured human task-resumption performance**; no simulated/LLM-rated substitute for human resumption |
+| P010 | Chess Platform | **SURVIVES** | **ADEQUATE** | Effect of **board state + speaker role + game phase + match contract on speech adjudication**, with independently constructed/validated contrastive benchmark |
+| P011 | AI Defense Simulator | **PARK / MERGE** | Collision | PARK independent FYP; CDER mechanism family remains merged with P001; preserve lineage |
+| P012 | AI Virtual Audience | KILL | — | Product/creative work optional/parked |
+| P013 | Independent Earbud Routing | KILL | — | Advanced engineering optional/parked |
+| P014 | Fantasy Action RPG | PARK | — | Creative/non-FYP |
 
 ## Independent FYP survivor set
-The seven independent survivors are **P001, P003, P004, P006, P007, P009 and P010**. P011 remains in the comparison record only as a collision/merge reference. P002 remains outside the FYP competition as AJ's personal-mastery LLM track.
 
-No portfolio ordering is currently authoritative. Historical numeric priority and earlier provisional rankings must not be reused as a final ranking. The next gate is a normalized adversarial comparison based on the strongest current research case and strongest attack for each survivor.
+The six independent survivors entering the **Final Comparative Selection Gate** are **P001, P003, P004, P007, P009 and P010**.
 
-## P001 / P011 internal collision checkpoint
-P001 EGPCV and P011 CDER share the same mechanism-level control loop: bounded claims → provenance-aware evidence → gaps/contradictions → minimum targeted verification → evidence-state update → human judgment. Their domain adapters, evidence types and probe forms differ, but a generalized evidence-gap verification engine can support both without a sufficiently distinct research-control mechanism.
+P004 must remain visibly **PROVISIONAL / FRAGILE** during comparison. P006 is no longer an independent FYP survivor. P011 remains a parked collision/merge reference. No portfolio ordering is authoritative yet.
 
-**Decision:** P011 fails the independent-novelty same-engine test. PARK P011 as an independent FYP and retain CDER research/documentation as historical/reusable evidence and a potential P001 secondary application/evaluation domain. Do not delete, rename or rewrite historical P011 evidence merely to match the new classification. Do not infer that P001 implementation scope has expanded.
+## Supersession rule
+
+Earlier canonical and historical research claims that are broader than the residual statements above are **superseded by the Final Portfolio Gate for future claims and comparisons**. They are not deleted or retroactively rewritten. Historical passes, documents, filenames, Drive folders and prior decision context remain provenance showing how each claim was narrowed.
+
+## Residual experimental separability checkpoints
+
+### P001
+Strong baseline already covers artifact-conditioned adaptive/personalized viva. B4 must materially improve **verification efficiency subject to assessment validity** by selecting minimum independent evidence for explicit competence gaps. If a strong adaptive-viva baseline reaches essentially the same competence judgments with similar burden, the residual becomes implementation terminology and fails.
+
+### P003
+Strong baseline already covers evidence-grounded economic analysis, provenance and abstention. B4 must reduce unsupported downstream claims specifically where a **typed transmission edge is missing/weak**, without merely refusing more often. If generic evidence-contract/RAG baselines make the same edge-sufficiency distinctions, the residual fails.
+
+### P004
+Do not manufacture a novel B4 optimizer. Historical adaptive/net-benefit transcoding already covers transform decisions based on bandwidth, output size, latency/compute and related trade-offs. The surviving empirical question is whether **modern conditions materially change the transform-versus-pass-through boundary**. If modern treatments merely change numerical values while reproducing established conclusions, scientific materiality collapses. Current residual remains **FRAGILE**.
+
+### P007
+A strong generic contextual-fairness baseline must receive comparable context. RPOA must show that policy/opportunity-relative reasoning distinguishes legitimate disparity, governance failure and insufficient context beyond what that baseline can achieve. Benchmark construction must be separated from B4 logic, with hidden/final scenarios, independent review/annotation and explicit external-validity limits.
+
+### P009
+The experiment must compare capture policies using **real human task-resumption outcomes**: resumption latency, goal/next-action/artifact recovery and errors, alongside sensitive exposure/storage/processing. LLM/simulated resumption is not a valid substitute. The residual fails if selective capture provides little advantage over ordinary event-triggered capture or materially worsens human resumption.
+
+### P010
+B4 must show that masking/removing board state, speaker role, game phase and match contract materially degrades adjudication on contrastive cases while controlling false penalties. The benchmark cannot be generated circularly from CVA's own rules; independent scenario construction/annotation, paraphrases, ambiguity, hard negatives and withheld cases are required.
+
+## P006 final disposition
+
+MEC's final residual proposition was whether **assistance provenance itself** creates a scientifically distinct mastery-state mechanism that existing fading + independent verification + delayed reassessment/relearning systems cannot reproduce. The final same-engine/prior-art attack did not support that distinction strongly enough. Assistance/help use is already part of mastery modelling and scaffolding decisions, while delayed reassessment/relearning already closes the mastery-retention loop. Expressing the combined lifecycle as an explicit evidence contract/state machine is insufficient by itself to establish a new mechanism.
+
+**Decision state:** **PARK P006 as an independent FYP.** Preserve the Personal Learning World as a valid product/project concept and preserve all historical P006 research/documentation. Do not perform another narrowing during this portfolio gate.
+
+## P001 / P011 collision checkpoint
+
+P011 remains **PARK as independent FYP / MERGE mechanism family with P001**. Historical CDER research and documentation remain provenance. This classification does not authorize implementation or expansion of P001 scope.
 
 ## Documentation integrity checkpoints
-- P001: Chapters 1–2 frozen v4.
-- P003: Chapters 1–2 frozen v4.
-- P004: v4 present; audit/freeze incomplete; NOT FROZEN.
-- P006: v2 reliable baseline; v3 BROKEN; DO NOT USE/FREEZE.
-- P007: Chapters 1–2 frozen v3.
-- P009: Chapters 1–2 frozen v2.
-- P010: v3 present; render/QA reverification required before high-integrity freeze.
-- P011: handoff reports `P011_CDER_Chapters_1_2_Audited_Draft_v2.docx`, 36 pages and previously rendered/audited, but current GitHub/Drive reconciliation did not locate the exact file; synchronization/freeze NOT VERIFIED.
 
-## P007 research gate checkpoint
-Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded mechanism is **RPOA — Reward-Policy Outcome Audit**: a contextual transaction-level governance audit intended to improve detection of predefined reward-policy failure modes while reducing false positives and unsupported fairness/gaming conclusions relative to simpler baselines. Pass 004 froze the formal experiment. Full product implementation remains parked.
+- P001: Chapters 1–2 frozen v4; research contribution language now prospectively narrowed by Final Portfolio Gate.
+- P003: Chapters 1–2 frozen v4; research contribution language prospectively narrowed.
+- P004: v4 present historically/connected workspace; audit/freeze incomplete; **NOT FROZEN**.
+- P006: v2 reliable historical baseline; v3 BROKEN; DO NOT USE/FREEZE; project now PARK independent FYP.
+- P007: Chapters 1–2 frozen v3; research contribution language prospectively narrowed.
+- P009: Chapters 1–2 frozen v2; research contribution language prospectively narrowed.
+- P010: v3 present; render/QA reverification required before high-integrity freeze; research contribution language prospectively narrowed.
+- P011: reported Chapters 1–2 v2 synchronization/freeze remains NOT VERIFIED.
 
-## P009 final gate checkpoint
-Generic personal screen memory, screenshot timelines/search, semantic retrieval, task-context restoration, privacy-aware lifelogging, event-triggered capture, local-first storage and privacy filtering are established. The surviving mechanism is **TRCSC — Task-Resumption-Constrained Selective Capture**: selective capture should reduce retained visual data, sensitive-screen exposure, storage growth and processing overhead relative to dense capture while preserving human task-resumption performance within a predeclared acceptable degradation margin.
+Documentation maturity is not research quality and must remain a separate comparison dimension.
 
-## P010 corrected final gate checkpoint
-Voice/video chess, speech-to-text, toxicity detection, generic contextual moderation, chess-rules QA, anti-cheat detection and automated warnings are not novelty claims. The surviving mechanism is **CVA — Contract-Aware Contextual Voice Arbitration**: match/game contract plus chess-board state, speaker role and game phase constrain live-speech adjudication of permitted conduct, prohibited assistance, misconduct and uncertain cases, with the research burden on improvement over simpler speech-only/context-poor baselines and false-penalty control.
+## Next gate
 
-## Closed novelty candidates
-P005, P008, P012 and P013 remain KILL as independent research-novelty/FYP candidates. Their historical research remains provenance and must not be deleted. P014 is PARK as creative/non-FYP.
+**Final Comparative Selection Gate** among P001, P003, P004, P007, P009 and P010. Start with a normalized evidence matrix, not arbitrary weighted scores. Keep separate: research defensibility; prior-art distance; experimental strength/falsifiability; evidence/data feasibility; implementation feasibility; evaluation validity; benchmark/human-study burden; scope/time risk; dependency risk; defense explainability; reproducibility; negative-result value; and documentation maturity.
 
-## Final comparison protocol
-Before any scoring or ordering, reconstruct each survivor using the same adversarial sequence:
-
-**current bounded mechanism → strongest prior art → strongest novelty attack → feasibility attack → experiment attack → surviving contribution → failure condition.**
-
-Then compare consistently across novelty independence; direct prior-art collision risk; clarity of bounded contribution; falsifiability; strength of experimental baselines; experimental tractability; realistic data/evidence availability; final-year implementation feasibility; evaluation validity; supervisor/defense explainability; dependency/API/hardware risk; scope-creep risk; ethical/privacy burden; reproducibility; documentation maturity; and whether a negative result remains academically useful.
-
-Research quality, documentation maturity and implementation progress are separate dimensions. Do not reward sunk documentation effort or penalize an unbuilt project merely for being unbuilt. Do not manufacture precision with arbitrary numerical scores.
-
-## Required dossier before a general/FYP project is decision-ready
-1. Bounded problem and origin.
-2. Historical/technical lineage.
-3. Evidence matrix and source provenance.
-4. Academic state of knowledge.
-5. Commercial prior art.
-6. Open-source prior art.
-7. Relevant standards/patents/regulation/platform constraints.
-8. Counterexamples and novelty threats.
-9. Gap analysis.
-10. Falsifiable differentiation statement.
-11. User/problem evidence.
-12. Feasibility and architecture candidates.
-13. Hardware/OS/API constraints.
-14. Security/privacy/safety/accessibility/ethics.
-15. Cost/licensing/dependencies.
-16. Rejected alternatives.
-17. Known limitations/unresolved questions.
-18. GO/PARK/KILL recommendation with confidence boundaries.
-
-## Cross-check policy
-Important conclusions should not depend on a single discovery mechanism when independent corroboration is reasonably available. Conflicting credible evidence is preserved and investigated rather than silently resolved.
+Identify genuine trade-offs and Pareto-dominated candidates before any final selection. Preserve P004's FRAGILE status. **No Chapter 3 or implementation is authorized.**

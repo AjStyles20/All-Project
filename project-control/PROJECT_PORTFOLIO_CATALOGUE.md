@@ -1,16 +1,10 @@
 # AJ Project Portfolio — Project Catalogue
 
 ## Purpose
-This is the canonical short-form registry of current AJ Project OS project ideas. Numeric IDs reflect the current portfolio priority order for ranked projects. AJ's personal LLM remains a special personal-mastery track and is deliberately kept near the front because it is active and personally important, not because it must compete as an FYP candidate.
+Canonical short-form registry of AJ Project OS project ideas after the 10 September 2026 renumbering and the 16 September 2026 P001/P011 internal-collision gate. Historical folders retain previous IDs; use `CANONICAL_PROJECT_INDEX.md` as the identity/documentation authority.
 
 ## Portfolio rule
-No project is to be called unique, first-of-its-kind, unprecedented, secure, production-ready, or otherwise stronger than the available evidence supports. Research must distinguish VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYPOTHESIS, and UNKNOWN. Absence from search results is not evidence of non-existence.
-
-## Portfolio classes
-- **GENERAL / PRODUCT SYSTEM** — intended for a broad class of users, organizations, schools, businesses, or markets.
-- **PERSONAL-FIRST SYSTEM** — originates from AJ's own need or curiosity but may later generalize.
-- **PERSONAL MASTERY PROJECT** — valuable because AJ wants to understand and build it; external adoption or novelty is not required.
-- **CREATIVE / ENTERTAINMENT PROJECT** — primarily creative engineering/design/entertainment.
+No project is to be called unique, first-of-its-kind, unprecedented, secure, production-ready, or otherwise stronger than available evidence supports. Research distinguishes VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYPOTHESIS and UNKNOWN. Absence from search results is not evidence of non-existence. Implementation does not mean verification, and Drive presence does not mean audit/freeze.
 
 ## Renumbering map — 10 September 2026
 | New ID | Previous ID | Project |
@@ -30,125 +24,118 @@ No project is to be called unique, first-of-its-kind, unprecedented, secure, pro
 | P013 | P008 | Independent Wireless Earbud Audio Routing |
 | P014 | P010 | Fantasy Action RPG |
 
-The map is permanent migration evidence. Historical commits and existing directory names may still contain previous IDs; do not reinterpret old evidence silently. Future structural migration should preserve redirects/mapping rather than destroying history.
+The map is permanent migration evidence. Do not rename/delete historical folders merely to match current IDs.
 
-### Project P001 — Intelligent Coding Examination Platform
+### P001 — Intelligent Coding Examination Platform
 **Previous ID:** P007  
 **Class:** GENERAL / PRODUCT SYSTEM  
-**Origin:** AJ's experience of programming knowledge being assessed by handwriting code on paper in school tests/examinations.
+**Bounded mechanism:** **EGPCV — Evidence-Gap-Driven Programming Competence Verification.** A policy-aware programming assessment mechanism constructs bounded competence claims from provenance-bearing process/execution/rubric evidence, preserves missing/contradictory/assistance-dependent evidence, and selects minimum targeted independent verification for unresolved claims without turning integrity observations into misconduct verdicts.
 
-A purpose-built programming examination environment with an integrated editor/execution workflow and configurable examination policies. It should capture bounded evidence such as code revisions, compilation/execution history, test outcomes, focus/tab events and clipboard events without automatically converting isolated events into misconduct verdicts. The research target is trustworthy evidence of programming competence in the AI era, with human review, security, accessibility, privacy and false-positive control.
+**Status:** PROVISIONAL GO / DECISION READY; Chapters 1–2 frozen v4; PARKED FOR FINAL PORTFOLIO COMPARISON; no implementation authorization.
 
-**Status:** DECISION READY — PROVISIONAL GO TO FORMAL SPECIFICATION; PARKED FOR PORTFOLIO COMPARISON.
-
-### Project P002 — AJ's Educational Language Model From Scratch
+### P002 — AJ's Educational Language Model From Scratch
 **Previous ID:** P003  
-**Class:** PERSONAL MASTERY PROJECT
+**Class:** PERSONAL MASTERY PROJECT  
+AJ intends to design, train, evaluate and operate a language model from random initialization as a learning/mastery project. Novelty is not required.
 
-AJ wants to design, train, evaluate and operate his own language model from random initialization. The complete pipeline should be understandable and inspectable: corpus, tokenizer, embeddings, attention, transformer blocks, optimization, checkpoints, inference, evaluation, computational limits and failure modes. Research contributions may be pursued where evidence supports them, but novelty is not required to justify building it.
+**Status:** ACTIVE PERSONAL TRACK — BUILD REGARDLESS OF NOVELTY; outside FYP competition.
 
-**Primary success condition:** AJ can truthfully say he designed and trained his own functioning language model from scratch and can explain the major components and tradeoffs.
-
-**Status:** ACTIVE PERSONAL TRACK — BUILD REGARDLESS OF NOVELTY.
-
-### Project P003 — Geopolitical Risk to Economic Impact Forecasting and Warning System
+### P003 — Geopolitical Risk to Economic Impact Forecasting and Warning System
 **Previous ID:** P011  
-**Class:** GENERAL / PRODUCT SYSTEM
+**Class:** GENERAL / PRODUCT SYSTEM  
+**Bounded mechanism:** **ETEC — Event → Exposure → Domestic Transmission → Local Outcome → Magnitude.** The research separates event extraction from exposure/transmission reasoning and bounded local outcome/magnitude estimation rather than treating geopolitical news-to-economic narrative generation as sufficient.
 
-Monitors national/global political events such as tariffs, sanctions, elections, export restrictions and conflict, then estimates plausible downstream economic effects for a selected country or market. Research must distinguish event extraction, causal evidence, scenario analysis, nowcasting, forecasting, geopolitical-risk indices and speculative narrative generation.
+**Status:** CONDITIONAL GO; Chapters 1–2 frozen v4; PARKED FOR FINAL PORTFOLIO COMPARISON; no implementation authorization.
 
-**Status:** DECISION READY — CONDITIONAL GO; formal ETEC research/experiment specification complete; PARKED FOR COMPARISON; no implementation authorized.
-
-### Project P004 — Internet Compression and Optimization Proxy System
+### P004 — Internet Compression and Optimization Proxy System
 **Previous ID:** P012  
-**Class:** GENERAL / PRODUCT SYSTEM
+**Class:** GENERAL / PRODUCT SYSTEM  
+**Bounded mechanism:** **Verifiable Net-Benefit Optimization.** Generic compression-proxy novelty is rejected. The surviving research asks whether an allowed transformation improves a declared objective relative to pass-through/simpler policies while explicitly accounting for transferred data, latency, fidelity, compute and security trade-offs.
 
-An application-level proxy intended to reduce transferred data and improve perceived responsiveness in bandwidth-constrained environments through safe, measurable optimization. Modern HTTPS/TLS, HTTP/2, HTTP/3/QUIC, CDNs, content encoding and end-to-end encryption are first-order constraints. Generic compression-proxy novelty has been rejected. The surviving bounded research direction concerns verifiable net-benefit optimization/evaluation: whether an allowed transformation actually improves the chosen objective relative to pass-through and simpler optimization policies while exposing data, latency, fidelity, compute and security trade-offs.
+**Status:** CONDITIONAL GO; v4 exists but audit/freeze is incomplete — NOT FROZEN; PARKED FOR FINAL PORTFOLIO COMPARISON.
 
-**Status:** DECISION READY — CONDITIONAL GO TO FORMAL SPECIFICATION; PARKED FOR PORTFOLIO COMPARISON.
-
-### Project P005 — Automated Log Analysis and Root-Cause Assistance Tool
+### P005 — Automated Log Analysis and Root-Cause Assistance Tool
 **Previous ID:** P014  
-**Class:** GENERAL / PRODUCT SYSTEM
+**Class:** GENERAL / PRODUCT SYSTEM  
+Generic and narrowed novelty space was found heavily occupied across conventional AIOps/log RCA, agentic hypothesis testing and evidence-sufficiency/abstention approaches.
 
-A lightweight utility for parsing heterogeneous logs, extracting anomalous events, correlating evidence and assisting operators in identifying plausible root causes. Three adversarial research passes found the relevant novelty space heavily occupied: conventional AIOps/log RCA; tool-using/agentic RCA with competing hypotheses and dynamic validation; and explicit abstention/evidence-sufficiency concepts.
+**Status:** KILL AS RESEARCH-NOVELTY/FYP CANDIDATE; optional engineering work PARKED.
 
-**Status:** KILL AS RESEARCH-NOVELTY CANDIDATE. REMOVE FROM FYP RESEARCH SHORTLIST. Engineering/portfolio implementation remains PARKED as optional non-novel work.
-
-### Project P006 — AI-Powered Virtual Classroom and Personal Learning World
+### P006 — AI-Powered Virtual Classroom and Personal Learning World
 **Previous ID:** P002  
-**Class:** GENERAL / PRODUCT SYSTEM with PERSONAL-FIRST origin
+**Class:** GENERAL / PRODUCT SYSTEM with PERSONAL-FIRST origin  
+**Bounded mechanism:** **MEC — Mastery Evidence Contract.** The surviving research direction concerns explicit evidence requirements for moving from assisted learning performance toward claims of independent mastery while preserving educational authority and bounded human/AI roles.
 
-A learning world that remains useful for one human learner and can later support humans plus bounded AI roles. Research has narrowed its strongest mechanisms to authority-preserving educational knowledge dependencies and assistance-to-independence mastery verification, with human/AI role contracts as supporting architecture.
+**Status:** CONDITIONAL GO; v2 is reliable documentation baseline; v3 is BROKEN and must not be used/frozen; PARKED FOR FINAL PORTFOLIO COMPARISON.
 
-**Status:** DECISION READY — CONDITIONAL GO / PARKED FOR PORTFOLIO COMPARISON. IMPLEMENTATION INTENTIONALLY NOT STARTED.
-
-### Project P007 — School Point & Digital Economy System
+### P007 — School Point & Digital Economy System
 **Previous ID:** P004  
-**Class:** GENERAL / PRODUCT SYSTEM
+**Class:** GENERAL / PRODUCT SYSTEM  
+**Bounded mechanism:** **RPOA — Reward-Policy Outcome Audit.** Generic points, token economies, gamification and generic fairness are not novelty claims. The research focuses on contextual transaction-level auditing of predefined reward-policy failure modes, unsupported fairness/gaming conclusions and governance outcomes relative to simpler baselines.
 
-A governed school points/reward economy tied to selected achievements. Generic digital token economies, points, balances, redemption stores and ordinary gamification are established and are not novelty claims. Pass 001 retained four provisional research directions only: opportunity-normalized reward fairness; reward-system fairness auditing; incentive-integrity/anti-gaming; and sustainable school-economy governance. Research must address motivation, fairness, incentive design, fraud/abuse, accessibility, governance and privacy.
+**Status:** CONDITIONAL GO; Chapters 1–2 frozen v3; PARKED FOR FINAL PORTFOLIO COMPARISON.
 
-**Status:** EVIDENCE BUILD — PASS 001 COMPLETE. NEXT: PASS 002 DIRECT PRIOR-ART ATTACK ON FAIRNESS-AWARE EDUCATIONAL REWARD ECONOMIES, INCENTIVE GAMING AND GOVERNANCE.
-
-### Project P008 — StartupMatch: Founder–Investor Matching Platform
+### P008 — StartupMatch: Founder–Investor Matching Platform
 **Previous ID:** P013  
-**Class:** GENERAL / PRODUCT SYSTEM
+**Class:** GENERAL / PRODUCT SYSTEM  
+Adversarial review eliminated generic marketplace, ML matching, explainability, fairness, temporal-history, provenance and abstention/reliability variants as a defensible independent novelty core.
 
-A two-sided marketplace connecting founders and investors using structured profiles, matching logic, secure communication and transparency controls. Research must distinguish ordinary filtering from defensible recommendation/matching and address trust, fraud, privacy, ranking bias and cold start.
+**Status:** KILL AS RESEARCH-NOVELTY/FYP CANDIDATE; product engineering PARKED.
 
-**Status:** PRODUCT-VIABLE CONCEPT; DIFFERENTIATION REQUIRES RESEARCH.
-
-### Project P009 — Personal Screen Memory System
+### P009 — Personal Screen Memory System
 **Previous ID:** P006  
-**Class:** PERSONAL-FIRST SYSTEM
+**Class:** PERSONAL-FIRST SYSTEM  
+**Bounded mechanism:** **TRCSC — Task-Resumption-Constrained Selective Capture.** Selective capture should reduce retained visual data, sensitive-screen exposure, storage growth and processing overhead relative to dense capture while preserving human task-resumption performance within a predeclared acceptable degradation margin.
 
-A user-controlled system for recovering information previously seen or worked with on a computer through selective capture, extraction, activity segmentation and search. Privacy, consent, storage, encryption, retention and OS integration are first-class constraints.
+**Status:** CONDITIONAL GO; Chapters 1–2 frozen v2; PARKED FOR FINAL PORTFOLIO COMPARISON.
 
-**Status:** RESEARCH REQUIRED.
-
-### Project P010 — Intelligent Online Chess Platform
+### P010 — Intelligent Online Chess Platform
 **Previous ID:** P005  
-**Class:** GENERAL / PRODUCT SYSTEM
+**Class:** GENERAL / PRODUCT SYSTEM  
+**Bounded mechanism:** **CVA — Contract-Aware Contextual Voice Arbitration.** Match/game contract plus board state, speaker role and game phase constrain live-speech adjudication of permitted conduct, prohibited assistance, misconduct and uncertainty; generic voice chess/moderation is not novelty.
 
-An online chess environment combining ordinary play with selected communication and intelligent-support capabilities while explicitly separating assistance-permitted and fair-play modes.
+**Status:** CONDITIONAL GO; v3 exists but render/QA reverification is required before high-integrity freeze; PARKED FOR FINAL PORTFOLIO COMPARISON.
 
-**Status:** RESEARCH AND DIFFERENTIATION REQUIRED.
-
-### Project P011 — Source-Grounded AI Presentation, Interview and Defense Simulator
+### P011 — Source-Grounded AI Defense Simulator
 **Previous ID:** P001  
-**Class:** GENERAL / PRODUCT SYSTEM
+**Class:** GENERAL / PRODUCT SYSTEM  
+Broad AI-viva novelty was rejected. The narrowed **CDER — Claim-Driven Evidence Resolution** mechanism maps project claims to provenance-aware evidence, detects gaps/contradictions, selects minimum targeted probes, updates evidence states and preserves abstention/human review.
 
-An AI rehearsal environment grounded in user documents with configurable reviewers, typed/spoken answers, bounded follow-ups and evidence-aware qualitative feedback.
+**Internal-collision result:** CDER and P001 EGPCV are near-isomorphic at the research-control level. A generalized evidence-gap verification engine can support both by swapping domain adapters, claim ontologies and probe libraries. Domain differences are useful for application/evaluation but do not currently support a second independent FYP novelty claim.
 
-**Status:** PAUSED IMPLEMENTATION — substantial prototype exists and must not be restarted from scratch.
+**Status:** **PARK AS INDEPENDENT FYP / MERGE MECHANISM FAMILY WITH P001.** Preserve all historical P011/CDER research and Chapters 1–2 work. The handoff reports an audited 36-page v2 document, but current GitHub/Drive synchronization/freeze is NOT VERIFIED. This classification does not authorize implementation or automatic P001 scope expansion.
 
-### Project P012 — Interactive AI Virtual Audience
+### P012 — Interactive AI Virtual Audience
 **Previous ID:** P009  
-**Class:** GENERAL / PRODUCT SYSTEM — provisional
+**Class:** GENERAL / PRODUCT SYSTEM  
+Adversarial review found virtual audience, configurable persona, adaptive practice/stressor and transfer-oriented variants too crowded to support a robust independent novelty claim without manufactured narrowing.
 
-A simulated audience for speeches, presentations, pitches and public-speaking rehearsal. It substantially overlaps the Defense Simulator and may ultimately become a mode/layer rather than a separate project.
+**Status:** KILL AS RESEARCH-NOVELTY/FYP CANDIDATE; optional product/creative work PARKED.
 
-**Status:** RESEARCH REQUIRED; MERGE QUESTION UNRESOLVED.
-
-### Project P013 — Independent Wireless Earbud Audio Routing and Multi-Device Communication System
+### P013 — Independent Wireless Earbud Audio Routing
 **Previous ID:** P008  
-**Class:** PERSONAL-FIRST SYSTEM
+**Class:** PERSONAL-FIRST SYSTEM  
+Standards/patent review established substantial direct prior art for independent/multi-source left/right audio routing and switching.
 
-Investigates independent left/right earpiece routing across sources/devices/channels. Bluetooth profiles, LE Audio, OS routing, firmware, chipset design, synchronization and latency may impose hard feasibility limits.
+**Status:** KILL AS RESEARCH-NOVELTY/FYP CANDIDATE; optional advanced engineering work PARKED.
 
-**Status:** TECHNICAL FEASIBILITY MUST BE ESTABLISHED FIRST.
-
-### Project P014 — Fantasy Action RPG Inspired by Ensemble Adventure Animation
+### P014 — Fantasy Action RPG
 **Previous ID:** P010  
-**Class:** CREATIVE / ENTERTAINMENT PROJECT
+**Class:** CREATIVE / ENTERTAINMENT PROJECT  
+Original creative engineering/design project; not treated as a research-novelty FYP survivor.
 
-An original party-based fantasy action RPG inspired only at a high level by ensemble fantasy adventure appeal. Protected characters, stories, dialogue, art, locations and other expressive elements must not be copied.
+**Status:** PARK AS CREATIVE/NON-FYP.
 
-**Status:** CREATIVE CONCEPT / RESEARCH STAGE.
+## Current FYP survivor set — 16 September 2026
+The seven independent survivors are **P001, P003, P004, P006, P007, P009 and P010**. P011 remains in the comparison record only as a collision/merge reference. P002 remains outside the FYP competition as a personal mastery track.
 
-## Priority interpretation — current
-P001, P003, P004 and P006 have reached bounded research gates and are parked for comparison. P005 is closed as a research-novelty candidate. P007 is the active general/FYP research target. P002 remains an independent personal-mastery track. Lower numeric IDs generally indicate higher current portfolio priority, but evidence may justify future reordering through an explicit migration decision.
+There is **no authoritative ranking among the seven survivors at this stage**. Numeric IDs and earlier provisional priorities must not be interpreted as the final order.
 
-## Portfolio-wide research protocol
-Where applicable, each project proceeds through: discovery → historical lineage → academic literature → current practice → commercial systems → open-source implementations → patents/standards/regulation where relevant → competing/failed approaches → prior-art matrix → gap analysis → novelty threats → bounded problem definition → evidence-backed differentiation → feasibility → security/privacy/ethics → architecture candidates → rejected alternatives → GO/PARK/KILL recommendation → implementation.
+## Next portfolio gate
+Before scoring or ordering, reconstruct the strongest current research case and strongest attack for each survivor using:
+
+**current bounded mechanism → strongest prior art → strongest novelty attack → feasibility attack → experiment attack → surviving contribution → failure condition.**
+
+Only after normalization should the portfolio compare novelty independence, prior-art collision risk, bounded-contribution clarity, falsifiability, baseline strength, experimental tractability, data/evidence availability, final-year implementation feasibility, evaluation validity, defense explainability, dependency risk, scope risk, ethical/privacy burden, reproducibility, documentation maturity and academic value of negative results.
+
+Research quality, documentation maturity and implementation progress are distinct dimensions. Sunk documentation effort is not evidence of research superiority, and lack of implementation is not evidence of research inferiority.

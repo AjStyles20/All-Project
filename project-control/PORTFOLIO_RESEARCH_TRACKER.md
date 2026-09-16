@@ -1,86 +1,72 @@
 # AJ Project Portfolio — Research Tracker
 
 ## Purpose
-This tracker prevents implementation enthusiasm from outrunning evidence. IDs were renumbered on 10 September 2026 so lower-priority ranked projects generally appear later. Historical files/commits retain their old IDs; use the migration map in `PROJECT_PORTFOLIO_CATALOGUE.md` when interpreting them.
+This tracker prevents implementation enthusiasm from outrunning evidence. IDs were renumbered on 10 September 2026. Historical files/commits retain old IDs; `CANONICAL_PROJECT_INDEX.md` is the authority for current identity and documentation state.
 
 ## Status vocabulary
 NOT STARTED; DISCOVERY; SCREENING; EVIDENCE BUILD; GAP REVIEW; FEASIBILITY REVIEW; DECISION READY; PAUSED IMPLEMENTATION; CONDITIONAL GO; GO; PARK; KILL.
 
 ## Evidence discipline
-Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYPOTHESIS, or UNKNOWN. “Not found” must never be converted into “does not exist.”
+Material claims must be marked VERIFIED FACT, REASONED INFERENCE, UNVERIFIED HYPOTHESIS, or UNKNOWN. “Not found” must never be converted into “does not exist.” Implementation does not imply verification. Drive presence does not imply audit/freeze.
 
-## Current portfolio matrix — reconciled 10 September 2026
+## Current portfolio matrix — reconciled 16 September 2026
 | New ID | Previous ID | Short name | Class | Overall status | Decision / next state |
 |---|---:|---|---|---|---|
-| P001 | P007 | Intelligent Coding Examination | General/Product | DECISION READY | PROVISIONAL GO TO FORMAL SPECIFICATION; parked for portfolio comparison |
-| P002 | P003 | AJ Educational LLM | Personal Mastery | DISCOVERY / EVIDENCE BUILD | Build regardless of novelty; personal research may continue independently |
-| P003 | P011 | Geopolitical Economic Risk | General/Product | DECISION READY | CONDITIONAL GO; formal ETEC research/experiment specification complete; PARKED FOR COMPARISON; no implementation authorized |
-| P004 | P012 | Internet Compression Proxy | General/Product | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; bounded net-benefit optimization/evaluation hypothesis survives; PARKED FOR COMPARISON |
-| P005 | P014 | Log Analysis & Root Cause | General/Product | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; engineering implementation remains PARKED as optional portfolio work |
-| P006 | P002 | Personal Learning World | General/Product + personal-first | DECISION READY | CONDITIONAL GO / PARKED FOR COMPARISON |
-| P007 | P004 | School Points Economy | General/Product | DECISION READY | CONDITIONAL GO TO RESEARCH IMPLEMENTATION DESIGN; Passes 001–004 complete; H5 contextual reward-policy outcome audit frozen; PARKED FOR COMPARISON |
-| P008 | P013 | StartupMatch | General/Product | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; transparent investor-matching product remains PARKED as optional engineering work |
-| P009 | P006 | Screen Memory | Personal-first | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; Passes 001–003 complete; H5 task-resumption-constrained selective capture survives; PARKED FOR COMPARISON |
-| P010 | P005 | Chess Platform | General/Product | DECISION READY | CONDITIONAL GO TO FORMAL SPECIFICATION; corrected voice-enabled chess + contextual AI arbiter framing; H5 survives; PARKED FOR COMPARISON |
-| P011 | P001 | AI Defense Simulator | General/Product | PAUSED IMPLEMENTATION | Preserve prototype; strict portfolio review later |
-| P012 | P009 | AI Virtual Audience | General/Product provisional | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; virtual audience/product implementation remains PARKED as optional engineering work |
-| P013 | P008 | Independent Earbud Routing | Personal-first | KILL | REMOVE FROM RESEARCH-NOVELTY SHORTLIST; split/coupled LE Audio implementation remains PARKED as optional advanced engineering work |
-| P014 | P010 | Fantasy Action RPG | Creative/Entertainment | NOT STARTED | NEXT RESEARCH CANDIDATE; creative track / lower FYP priority |
+| P001 | P007 | Intelligent Coding Examination | General/Product | DECISION READY | PROVISIONAL GO; EGPCV; parked for final adversarial portfolio comparison; no implementation authorized |
+| P002 | P003 | AJ Educational LLM | Personal Mastery | DISCOVERY / EVIDENCE BUILD | Build regardless of novelty; outside FYP competition |
+| P003 | P011 | Geopolitical Economic Risk | General/Product | DECISION READY | CONDITIONAL GO; ETEC specification complete; parked for comparison; no implementation authorized |
+| P004 | P012 | Internet Compression Proxy | General/Product | DECISION READY | CONDITIONAL GO; Verifiable Net-Benefit Optimization survives; v4 present but audit/freeze incomplete; NOT FROZEN |
+| P005 | P014 | Log Analysis & Root Cause | General/Product | KILL | Remove from research-novelty shortlist; optional engineering work parked |
+| P006 | P002 | Personal Learning World | General/Product + personal-first | DECISION READY | CONDITIONAL GO; MEC; v2 reliable baseline; v3 BROKEN and must not be used/frozen; parked for comparison |
+| P007 | P004 | School Points Economy | General/Product | DECISION READY | CONDITIONAL GO; RPOA; parked for comparison |
+| P008 | P013 | StartupMatch | General/Product | KILL | Remove from research-novelty shortlist; product engineering parked |
+| P009 | P006 | Screen Memory | Personal-first | DECISION READY | CONDITIONAL GO; TRCSC; parked for comparison |
+| P010 | P005 | Chess Platform | General/Product | DECISION READY | CONDITIONAL GO; CVA; v3 present but render/QA reverification required before high-integrity freeze; parked for comparison |
+| P011 | P001 | AI Defense Simulator | General/Product | PARK / MERGE | PARK as independent FYP; CDER retained as P001 evidence-gap verification application/evaluation domain; reported v2 Chapters 1–2 audit preserved but GitHub/Drive synchronization/freeze NOT VERIFIED |
+| P012 | P009 | AI Virtual Audience | General/Product provisional | KILL | Remove from research-novelty shortlist; optional product/creative implementation parked |
+| P013 | P008 | Independent Earbud Routing | Personal-first | KILL | Remove from research-novelty shortlist; optional advanced engineering work parked |
+| P014 | P010 | Fantasy Action RPG | Creative/Entertainment | PARK | Creative/non-FYP track |
 
-## Current priority interpretation
-For ranked general/FYP work, the current order is P001 → P003 → P004 → P005 → P006 → P007 → P008 → P009 → P010 → P011 → P012 → P013 → P014. P002 is deliberately outside that competition because it is AJ's personal LLM project.
+## Independent FYP survivor set
+The seven independent survivors are **P001, P003, P004, P006, P007, P009 and P010**. P011 remains in the comparison record only as a collision/merge reference. P002 remains outside the FYP competition as AJ's personal-mastery LLM track.
 
-P001, P003, P004, P006, P007, P009 and P010 have reached bounded research gates and are parked for later portfolio comparison. P005, P008, P012 and P013 were killed as research-novelty candidates after adversarial review. P011 remains a preserved prototype. P014 is the next untouched candidate.
+No portfolio ordering is currently authoritative. Historical numeric priority and earlier provisional rankings must not be reused as a final ranking. The next gate is a normalized adversarial comparison based on the strongest current research case and strongest attack for each survivor.
+
+## P001 / P011 internal collision checkpoint
+P001 EGPCV and P011 CDER share the same mechanism-level control loop: bounded claims → provenance-aware evidence → gaps/contradictions → minimum targeted verification → evidence-state update → human judgment. Their domain adapters, evidence types and probe forms differ, but a generalized evidence-gap verification engine can support both without a sufficiently distinct research-control mechanism.
+
+**Decision:** P011 fails the independent-novelty same-engine test. PARK P011 as an independent FYP and retain CDER research/documentation as historical/reusable evidence and a potential P001 secondary application/evaluation domain. Do not delete, rename or rewrite historical P011 evidence merely to match the new classification. Do not infer that P001 implementation scope has expanded.
+
+## Documentation integrity checkpoints
+- P001: Chapters 1–2 frozen v4.
+- P003: Chapters 1–2 frozen v4.
+- P004: v4 present; audit/freeze incomplete; NOT FROZEN.
+- P006: v2 reliable baseline; v3 BROKEN; DO NOT USE/FREEZE.
+- P007: Chapters 1–2 frozen v3.
+- P009: Chapters 1–2 frozen v2.
+- P010: v3 present; render/QA reverification required before high-integrity freeze.
+- P011: handoff reports `P011_CDER_Chapters_1_2_Audited_Draft_v2.docx`, 36 pages and previously rendered/audited, but current GitHub/Drive reconciliation did not locate the exact file; synchronization/freeze NOT VERIFIED.
 
 ## P007 research gate checkpoint
-Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded hypothesis is:
-
-**H5 — Contextual Reward-Policy Outcome Audit:** a contextual transaction-level governance audit may improve detection of predefined reward-policy failure modes while reducing false positives and unsupported fairness/gaming conclusions relative to simpler baselines.
-
-Pass 004 froze the formal experiment: controlled scenarios S0–S8, baselines B0–B4, mandatory unsupported-claim and insufficiency metrics, falsification criteria, privacy/ethics boundaries and a lightweight implementation architecture. Full product implementation remains parked pending portfolio comparison or explicit authorization.
-
-## P008 final gate checkpoint
-Three passes eliminated generic founder-investor marketplace novelty, ML compatibility matching, explainable/two-sided recommendation, positive-unlabeled handling, fairness-aware recommendation, temporal investment-history modelling, confidence/reliability scoring, stale-data handling, source provenance and selective/abstaining recommendation as novelty claims.
-
-**Final P008 decision: KILL as research-novelty candidate; PARK as optional engineering/product work.** No formal research specification is authorized.
+Passes 001–003 eliminated generic novelty claims around digital token economies, ordinary gamification, generic fairness, generic incentive design, economy management, fairness monitoring, reward-hacking detection and human oversight. The surviving bounded mechanism is **RPOA — Reward-Policy Outcome Audit**: a contextual transaction-level governance audit intended to improve detection of predefined reward-policy failure modes while reducing false positives and unsupported fairness/gaming conclusions relative to simpler baselines. Pass 004 froze the formal experiment. Full product implementation remains parked.
 
 ## P009 final gate checkpoint
-Passes 001–003 eliminated generic novelty claims around personal screen memory, screenshot timelines/search, semantic retrieval, task-context restoration, privacy-aware lifelogging, event-triggered capture, local-first storage and privacy filtering.
-
-**H5 — Task-Resumption-Constrained Selective Capture:** a selective desktop-memory capture policy may reduce retained visual data, sensitive-screen exposure, storage growth and processing overhead relative to dense capture while preserving human task-resumption performance within a predeclared acceptable degradation margin.
-
-**Final P009 decision: CONDITIONAL GO TO FORMAL SPECIFICATION; PARKED FOR COMPARISON.**
+Generic personal screen memory, screenshot timelines/search, semantic retrieval, task-context restoration, privacy-aware lifelogging, event-triggered capture, local-first storage and privacy filtering are established. The surviving mechanism is **TRCSC — Task-Resumption-Constrained Selective Capture**: selective capture should reduce retained visual data, sensitive-screen exposure, storage growth and processing overhead relative to dense capture while preserving human task-resumption performance within a predeclared acceptable degradation margin.
 
 ## P010 corrected final gate checkpoint
-The initial coaching-centric interpretation was corrected after AJ restated the original project: a more real-world-like online chess platform beginning with player-to-player voice communication and an automated arbiter/moderator, with possible later video supervision.
+Voice/video chess, speech-to-text, toxicity detection, generic contextual moderation, chess-rules QA, anti-cheat detection and automated warnings are not novelty claims. The surviving mechanism is **CVA — Contract-Aware Contextual Voice Arbitration**: match/game contract plus chess-board state, speaker role and game phase constrain live-speech adjudication of permitted conduct, prohibited assistance, misconduct and uncertain cases, with the research burden on improvement over simpler speech-only/context-poor baselines and false-penalty control.
 
-Passes 002–003 eliminated novelty claims around voice/video chess, speech-to-text, profanity/toxicity detection, generic contextual moderation, chess-rules QA, generic anti-cheat detection and automated warnings.
+## Closed novelty candidates
+P005, P008, P012 and P013 remain KILL as independent research-novelty/FYP candidates. Their historical research remains provenance and must not be deleted. P014 is PARK as creative/non-FYP.
 
-**H5 — Contextual Voice Arbitration:** incorporating chess-board state, speaker role, game phase and explicit match rules into live-speech adjudication may improve classification of permitted conduct, misconduct, prohibited assistance and uncertain cases while reducing false penalties relative to generic speech-only moderation.
+## Final comparison protocol
+Before any scoring or ordering, reconstruct each survivor using the same adversarial sequence:
 
-**Final P010 decision: CONDITIONAL GO TO FORMAL SPECIFICATION; PARKED FOR PORTFOLIO COMPARISON.**
+**current bounded mechanism → strongest prior art → strongest novelty attack → feasibility attack → experiment attack → surviving contribution → failure condition.**
 
-## P012 final gate checkpoint
-AJ's original concept is a configurable simulated audience for speeches, presentations, interviews and other high-pressure communication scenarios, intended for confidence-building and communication practice rather than assumed clinical treatment.
+Then compare consistently across novelty independence; direct prior-art collision risk; clarity of bounded contribution; falsifiability; strength of experimental baselines; experimental tractability; realistic data/evidence availability; final-year implementation feasibility; evaluation validity; supervisor/defense explainability; dependency/API/hardware risk; scope-creep risk; ethical/privacy burden; reproducibility; documentation maturity; and whether a negative result remains academically useful.
 
-Passes 001–002 eliminated novelty around virtual audiences, interview/presentation simulation, configurable personas, audience questions, multi-persona panels, generic confidence training, graded exposure, audience hostility/support, physiological adaptation, generic adaptive difficulty, adaptive questioning, performance-contingent coaching and transfer evaluation by itself.
-
-Pass 003 directly attacked the remaining **H6 — Transfer-Constrained Stressor Matching** hypothesis. Current commercial systems now close much of the same loop: Yoodli identifies skill gaps, provides targeted recommendations and repeated adaptive practice journeys; VirtualSpeech provides personalized post-roleplay coaching and focused micro-practice. Academic simulation research also contains adaptive, performance-driven virtual interlocutors, targeted communication feedback, deliberate-practice approaches and transfer to later simulated or real encounters.
-
-The exact conjunction of automatically inferred weakness + specifically matched audience stressor + deliberately unfamiliar transfer benchmark was not located as one canonical study, but the constituent and paired mechanisms are mature enough that narrowing to this conjunction would risk manufactured novelty rather than a robust research contribution.
-
-**Final P012 decision: KILL as research-novelty/FYP candidate; PARK as optional engineering/product project.** No formal research specification or implementation is authorized under the research-shortlist workflow.
-
-## P013 final gate checkpoint
-AJ's original concept is stronger than ordinary left/right balance: left and right earbuds should be able to act as independently useful endpoints when requested, such as media in one ear and a call or other service in the other, while retaining ordinary coordinated stereo and per-ear mute/attention modes.
-
-Passes 001–002 established that Bluetooth LE Audio can physically support independent streams to separate left/right sinks, while ordinary Android applications cannot arbitrarily reroute third-party media and cellular telephony and coordinated-set mechanisms intentionally preserve pair semantics.
-
-Pass 003 found decisive direct prior art. Bose patent family US11916988B2 / US20220103607 explicitly describes independent wireless earbuds receiving different LE Audio sources, including left and right buds tuned to different broadcasts, per-ear mono downmix, mobile-interface source selection, and examples involving one program in one ear and phone-call-related audio in the other. Additional patent and standards evidence includes Huawei-related separate left/right ISO-channel transmission, Google multi-source earbud switching work, Samsung Bluetooth multi-streaming, Qualcomm simultaneous multi-source headset prior art, and Bluetooth LE Audio Multi-Stream itself.
-
-The lack of widespread consumer exposure of this exact user experience does not create research novelty. Narrowing the claim to split/coupled transition policy, one media/call combination, per-ear mute, or implementation latency would risk manufactured novelty because multi-source assignment and switching are already established.
-
-**Final P013 decision: KILL as research-novelty/FYP candidate; PARK as optional advanced engineering/embedded-systems project.** A future controlled LE Audio prototype may still be valuable as implementation/integration work, but no formal research specification is authorized under the novelty shortlist.
+Research quality, documentation maturity and implementation progress are separate dimensions. Do not reward sunk documentation effort or penalize an unbuilt project merely for being unbuilt. Do not manufacture precision with arbitrary numerical scores.
 
 ## Required dossier before a general/FYP project is decision-ready
 1. Bounded problem and origin.

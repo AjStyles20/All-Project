@@ -42,21 +42,28 @@ class ProbeSelection:
 
 class ProbeSelector:
     def select(
-        self, *, gap_type: str, claim_id: str, probes: list[VerificationProbe],
+        self, *, gap_type: str, claim_id: str, probes: list[VerificationProbe], used_probe_ids: frozenset[str] = frozenset(),
     ) -> ProbeSelection:
         assessed = []
         adequate = []
         for probe in probes:
+            if probe.probe_id in used_probe_ids:
+                assessed.append((probe, False, False, "REJECTED_ALREADY_USED"))
+                continue
             admissible = claim_id in probe.applicable_claims and gap_type in probe.gap_types
             sufficient = admissible and gap_type in probe.potentially_sufficient_gap_types
             if sufficient:
                 adequate.append(probe)
-            assessed.append((probe, admissible, sufficient))
+            assessed.append((probe, admissible, sufficient, None))
 
         selected = min(adequate, key=lambda p: (p.burden_rank, p.probe_id)) if adequate else None
         dispositions = []
-        for probe, admissible, sufficient in assessed:
-            if not admissible:
+        for probe, admissible, sufficient, forced_disposition in assessed:
+            if forced_disposition == "REJECTED_ALREADY_USED":
+                disposition, rationale = "REJECTED_ALREADY_USED", (
+                    "Probe was already used in this verification run and is not reused."
+                )
+            elif not admissible:
                 disposition, rationale = "REJECTED_NOT_ADMISSIBLE", (
                     "Probe is not admissible for this claim/gap combination."
                 )

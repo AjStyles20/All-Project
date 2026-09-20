@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from app.domain.enums import EvidenceState
-from app.domain.experiment_run import ExperimentRun, FrozenMethodConfiguration
+from app.domain.experiment_run import ExperimentRun, ExperimentRunStatus, FrozenMethodConfiguration
 from app.persistence.database import Database
 from app.persistence.experiment_observation_repository import (
     ExperimentObservationRepository, PersistedMethodObservation,
@@ -17,7 +17,7 @@ def setup_run(tmp_path):
     runs=ExperimentRunRepository(db); obs=ExperimentObservationRepository(db)
     now=datetime.now(timezone.utc)
     runs.create(ExperimentRun(
-        "EXP-I","CASE-I","CC3","DEV-v1","AR-v1",
+        "EXP-I","CASE-I","CC3","DEV-v1","AR-v1",ExperimentRunStatus.ACTIVE,
         started_at=now,
     ))
     for method in ("B0","B1","B2","B3","B4"):

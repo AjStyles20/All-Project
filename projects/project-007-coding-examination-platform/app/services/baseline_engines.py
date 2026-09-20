@@ -25,6 +25,18 @@ class _EvidenceBoundary:
     def include(evidence: Iterable[EvidenceItem], allowed: frozenset[EvidenceType]):
         return [item for item in evidence if item.evidence_type in allowed]
 
+    @staticmethod
+    def include_b2(evidence: Iterable[EvidenceItem], allowed: frozenset[EvidenceType]):
+        """B2 may consume only explicitly provenance-marked fixed-viva verification."""
+        return [
+            item for item in evidence
+            if item.evidence_type in allowed
+            and (
+                item.evidence_type is not EvidenceType.VERIFICATION
+                or item.source_type == "fixed_viva"
+            )
+        ]
+
 
 class B0Engine:
     """Final submission + ordinary tests/rubric only."""
@@ -58,11 +70,11 @@ class B2Engine(B1Engine):
         # The evidence boundary is implemented now; the fixed-viva response
         # rubric remains a separate method-freeze item. No targeted probe
         # selection is permitted here.
-        bounded = _EvidenceBoundary.include(evidence, self.allowed)
+        bounded = _EvidenceBoundary.include_b2(evidence, self.allowed)
         result = EvidenceEvaluator().evaluate(claim_id, bounded)
         return BaselineResult(
             self.method, claim_id, result.state,
-            f"B2 fixed-viva boundary (no targeted selection): {result.rationale}",
+            f"B2 fixed-viva boundary (no targeted selection; targeted-verification evidence excluded): {result.rationale}",
             tuple(item.evidence_id for item in bounded),
         )
 

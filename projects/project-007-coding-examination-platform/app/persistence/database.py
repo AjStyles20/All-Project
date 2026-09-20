@@ -77,6 +77,25 @@ CREATE TABLE IF NOT EXISTS evidence_state_history (
     FOREIGN KEY (claim_id) REFERENCES competence_claim_definitions(claim_id)
 );
 
+CREATE TABLE IF NOT EXISTS probe_candidate_audit (
+    candidate_audit_seq INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id TEXT NOT NULL,
+    case_id TEXT NOT NULL,
+    claim_id TEXT NOT NULL,
+    gap_type TEXT NOT NULL,
+    probe_id TEXT NOT NULL,
+    admissible INTEGER NOT NULL CHECK (admissible IN (0, 1)),
+    potentially_sufficient INTEGER NOT NULL CHECK (potentially_sufficient IN (0, 1)),
+    burden_rank INTEGER NOT NULL,
+    disposition TEXT NOT NULL,
+    rationale TEXT NOT NULL,
+    FOREIGN KEY (case_id) REFERENCES programming_cases(case_id),
+    UNIQUE (event_id, probe_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_probe_candidate_audit_case
+    ON probe_candidate_audit(case_id, candidate_audit_seq);
+
 CREATE TABLE IF NOT EXISTS audit_events (
     audit_event_seq INTEGER PRIMARY KEY AUTOINCREMENT,
     event_id TEXT NOT NULL UNIQUE,

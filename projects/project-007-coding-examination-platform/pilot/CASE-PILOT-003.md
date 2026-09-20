@@ -10,9 +10,13 @@ Use the same `count_even(values)` specification and submitted artifact family as
 
 ## Independent response condition
 
-The constructed independent response proposes input `[2, 3]`, but gives an incomplete/incorrect expected-result explanation while still showing a relevant attempt to distinguish even from odd values.
+The exact frozen constructed response shown to the assessor is:
 
-For the dry-run worksheet, the exact response text must be frozen before administration and must not be edited after an assessor judgment.
+> Input: `[2, 3]`. Expected output: `2`. Reason: this checks that the function can handle both an even and an odd number.
+
+The input is relevant, but the expected output is incorrect (`count_even([2, 3])` should return `1`). The response therefore intentionally contains meaningful but incomplete/incorrect evidence. This explanatory construction note must be hidden from the assessor until after independent judgment.
+
+The literal response above is frozen for v1.0 and must not be edited after an assessor judgment.
 
 ## Intended stress
 

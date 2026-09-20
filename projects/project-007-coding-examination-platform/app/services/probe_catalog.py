@@ -29,6 +29,7 @@ def cc3_development_probes() -> list[VerificationProbe]:
             gap_types=frozenset({"EG-T3"}),
             potentially_sufficient_gap_types=frozenset({"EG-T3"}),
             burden_rank=2,
+            executable=True,
         ),
         VerificationProbe(
             probe_id="VP-CC3-03",

@@ -7,11 +7,11 @@ from app.domain.models import EvidenceItem
 from app.services.baseline_experiment_runner import BaselineExperimentRunner
 
 
-def ev(evidence_id, evidence_type, case_id="CASE-DEV-003"):
+def ev(evidence_id, evidence_type, case_id="CASE-DEV-003", source_type="experiment-fixture"):
     return EvidenceItem(
         evidence_id=evidence_id, case_id=case_id,
         evidence_type=evidence_type, content=evidence_id,
-        source_type="experiment-fixture", created_at=datetime.now(timezone.utc),
+        source_type=source_type, created_at=datetime.now(timezone.utc),
     )
 
 
@@ -21,7 +21,7 @@ def test_runner_uses_same_case_evidence_but_preserves_method_boundaries():
         ev("EV-X", EvidenceType.EXECUTION),
         ev("EV-R", EvidenceType.RUBRIC),
         ev("EV-P", EvidenceType.PROCESS),
-        ev("EV-V", EvidenceType.VERIFICATION),
+        ev("EV-V", EvidenceType.VERIFICATION, source_type="fixed_viva"),
         ev("EV-C", EvidenceType.POLICY_CONTEXT),
     ]
 

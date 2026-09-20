@@ -100,3 +100,23 @@ Use this file for durable architectural, methodological, governance, and scope d
 - Decision: Before recommending/selecting the final FYP, compare P001, P003, P004, P007, P009 and P010 using a normalized evidence matrix with no arbitrary initial weighted score. Keep separate at minimum: **research defensibility; prior-art distance; experimental strength/falsifiability; evidence/data feasibility; implementation feasibility; evaluation validity; benchmark/human-study burden; scope/time risk; dependency risk; defense explainability; reproducibility; negative-result value; documentation maturity.** Identify genuine trade-offs and Pareto-dominated candidates before any final selection.
 - Consequences: P004's **FRAGILE** residual must remain visible. Documentation maturity is reported separately and cannot determine research quality. No Chapter 3 or implementation begins before this gate is inspected and explicitly resolved.
 - Approved by: AJ explicitly on 2026-09-16.
+
+
+## DR-010 — Final Comparative Selection Gate resolved; authorize staged P001 then P003 implementation
+- Date: 2026-09-20
+- Status: Approved
+- Authority level: A3
+- Context: The six surviving FYP candidates were compared after DR-009 using residual contribution, falsifiability, evidence/data feasibility, implementation feasibility, dependency risk, defense clarity, reproducibility, negative-result value, engineering substance and research-to-system traceability. P004 remains scientifically fragile; P009 requires a human-participant study; P007 and P010 retain external-validation/materiality dependencies. P001 and P003 retain strong, experimentally separable residuals with feasible local implementation.
+- Decision:
+  - Select **P001 Intelligent Coding Examination Platform** as the first research-critical implementation target.
+  - Select **P003 Geopolitical Economic Risk to Economic Impact Forecasting and Warning System** as the second implementation target.
+  - Keep P004, P007, P009 and P010 as research survivors/reserves subject to their existing gates; do not treat this implementation order as a claim that other survivors are globally inferior.
+  - For P001, the implementation contribution remains **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, specifically competence-gap-driven bounded minimum independent evidence acquisition.
+  - Authorize research-critical P001 implementation only after/alongside explicit method/specification contracts. Fuller product features remain deferred.
+  - P003 implementation should not begin until P001 reaches an agreed checkpoint unless AJ explicitly changes the order.
+- Rationale: P001 permits a bounded local experiment with explicit B0–B4 baselines, strong research-to-software traceability, useful negative results, no required external API, and manageable hardware requirements. P003 remains the next implementation candidate but requires careful evidence-chain construction and domain review.
+- Consequences: DR-009's implementation prohibition is satisfied and superseded prospectively by this completed selection decision. Historical records remain unchanged. Implementation does not establish scientific superiority; independent assessment and held-out evaluation remain required.
+- Files/components affected: P001 specification/implementation; P003 future implementation; portfolio control records.
+- Claims affected: future P001 implementation status and future P003 implementation order.
+- Approved by: AJ through the completed All-Project selection/implementation workflow and repeated authorization to proceed.
+- Supersedes: DR-009 only with respect to the unresolved Final Comparative Selection Gate and implementation prohibition; DR-009's comparison criteria remain historical methodology.

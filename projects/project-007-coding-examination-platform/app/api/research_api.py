@@ -3,15 +3,27 @@
 The API is read-only at M7: it does not create evidence, change method outputs,
 or perform consequential assessment decisions.
 """
+from datetime import datetime, timezone
+
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
 from fastapi.responses import JSONResponse
 
 from app.persistence.database import Database
 from app.persistence.audit_repository import AuditRepository
 from app.persistence.experiment_observation_repository import ExperimentObservationRepository
 from app.persistence.experiment_run_repository import ExperimentRunRepository
+from app.domain.enums import EvidenceState
 from app.services.experiment_export import ExperimentExporter
+from app.services.experiment_record import IndependentReferenceJudgment
 from app.services.research_interface import ResearchInterface
+
+
+class ReferenceJudgmentInput(BaseModel):
+    assessor_id: str = Field(min_length=1)
+    state: EvidenceState
+    rationale: str = Field(min_length=1)
+    rubric_version: str = Field(min_length=1)
 
 
 def create_research_app(database_path: str) -> FastAPI:
@@ -35,6 +47,40 @@ def create_research_app(database_path: str) -> FastAPI:
             return exporter.as_dict(experiment_run_id)
         except ValueError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @app.post("/research/experiments/{experiment_run_id}/reference", status_code=201)
+    def record_reference(experiment_run_id: str, payload: ReferenceJudgmentInput):
+        run = interface.runs.get(experiment_run_id)
+        if run is None:
+            raise HTTPException(status_code=404, detail="Unknown experiment run.")
+        reference = IndependentReferenceJudgment(
+            assessor_id=payload.assessor_id,
+            claim_id=run.claim_id,
+            state=payload.state,
+            rationale=payload.rationale,
+            rubric_version=payload.rubric_version,
+        )
+        try:
+            interface.observations.add_reference(
+                experiment_run_id, reference, datetime.now(timezone.utc)
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
+        except Exception as exc:
+            # The persistence layer enforces one immutable reference per run.
+            if "UNIQUE constraint failed" in str(exc):
+                raise HTTPException(
+                    status_code=409,
+                    detail="Independent reference already exists for this experiment.",
+                ) from exc
+            raise
+        return {
+            "experiment_run_id": experiment_run_id,
+            "claim_id": run.claim_id,
+            "assessor_id": payload.assessor_id,
+            "state": payload.state.value,
+            "rubric_version": payload.rubric_version,
+        }
 
     @app.get("/research/experiments/{experiment_run_id}/audit")
     def experiment_audit(experiment_run_id: str):

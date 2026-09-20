@@ -77,6 +77,32 @@ CREATE TABLE IF NOT EXISTS evidence_state_history (
     FOREIGN KEY (claim_id) REFERENCES competence_claim_definitions(claim_id)
 );
 
+CREATE TABLE IF NOT EXISTS audit_events (
+    audit_event_seq INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id TEXT NOT NULL UNIQUE,
+    case_id TEXT NOT NULL,
+    event_type TEXT NOT NULL
+        CHECK (event_type IN (
+            'EVIDENCE_STATE_RECORDED', 'GAP_DETECTED', 'PROBE_SELECTION',
+            'PROBE_RESULT_RECORDED', 'CONTROL_DECISION'
+        )),
+    recorded_at TEXT NOT NULL,
+    actor_type TEXT NOT NULL,
+    rationale TEXT NOT NULL,
+    claim_id TEXT,
+    gap_type TEXT,
+    probe_id TEXT,
+    evidence_id TEXT,
+    from_state TEXT,
+    to_state TEXT,
+    decision TEXT,
+    method_version TEXT,
+    FOREIGN KEY (case_id) REFERENCES programming_cases(case_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_audit_case
+    ON audit_events(case_id, audit_event_seq);
+
 CREATE INDEX IF NOT EXISTS idx_evidence_case
     ON evidence_items(case_id);
 

@@ -45,12 +45,12 @@ def case_pilot_001() -> PilotCaseBundle:
     evidence = (
         EvidenceItem(
             "P001-EV-A1", case.case_id, EvidenceType.ARTIFACT,
-            "Frozen count_even implementation from CASE-PILOT-001.",
+            "def count_even(values):\\n    count = 0\\n    for value in values:\\n        if value % 2 == 0:\\n            count += 1\\n    return count",
             "constructed_pilot_artifact", _time(),
         ),
         EvidenceItem(
             "P001-EV-X1", case.case_id, EvidenceType.EXECUTION,
-            "Frozen record: examiner-supplied tests pass.",
+            "Examiner-supplied execution record: [1, 2, 3, 4] -> 2 PASS; [2, 4, 6] -> 3 PASS; [1, 3, 5] -> 0 PASS.",
             "constructed_reference_execution", _time(),
         ),
     )

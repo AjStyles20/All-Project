@@ -2,7 +2,7 @@
 
 **Authority:** This file is the canonical cross-reference for project identity after the 10 September 2026 renumbering. Historical folder names and document filenames may retain earlier IDs. When an old ID conflicts with this index, this index controls interpretation.
 
-**Last reconciled/synchronized:** 16 September 2026 — Final Portfolio Research Gate.
+**Last reconciled/synchronized:** 20 September 2026 — P003 implementation completion boundary.
 
 ## Rules
 
@@ -14,7 +14,7 @@
 6. Historical Project 001 implementation/test claims conflict across control records and remain unresolved; do not repeat the approximately-146-test claim as verified fact without direct implementation/test evidence.
 7. Implementation does not imply verification. Drive presence does not imply audit/freeze.
 8. Final Portfolio Gate contribution statements supersede broader earlier research claims prospectively; historical research passes/documents are preserved as lineage and must not be rewritten to imply the narrowed claim was always the claim.
-9. No survivor is authorized for Chapter 3 or implementation until the Final Comparative Selection Gate is completed and explicitly approved.
+9. Historical rule: no survivor was authorized for Chapter 3 or implementation before the Final Comparative Selection Gate. DR-010 resolved that gate and prospectively authorized staged P001 then P003 implementation; the historical prohibition remains lineage, not current status.
 
 ## Canonical Migration Map
 
@@ -22,7 +22,7 @@
 |---|---|---|---|---|---|---|
 | P001 | P007 | Intelligent Coding Examination Platform | `projects/project-007-coding-examination-platform` | **SURVIVES** | **STRONG** — competence-gap-driven minimum independent evidence acquisition | `P001_Coding_Examination_Platform_Chapters_1_2_Audited_Draft_v4.docx` — frozen v4; broader EGPCV wording in older material is superseded where inconsistent |
 | P002 | P003 | AJ's Educational Language Model From Scratch | `projects/project-003-small-educational-language-model` / related historical P003 folders | BUILD REGARDLESS OF NOVELTY; outside FYP competition | Personal mastery track | Discovery/evidence stage; not frozen |
-| P003 | P011 | Geopolitical Risk to Economic Impact Forecasting and Warning System | `projects/project-011-geopolitical-economic-risk` | **SURVIVES** | **STRONG** — typed transmission-edge evidence sufficiency + weakest-link downstream claim progression | `P003_Geopolitical_Economic_Risk_Chapters_1_2_Audited_Draft_v4.docx` — frozen v4; generic evidence-contract/RAG/abstention novelty claims superseded |
+| P003 | P011 | Geopolitical Risk to Economic Impact Forecasting and Warning System | `projects/project-011-geopolitical-economic-risk` | **IMPLEMENTATION ACTIVE — INTERNAL BOUNDARY COMPLETE; EXTERNAL EMPIRICAL EVALUATION PENDING** | **STRONG** — typed transmission-edge evidence sufficiency + weakest-link downstream claim progression | Frozen Chapters 1–2 v4 remains the historical academic baseline; current technical status is governed by DR-010/DR-011 and the P003 implementation-completion boundary |
 | P004 | P012 | Internet Compression and Optimization Proxy System | `projects/project-012-internet-compression-proxy` | **PROVISIONAL SURVIVOR** | **FRAGILE** — modern empirical systems evaluation under already-compressed content, modern codecs, protocol/security constraints and low-resource deployment; scientific materiality remains uncertain | `P004_Internet_Compression_Optimization_Proxy_Chapters_1_2_Audited_Draft_v4.docx` present historically/connected workspace; audit/freeze incomplete — **NOT FROZEN** |
 | P005 | P014 | Automated Log Analysis and Root-Cause Assistance Tool | `projects/project-014-log-root-cause` | KILL research novelty; engineering parked | — | None |
 | P006 | P002 | AI-Powered Virtual Classroom and Personal Learning World | `projects/project-002-ai-virtual-classroom` | **PARK AS INDEPENDENT FYP** | MEC **COLLAPSED** under final same-engine/prior-art attack; Personal Learning World remains a valid product/project concept; no further narrowing during this gate | v2 remains reliable historical baseline; v3 **BROKEN; DO NOT USE/FREEZE** |
@@ -67,4 +67,4 @@ GitHub remains internally inconsistent about the historical AI Defense Simulator
 
 The independent FYP survivor set after the completed Final Portfolio Research Gate is **P001, P003, P004, P007, P009 and P010**. P004 is explicitly a **PROVISIONAL SURVIVOR / FRAGILE residual**. P006 and P011 are parked as independent FYP candidates for different reasons: P006's residual mechanism collapsed under prior-art/same-engine attack; P011 collided with P001. P002 remains outside the FYP competition. P005, P008, P012 and P013 remain killed on research novelty; P014 remains creative/non-FYP.
 
-**Next phase:** Final Comparative Selection Gate among the six survivors. No implementation or Chapter 3 is authorized before that gate is inspected and explicitly resolved.
+**Current phase:** The Final Comparative Selection Gate has been resolved by DR-010. P001 and P003 are the authorized implementation tracks. P003 has reached the DR-011 internal implementation-completion boundary and now awaits external empirical evaluation; P004, P007, P009 and P010 remain reserves unless a later approved decision promotes them.

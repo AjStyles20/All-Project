@@ -36,6 +36,6 @@ def test_cc3_selection_persists_why_each_candidate_was_selected_or_rejected(tmp_
     assert by_probe["VP-CC3-02"].disposition == "SELECTED"
     assert by_probe["VP-CC3-02"].burden_rank == 2
 
-    assert by_probe["VP-CC3-03"].disposition == "REJECTED_HIGHER_BURDEN"
+    assert by_probe["VP-CC3-03"].disposition == "REJECTED_NOT_EXECUTABLE"
     assert by_probe["VP-CC3-03"].potentially_sufficient is True
     assert by_probe["VP-CC3-03"].burden_rank == 3

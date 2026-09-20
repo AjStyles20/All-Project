@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timezone
 
-from app.domain.enums import EvidenceState
+from app.domain.enums import EvidenceState\nfrom app.domain.models import ProgrammingCase, CompetenceClaim\nfrom app.persistence.repositories import P001Repository
 from app.domain.experiment_run import ExperimentRun, ExperimentRunStatus
 from app.persistence.database import Database
 from app.persistence.experiment_observation_repository import ExperimentObservationRepository
@@ -12,7 +12,7 @@ from app.services.research_interface import ResearchInterface
 
 def test_export_is_machine_readable_and_preserves_missing_components(tmp_path):
     db=Database(tmp_path/"export.db"); db.initialize()
-    runs=ExperimentRunRepository(db); observations=ExperimentObservationRepository(db)
+    core=P001Repository(db); runs=ExperimentRunRepository(db); observations=ExperimentObservationRepository(db)\n    core.add_case(ProgrammingCase(\"CASE-X\",\"Export case\",\"Development fixture\",\"Python\"))\n    core.add_claim(CompetenceClaim(\"CC3\",\"Test Design\",\"Design appropriate tests.\"))
     runs.create(ExperimentRun(
         "EXP-X","CASE-X","CC3","DEV-v1","AR-v1",ExperimentRunStatus.ACTIVE,
         started_at=datetime.now(timezone.utc),

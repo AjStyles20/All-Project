@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from app.domain.enums import EvidenceState
+from app.domain.enums import EvidenceState\nfrom app.domain.models import ProgrammingCase, CompetenceClaim\nfrom app.persistence.repositories import P001Repository
 from app.domain.experiment_run import ExperimentRun, ExperimentRunStatus, FrozenMethodConfiguration
 from app.persistence.database import Database
 from app.persistence.experiment_observation_repository import (
@@ -14,7 +14,7 @@ from app.services.verification_burden import VerificationBurden
 
 def setup_run(tmp_path):
     db=Database(tmp_path/"interface.db"); db.initialize()
-    runs=ExperimentRunRepository(db); obs=ExperimentObservationRepository(db)
+    core=P001Repository(db); runs=ExperimentRunRepository(db); obs=ExperimentObservationRepository(db)\n    core.add_case(ProgrammingCase(\"CASE-I\",\"Interface case\",\"Development fixture\",\"Python\"))\n    core.add_claim(CompetenceClaim(\"CC3\",\"Test Design\",\"Design appropriate tests.\"))
     now=datetime.now(timezone.utc)
     runs.create(ExperimentRun(
         "EXP-I","CASE-I","CC3","DEV-v1","AR-v1",ExperimentRunStatus.ACTIVE,

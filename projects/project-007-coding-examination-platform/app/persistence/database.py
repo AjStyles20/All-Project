@@ -150,6 +150,31 @@ CREATE TABLE IF NOT EXISTS audit_events (
 CREATE INDEX IF NOT EXISTS idx_audit_case
     ON audit_events(case_id, audit_event_seq);
 
+CREATE TABLE IF NOT EXISTS experiment_runs (
+    experiment_run_id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL,
+    claim_id TEXT NOT NULL,
+    corpus_version TEXT NOT NULL,
+    assessor_rubric_version TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('ACTIVE', 'COMPLETE', 'INVALID')),
+    started_at TEXT NOT NULL,
+    ended_at TEXT,
+    FOREIGN KEY (case_id) REFERENCES programming_cases(case_id),
+    FOREIGN KEY (claim_id) REFERENCES competence_claim_definitions(claim_id)
+);
+
+CREATE TABLE IF NOT EXISTS experiment_method_configurations (
+    experiment_run_id TEXT NOT NULL,
+    method TEXT NOT NULL CHECK (method IN ('B0', 'B1', 'B2', 'B3', 'B4')),
+    method_version TEXT NOT NULL,
+    configuration_version TEXT NOT NULL,
+    PRIMARY KEY (experiment_run_id, method),
+    FOREIGN KEY (experiment_run_id) REFERENCES experiment_runs(experiment_run_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_experiment_runs_case_claim
+    ON experiment_runs(case_id, claim_id, started_at);
+
 CREATE INDEX IF NOT EXISTS idx_evidence_case
     ON evidence_items(case_id);
 

@@ -76,3 +76,53 @@ def test_audit_endpoint_is_bounded_to_experiment_case_and_claim(tmp_path):
     assert payload["case_id"] == "CASE-API"
     assert [event["event_id"] for event in payload["events"]] == ["AE-1"]
     assert payload["events"][0]["gap_type"] == "EG-T3"
+
+
+def test_reference_endpoint_binds_claim_and_accepts_frozen_rubric(tmp_path):
+    path = tmp_path / "api.db"
+    seed(path)
+    client = TestClient(create_research_app(str(path)))
+    response = client.post("/research/experiments/EXP-API/reference", json={
+        "assessor_id": "ASSESSOR-01",
+        "state": "SUPPORTED",
+        "rationale": "Independent rubric-based judgment.",
+        "rubric_version": "AR-v1",
+    })
+    assert response.status_code == 201
+    payload = response.json()
+    assert payload["claim_id"] == "CC3"
+    assert payload["assessor_id"] == "ASSESSOR-01"
+    inspected = client.get("/research/experiments/EXP-API").json()
+    assert inspected["reference_state"] == "SUPPORTED"
+    assert inspected["reference_assessor_id"] == "ASSESSOR-01"
+
+
+def test_reference_endpoint_rejects_wrong_rubric_and_overwrite(tmp_path):
+    path = tmp_path / "api.db"
+    seed(path)
+    client = TestClient(create_research_app(str(path)))
+    wrong = client.post("/research/experiments/EXP-API/reference", json={
+        "assessor_id": "ASSESSOR-01",
+        "state": "SUPPORTED",
+        "rationale": "Wrong rubric attempt.",
+        "rubric_version": "AR-WRONG",
+    })
+    assert wrong.status_code == 409
+    assert "rubric" in wrong.json()["detail"].lower()
+
+    first = client.post("/research/experiments/EXP-API/reference", json={
+        "assessor_id": "ASSESSOR-01",
+        "state": "SUPPORTED",
+        "rationale": "First independent judgment.",
+        "rubric_version": "AR-v1",
+    })
+    assert first.status_code == 201
+
+    second = client.post("/research/experiments/EXP-API/reference", json={
+        "assessor_id": "ASSESSOR-02",
+        "state": "UNRESOLVED",
+        "rationale": "Attempted overwrite.",
+        "rubric_version": "AR-v1",
+    })
+    assert second.status_code == 409
+    assert "already exists" in second.json()["detail"].lower()

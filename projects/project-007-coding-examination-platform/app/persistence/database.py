@@ -77,6 +77,34 @@ CREATE TABLE IF NOT EXISTS evidence_state_history (
     FOREIGN KEY (claim_id) REFERENCES competence_claim_definitions(claim_id)
 );
 
+CREATE TABLE IF NOT EXISTS verification_runs (
+    run_id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL,
+    method_version TEXT NOT NULL,
+    configuration_version TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN (
+        'ACTIVE', 'VERIFICATION_COMPLETE', 'HUMAN_REVIEW_REQUIRED'
+    )),
+    started_at TEXT NOT NULL,
+    ended_at TEXT,
+    final_decision TEXT,
+    final_rationale TEXT,
+    FOREIGN KEY (case_id) REFERENCES programming_cases(case_id)
+);
+
+CREATE TABLE IF NOT EXISTS verification_run_probes (
+    run_id TEXT NOT NULL,
+    probe_id TEXT NOT NULL,
+    claim_id TEXT NOT NULL,
+    gap_type TEXT NOT NULL,
+    used_at TEXT NOT NULL,
+    PRIMARY KEY (run_id, probe_id),
+    FOREIGN KEY (run_id) REFERENCES verification_runs(run_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_verification_runs_case
+    ON verification_runs(case_id, started_at);
+
 CREATE TABLE IF NOT EXISTS probe_candidate_audit (
     candidate_audit_seq INTEGER PRIMARY KEY AUTOINCREMENT,
     event_id TEXT NOT NULL,

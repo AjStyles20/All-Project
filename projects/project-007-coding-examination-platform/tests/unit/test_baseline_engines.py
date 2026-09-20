@@ -5,11 +5,11 @@ from app.domain.models import EvidenceItem
 from app.services.baseline_engines import B0Engine, B1Engine, B2Engine, B3Engine
 
 
-def ev(evidence_id, evidence_type):
+def ev(evidence_id, evidence_type, source_type="test-fixture"):
     return EvidenceItem(
         evidence_id=evidence_id, case_id="CASE-DEV-003",
         evidence_type=evidence_type, content=evidence_id,
-        source_type="test-fixture", created_at=datetime.now(timezone.utc),
+        source_type=source_type, created_at=datetime.now(timezone.utc),
     )
 
 
@@ -37,7 +37,7 @@ def test_b1_adds_process_but_not_verification():
 def test_b2_can_consume_fixed_viva_evidence_but_does_not_select_probes():
     evidence = [
         ev("A", EvidenceType.ARTIFACT), ev("P", EvidenceType.PROCESS),
-        ev("V", EvidenceType.VERIFICATION),
+        ev("V", EvidenceType.VERIFICATION, "fixed_viva"),
     ]
     result = B2Engine().evaluate("CC3", evidence)
     assert result.evidence_ids == ("A", "P", "V")
@@ -58,7 +58,7 @@ def test_same_evidence_produces_explicitly_different_information_sets():
     evidence = [
         ev("A", EvidenceType.ARTIFACT), ev("X", EvidenceType.EXECUTION),
         ev("R", EvidenceType.RUBRIC), ev("P", EvidenceType.PROCESS),
-        ev("V", EvidenceType.VERIFICATION),
+        ev("V", EvidenceType.VERIFICATION, "fixed_viva"),
     ]
     assert B0Engine().evaluate("CC3", evidence).evidence_ids == ("A", "X", "R")
     assert B1Engine().evaluate("CC3", evidence).evidence_ids == ("A", "X", "R", "P")

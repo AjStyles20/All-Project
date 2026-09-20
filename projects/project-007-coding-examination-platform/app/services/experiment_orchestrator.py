@@ -15,6 +15,9 @@ from app.persistence.experiment_observation_repository import (
 )
 from app.persistence.experiment_run_repository import ExperimentRunRepository
 from app.services.experiment_record import IndependentReferenceJudgment
+from app.services.baseline_experiment_runner import BaselineExperimentRunner
+from app.services.verification_burden import VerificationBurden
+from app.domain.models import EvidenceItem
 
 
 REQUIRED_METHODS = ("B0", "B1", "B2", "B3", "B4")
@@ -43,6 +46,55 @@ class ExperimentOrchestrator:
                 experiment_run_id, method, method_version, configuration_version,
             ))
         return run
+
+    def execute_b0_b3(
+        self, *, experiment_run_id: str, case_id: str, claim_id: str,
+        evidence: list[EvidenceItem], recorded_at: datetime,
+        b2_burden: VerificationBurden | None = None,
+    ) -> tuple[PersistedMethodObservation, ...]:
+        """Execute B0-B3 from one evidence collection under frozen boundaries.
+
+        B0, B1 and B3 have zero verification burden here. B2 burden must be
+        supplied from the actual fixed-viva administration when B2 verification
+        evidence is present; it is never guessed.
+        """
+        run = self.runs.get(experiment_run_id)
+        if run is None or run.status is not ExperimentRunStatus.ACTIVE:
+            raise ValueError("Baseline execution requires an ACTIVE experiment run.")
+        if run.case_id != case_id or run.claim_id != claim_id:
+            raise ValueError("Execution case/claim must match the frozen experiment.")
+
+        result = BaselineExperimentRunner().run(
+            case_id=case_id, claim_id=claim_id, evidence=evidence,
+        )
+        observations = []
+        for baseline in result.results:
+            if baseline.method == "B2":
+                has_fixed_viva = any(
+                    item.evidence_id in baseline.evidence_ids
+                    and item.evidence_type.value == "VERIFICATION"
+                    and item.source_type == "fixed_viva"
+                    for item in evidence
+                )
+                if has_fixed_viva and b2_burden is None:
+                    raise ValueError(
+                        "B2 fixed-viva evidence requires measured burden; it cannot be guessed."
+                    )
+                burden = b2_burden or VerificationBurden(0, 0.0, ())
+            else:
+                burden = VerificationBurden(0, 0.0, ())
+
+            observation = PersistedMethodObservation(
+                experiment_run_id=experiment_run_id,
+                method=baseline.method,
+                system_state=baseline.state,
+                evidence_ids=baseline.evidence_ids,
+                burden=burden,
+                recorded_at=recorded_at,
+            )
+            self.record_method(observation)
+            observations.append(observation)
+        return tuple(observations)
 
     def record_method(self, observation: PersistedMethodObservation) -> None:
         run = self.runs.get(observation.experiment_run_id)

@@ -175,6 +175,37 @@ CREATE TABLE IF NOT EXISTS experiment_method_configurations (
 CREATE INDEX IF NOT EXISTS idx_experiment_runs_case_claim
     ON experiment_runs(case_id, claim_id, started_at);
 
+CREATE TABLE IF NOT EXISTS experiment_method_observations (
+    experiment_run_id TEXT NOT NULL,
+    method TEXT NOT NULL CHECK (method IN ('B0', 'B1', 'B2', 'B3', 'B4')),
+    system_state TEXT NOT NULL CHECK (
+        system_state IN ('SUPPORTED', 'PARTIAL', 'UNRESOLVED', 'CONTRADICTED')
+    ),
+    evidence_ids TEXT NOT NULL,
+    question_count INTEGER NOT NULL CHECK (question_count >= 0),
+    verification_seconds REAL NOT NULL CHECK (verification_seconds >= 0),
+    complexity TEXT NOT NULL,
+    recorded_at TEXT NOT NULL,
+    PRIMARY KEY (experiment_run_id, method),
+    FOREIGN KEY (experiment_run_id, method)
+        REFERENCES experiment_method_configurations(experiment_run_id, method)
+);
+
+CREATE TABLE IF NOT EXISTS experiment_reference_judgments (
+    experiment_run_id TEXT PRIMARY KEY,
+    assessor_id TEXT NOT NULL,
+    claim_id TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (
+        state IN ('SUPPORTED', 'PARTIAL', 'UNRESOLVED', 'CONTRADICTED')
+    ),
+    rationale TEXT NOT NULL,
+    rubric_version TEXT NOT NULL,
+    recorded_at TEXT NOT NULL,
+    FOREIGN KEY (experiment_run_id) REFERENCES experiment_runs(experiment_run_id),
+    FOREIGN KEY (claim_id) REFERENCES competence_claim_definitions(claim_id)
+);
+
+
 CREATE INDEX IF NOT EXISTS idx_evidence_case
     ON evidence_items(case_id);
 

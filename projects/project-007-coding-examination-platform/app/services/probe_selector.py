@@ -18,6 +18,7 @@ class VerificationProbe:
     gap_types: frozenset[str]
     potentially_sufficient_gap_types: frozenset[str]
     burden_rank: int
+    executable: bool = False
 
 
 @dataclass(frozen=True)
@@ -52,7 +53,7 @@ class ProbeSelector:
                 continue
             admissible = claim_id in probe.applicable_claims and gap_type in probe.gap_types
             sufficient = admissible and gap_type in probe.potentially_sufficient_gap_types
-            if sufficient:
+            if sufficient and probe.executable:
                 adequate.append(probe)
             assessed.append((probe, admissible, sufficient, None))
 
@@ -71,6 +72,10 @@ class ProbeSelector:
                 disposition, rationale = "REJECTED_INSUFFICIENT", (
                     "Probe is admissible but is not classified as potentially sufficient "
                     "for this gap under the frozen development catalogue."
+                )
+            elif sufficient and not probe.executable:
+                disposition, rationale = "REJECTED_NOT_EXECUTABLE", (
+                    "Probe is potentially sufficient but has no frozen executable response evaluator."
                 )
             elif probe.probe_id == selected.probe_id:
                 disposition, rationale = "SELECTED", (
@@ -98,6 +103,6 @@ class ProbeSelector:
         return ProbeSelection(
             gap_type=gap_type, claim_id=claim_id, selected_probe=selected,
             decision="CONTINUE_VERIFICATION",
-            rationale="Selected the lowest-burden probe among candidates that are admissible and potentially sufficient under the frozen development probe set.",
+            rationale="Selected the lowest-burden probe among candidates that are admissible, potentially sufficient, and executable under the frozen development probe set.",
             candidate_dispositions=tuple(dispositions),
         )

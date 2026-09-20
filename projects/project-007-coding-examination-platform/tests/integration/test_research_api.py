@@ -4,6 +4,8 @@ from fastapi.testclient import TestClient
 
 from app.api.research_api import create_research_app
 from app.domain.experiment_run import ExperimentRun, ExperimentRunStatus
+from app.domain.audit import AuditEvent, AuditEventType
+from app.persistence.audit_repository import AuditRepository
 from app.domain.models import CompetenceClaim, ProgrammingCase
 from app.persistence.database import Database
 from app.persistence.experiment_run_repository import ExperimentRunRepository
@@ -50,3 +52,27 @@ def test_unknown_experiment_is_404(tmp_path):
     response = client.get("/research/experiments/DOES-NOT-EXIST")
     assert response.status_code == 404
     assert response.json()["detail"] == "Unknown experiment run."
+
+
+def test_audit_endpoint_is_bounded_to_experiment_case_and_claim(tmp_path):
+    path = tmp_path / "api.db"
+    seed(path)
+    db = Database(path)
+    audits = AuditRepository(db)
+    now = datetime.now(timezone.utc)
+    audits.append(AuditEvent(
+        "AE-1", "CASE-API", AuditEventType.GAP_DETECTED, now,
+        "SYSTEM", "CC3 gap detected.", claim_id="CC3", gap_type="EG-T3",
+    ))
+    audits.append(AuditEvent(
+        "AE-2", "CASE-API", AuditEventType.CONTROL_DECISION, now,
+        "SYSTEM", "Different claim event.", claim_id="CC5",
+        decision="CONTINUE_VERIFICATION",
+    ))
+    client = TestClient(create_research_app(str(path)))
+    response = client.get("/research/experiments/EXP-API/audit")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["case_id"] == "CASE-API"
+    assert [event["event_id"] for event in payload["events"]] == ["AE-1"]
+    assert payload["events"][0]["gap_type"] == "EG-T3"

@@ -46,7 +46,7 @@ class VerificationWorkflow:
                 f"expected={response.expected_result!r}; "
                 f"reason={response.usefulness_reason!r}"
             ),
-            source_type=selection.selected_probe.probe_id,
+            source_type="targeted_verification",
             created_at=recorded_at,
         )
         state_record = EvidenceStateRecord(

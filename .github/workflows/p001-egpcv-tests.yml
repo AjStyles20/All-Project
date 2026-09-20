@@ -1,0 +1,29 @@
+name: P001 EGPCV Tests
+
+on:
+  push:
+    branches:
+      - p001-egpcv-implementation
+    paths:
+      - "projects/project-007-coding-examination-platform/**"
+      - ".github/workflows/p001-egpcv-tests.yml"
+  pull_request:
+    paths:
+      - "projects/project-007-coding-examination-platform/**"
+      - ".github/workflows/p001-egpcv-tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/project-007-coding-examination-platform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install test dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run P001 tests
+        run: python -m pytest -q

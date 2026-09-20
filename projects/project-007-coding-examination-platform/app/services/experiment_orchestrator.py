@@ -18,6 +18,8 @@ from app.services.experiment_record import IndependentReferenceJudgment
 from app.services.baseline_experiment_runner import BaselineExperimentRunner
 from app.services.verification_burden import VerificationBurden
 from app.domain.models import EvidenceItem
+from app.services.b4_orchestrator import B4Orchestrator
+from app.services.cc3_response_evaluator import CC3ProbeResponse
 
 
 REQUIRED_METHODS = ("B0", "B1", "B2", "B3", "B4")
@@ -95,6 +97,49 @@ class ExperimentOrchestrator:
             self.record_method(observation)
             observations.append(observation)
         return tuple(observations)
+
+    def execute_b4_cc3(
+        self, *, experiment_run_id: str, b4: B4Orchestrator,
+        verification_run_id: str, response: CC3ProbeResponse,
+        evidence_id: str, started_at: datetime, recorded_at: datetime,
+        burden: VerificationBurden,
+    ) -> PersistedMethodObservation:
+        """Execute the bounded B4 CC3 path and persist its experiment observation."""
+        run = self.runs.get(experiment_run_id)
+        if run is None or run.status is not ExperimentRunStatus.ACTIVE:
+            raise ValueError("B4 execution requires an ACTIVE experiment run.")
+        if run.claim_id != "CC3":
+            raise ValueError("Current B4 integration is bounded to CC3.")
+
+        frozen = {c.method: c for c in self.runs.method_configurations(experiment_run_id)}
+        b4_config = frozen.get("B4")
+        if b4_config is None:
+            raise ValueError("B4 is not frozen for this experiment.")
+
+        start = b4.start_cc3(
+            run_id=verification_run_id, case_id=run.case_id, started_at=started_at,
+            method_version=b4_config.method_version,
+            configuration_version=b4_config.configuration_version,
+        )
+        if start.selection is None or start.control_decision != "CONTINUE_VERIFICATION":
+            raise ValueError(
+                "Current development integration requires one executable targeted CC3 probe."
+            )
+        update = b4.submit_cc3_response(
+            run_id=verification_run_id, response=response,
+            evidence_id=evidence_id, recorded_at=recorded_at,
+        )
+        if update.evidence.source_type != "targeted_verification":
+            raise ValueError("B4 evidence provenance contract violated.")
+
+        observation = PersistedMethodObservation(
+            experiment_run_id=experiment_run_id, method="B4",
+            system_state=update.state_record.state,
+            evidence_ids=(update.evidence.evidence_id,),
+            burden=burden, recorded_at=recorded_at,
+        )
+        self.record_method(observation)
+        return observation
 
     def record_method(self, observation: PersistedMethodObservation) -> None:
         run = self.runs.get(observation.experiment_run_id)

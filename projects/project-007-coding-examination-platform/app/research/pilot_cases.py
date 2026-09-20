@@ -81,7 +81,7 @@ def case_pilot_003() -> PilotCaseBundle:
     evidence = (
         EvidenceItem(
             "P003-EV-V1", case.case_id, EvidenceType.VERIFICATION,
-            "Constructed response proposes [2, 3] as an additional test but provides incomplete/incorrect expected-result explanation.",
+            "Frozen constructed response: Input: [2, 3]. Expected output: 2. Reason: this checks that the function can handle both an even and an odd number.",
             "constructed_independent_response", _time(),
         ),
     )

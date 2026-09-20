@@ -100,3 +100,32 @@ Use this file for durable architectural, methodological, governance, and scope d
 - Decision: Before recommending/selecting the final FYP, compare P001, P003, P004, P007, P009 and P010 using a normalized evidence matrix with no arbitrary initial weighted score. Keep separate at minimum: **research defensibility; prior-art distance; experimental strength/falsifiability; evidence/data feasibility; implementation feasibility; evaluation validity; benchmark/human-study burden; scope/time risk; dependency risk; defense explainability; reproducibility; negative-result value; documentation maturity.** Identify genuine trade-offs and Pareto-dominated candidates before any final selection.
 - Consequences: P004's **FRAGILE** residual must remain visible. Documentation maturity is reported separately and cannot determine research quality. No Chapter 3 or implementation begins before this gate is inspected and explicitly resolved.
 - Approved by: AJ explicitly on 2026-09-16.
+
+
+## DR-010 — Final Comparative Selection Gate resolved; staged P001 then P003 implementation authorized
+- Date: 2026-09-17
+- Status: Approved
+- Authority level: A3
+- Context: The normalized survivor comparison required by DR-009 was completed without collapsing unlike contribution types into a simplistic scalar score. P001 and P003 retained strong, experimentally separable residual contributions and feasible research-critical implementation paths. P004, P007, P009 and P010 remain reserves with the limitations frozen by DR-008.
+- Decision: **Resolve the Final Comparative Selection Gate and authorize staged implementation of P001 followed by P003.** P001 is the first implementation target. P003 is the second implementation target and may proceed once the agreed P001 external-human-evidence checkpoint is reached, unless AJ explicitly changes the order.
+- Rationale: The decision preserves the portfolio's research distinctions while permitting implementation only after the comparative gate required by DR-009. Implementation authorization does not establish scientific superiority, novelty beyond the frozen residual, or successful empirical validation.
+- Consequences:
+  - DR-009's prospective prohibition on Chapter 3/implementation is satisfied and superseded for P001 and P003.
+  - P004, P007, P009 and P010 remain reserve projects; this record does not authorize their full implementation.
+  - P001 and P003 must continue to distinguish software verification from independent empirical evidence.
+  - Historical records that say implementation was prohibited remain valid lineage for the period before this decision.
+- Approved by: AJ.
+- Supersedes: DR-009's prospective implementation prohibition after completion of the Final Comparative Selection Gate; does not supersede DR-008 contribution boundaries.
+
+## DR-011 — P003 internal implementation completion boundary
+- Date: 2026-09-20
+- Status: Approved
+- Authority level: A2
+- Context: P003 has reached the research-critical implementation boundary defined by its frozen experiment. Core ETEC progression, falsification fixtures, replay integrity, comparative infrastructure, historical evidence packets, B2 execution safeguards, reviewer blinding/locking and analysis authorization are implemented. A controlled external-provider route and a non-experimental qualification route are also present.
+- Decision: **Freeze P003 internal implementation as complete at the current research-critical boundary.** Further engineering is not justified merely to make the project appear larger.
+- Verification: GitHub Actions run #228 completed successfully with **95 passed, 0 failed in 0.25 seconds** at the implementation-completion checkpoint.
+- Remaining external evidence: controlled qualification and execution of the frozen B2 baseline; genuine independent human review; locked judgments; authorized comparative analysis; M9/M10 empirical closure; final empirical Chapter Four/Five conclusions.
+- Claims boundary: Internal software completion is not M9/M10 completion and does not establish B3 superiority, calibrated forecasting accuracy, causal forecasting, acceptable inter-rater agreement, or universal validity.
+- Change control: New P003 code after this boundary requires a correctness/security defect, a requirement of the frozen external experiment, faithful ingestion/preservation of real external evidence, or an explicitly versioned prospective extension that cannot affect the frozen first-wave evaluation.
+- Files/components affected: `projects/project-011-geopolitical-economic-risk/`, P003 status summaries, future portfolio handoffs.
+- Approved by: AJ through continuation of the authorized implementation workflow.

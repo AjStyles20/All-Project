@@ -94,5 +94,5 @@ def test_b4_orchestrator_runs_persistent_cc3_path_end_to_end(tmp_path):
     assert dispositions == {
         "VP-CC3-01": "REJECTED_INSUFFICIENT",
         "VP-CC3-02": "SELECTED",
-        "VP-CC3-03": "REJECTED_HIGHER_BURDEN",
+        "VP-CC3-03": "REJECTED_NOT_EXECUTABLE",
     }

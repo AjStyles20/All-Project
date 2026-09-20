@@ -25,10 +25,14 @@ The first tests require:
 4. T6 cannot release a forecast when T5 model eligibility is insufficient;
 5. evidence after the historical information cutoff is rejected.
 
-## CI status warning
+## CI verification
 
-The P003 workflow file exists on the implementation branch, but GitHub did not create a workflow run for the commit that introduced it. Therefore M1 must not be called CI-verified yet. This is an infrastructure issue to resolve before M1 closure.
+GitHub Actions P003 ETEC Tests run #5 executed successfully after fixing the project-root import path in CI.
+
+Verified result: **5 passed, 0 failed in 0.01s**.
+
+The preceding run #3 failed during collection with `ModuleNotFoundError: No module named 'app'`; this was a CI path/configuration defect, not a domain-test failure. Commit `1449d3479600c1a7fd207134bb2529ff494fa205` sets the project root on `PYTHONPATH` and invokes pytest as a module.
 
 ## M1 closure gate
 
-M1 closes only after the P003 test workflow actually executes on GitHub Actions and the exact pytest result is recorded. A workflow file existing in the repository is not verification.
+**M1 CLOSED for the bounded core-domain slice.** The five frozen deterministic tests execute successfully in GitHub Actions. This proves only that the implemented invariants behave as tested; it does not establish historical validity or scientific superiority of ETEC.

@@ -88,3 +88,21 @@ class ExperimentObservationRepository:
             )
             for row in rows
         )
+
+    def reference(self, experiment_run_id: str) -> IndependentReferenceJudgment | None:
+        with self.database.connect() as connection:
+            row = connection.execute(
+                """SELECT assessor_id, claim_id, state, rationale, rubric_version
+                   FROM experiment_reference_judgments
+                   WHERE experiment_run_id = ?""",
+                (experiment_run_id,),
+            ).fetchone()
+        if row is None:
+            return None
+        return IndependentReferenceJudgment(
+            assessor_id=row["assessor_id"],
+            claim_id=row["claim_id"],
+            state=EvidenceState(row["state"]),
+            rationale=row["rationale"],
+            rubric_version=row["rubric_version"],
+        )

@@ -37,6 +37,11 @@ class DryRunReadinessValidator:
             issues.append("assessor_rubric_version")
         if not bundle.case.version:
             issues.append("case_version")
+            issues.append("task_version")
+        # Bounded M8 rule: task_version is explicitly aliased to case.version.
+        task_version = bundle.case.version
+        if task_version != bundle.case.version:
+            issues.append("task_version")
         if not bundle.evidence:
             issues.append("evidence_bundle")
         if any(not item.source_type for item in bundle.evidence):

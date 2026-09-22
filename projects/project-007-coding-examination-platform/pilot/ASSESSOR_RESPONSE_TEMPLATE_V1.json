@@ -1,0 +1,19 @@
+{
+  "schema_version": "M8-ASSESSOR-RESPONSE-v1",
+  "judgment": {
+    "assessor_code": "ASSESSOR-A",
+    "case_id": "CASE-PILOT-001",
+    "state": "<SUPPORTED|PARTIAL|UNRESOLVED|CONTRADICTED>",
+    "relevant_input": "<YES|NO|CANNOT_DETERMINE>",
+    "correct_expected_outcome": "<YES|NO|CANNOT_DETERMINE>",
+    "defensible_reason": "<YES|NO|CANNOT_DETERMINE>",
+    "rationale": "<actual assessor rationale>",
+    "boundary_confident": true,
+    "ambiguous_boundary": null,
+    "additional_evidence_needed": false,
+    "additional_evidence_description": null,
+    "human_review_concern": false,
+    "human_review_reason": null,
+    "independence_confirmed": true
+  }
+}

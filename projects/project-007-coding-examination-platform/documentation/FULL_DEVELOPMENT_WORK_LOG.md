@@ -42,3 +42,7 @@
 **CI correction:** the P001 workflow previously ran on pushes to the historical implementation branch but not canonical `main`. It now also triggers for relevant pushes to `main`.
 
 **Verification boundary:** unit/legacy tests can run in CI without a live MySQL service. A genuine MySQL integration test still requires a MySQL Server schema created from the migration and must be recorded separately. No claim is made yet that the developer's local Workbench/MySQL instance has passed application integration.
+
+
+## 2026-09-23 — Academic figure integration correction
+The earlier consolidated multi-diagram sheet is no longer treated as a final report figure. The design document now introduces and discusses individual figures in their proper analysis/design sections: Figure 3.3.1 Use Case Diagram, Figure 3.4.1 High-Level System Architecture, Figure 3.4.2 Component Diagram, and Figure 3.5.1 Candidate Examination Activity Diagram. Future figures will be inserted progressively as the corresponding components stabilize. Final numbering remains subject to Chapter Three reconciliation.

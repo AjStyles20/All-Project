@@ -12,3 +12,13 @@
 **Documentation rule:** every material increment must update requirements, design/diagrams, RTM, tests/evidence, and this work log.
 
 **Research boundary:** full product development is authorized, but external assessor evidence and frozen experimental definitions remain controlled. Product completeness must not be represented as scientific validation.
+
+
+## 2026-09-23 — Increment FD-01: Identity, authentication and RBAC foundation
+**Implemented:** operational User/Role model; four explicit roles (Candidate, Examiner, Administrator, Independent Assessor); PBKDF2-HMAC-SHA256 salted password hashing; opaque random bearer sessions with only SHA-256 token digests persisted; login/logout/current-user API; role guards; SQLite users, user_roles and auth_sessions schema; unit and integration tests.
+
+**Security boundary:** plaintext passwords and raw bearer tokens are not stored. This is a development authentication foundation, not yet a production internet-facing identity service. Account recovery, rate limiting, CSRF/cookie policy, MFA and production secret/transport configuration remain future hardening work.
+
+**Traceability:** full-product FR-01 is implemented for the current API foundation; FR-02 is partial because administrative user-management endpoints/UI are not yet implemented.
+
+**Verification status:** tests were added, but no new CI result is claimed in this log until GitHub Actions executes the new main revision.

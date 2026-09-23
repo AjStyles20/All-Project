@@ -263,3 +263,27 @@ The first versioned MySQL migration is `database/mysql/migrations/001_identity_r
 
 ### Figure placement
 The formal diagram register is maintained in `documentation/DIAGRAM_REGISTER.md`. The current design figure set covers: system architecture, use cases, candidate activity, login sequence, Level-0 DFD, ERD, component architecture, deployment and key domain classes. These figures are target-state analysis/design artifacts unless the RTM/work log marks the represented feature as implemented.
+
+
+## 15. MySQL application adapter — implemented boundary
+The full-product persistence path now has a MySQL-specific connection adapter and identity repository. Database settings are read from `P001_DB_HOST`, `P001_DB_PORT`, `P001_DB_NAME`, `P001_DB_USER`, and `P001_DB_PASSWORD`. Credentials are therefore deployment configuration rather than source code.
+
+The architecture deliberately keeps SQL dialect details below the service layer:
+
+```text
+FastAPI routes
+     |
+AuthService                 <- business/application behavior
+     |
+MySQLUserRepository         <- persistence contract implementation
+     |
+MySQLDatabase               <- connection/transaction boundary
+     |
+MySQL Connector/Python
+     |
+MySQL Server <---------- MySQL Workbench
+```
+
+**Why an adapter/repository boundary?** MySQL and SQLite differ in connection APIs, placeholders, types and schema mechanics. Keeping those differences in persistence code lets the authentication service express the same domain operation regardless of DBMS. It also lets the historical research prototype remain reproducible without making SQLite the production architecture.
+
+**Current limitation:** the MySQL adapter is implemented but not yet verified against the developer's local MySQL Server. The next verification step is a live MySQL integration test using migration 001; only then will the MySQL FD-01 persistence path be marked verified.

@@ -56,3 +56,15 @@ The earlier consolidated multi-diagram sheet is no longer treated as a final rep
 **Verification semantics:** (1) migration success verifies schema creation; (2) connection checker verifies Python-to-MySQL connectivity and required tables; (3) live integration test verifies create-user/login/authenticate/logout behavior against MySQL. These claims are intentionally separate.
 
 **Current status:** implementation path is ready, but the live test is not marked passed until it is executed against an actual MySQL Server. Ordinary CI skips this test unless `P001_RUN_MYSQL_TESTS=1`.
+
+
+## 2026-09-24 — FD-02 opened: Examination and Question Management
+**Branch:** `p001-fd02-exam-question-management`.
+
+**Designed and implemented in this slice:** Examination and ProgrammingQuestion domain objects with validation; examination lifecycle vocabulary; MySQL migration 002 for `examinations`, `questions`, and normalized junction table `examination_questions`; unit tests for domain invariants; dedicated FD-02 design document with Figure 3.7.1 ERD increment and explanatory text.
+
+**Design reasoning:** questions are independent/versioned entities rather than duplicated inside examination rows. The junction table represents the many-to-many relationship and carries display order and score weight. Ownership is linked to the FD-01 user identity model.
+
+**Not yet complete:** repository, service/state-transition policy, protected examiner APIs, live MySQL migration/integration evidence, and UI. No FD-02 completion claim is permitted until those are implemented and tested.
+
+**Documentation synchronization:** the ERD has been expanded in the FD-02 design document at the same time as migration 002. The final rendered ERD will be regenerated from the stabilized physical schema rather than allowing a stale diagram to survive.

@@ -287,3 +287,57 @@ MySQL Server <---------- MySQL Workbench
 **Why an adapter/repository boundary?** MySQL and SQLite differ in connection APIs, placeholders, types and schema mechanics. Keeping those differences in persistence code lets the authentication service express the same domain operation regardless of DBMS. It also lets the historical research prototype remain reproducible without making SQLite the production architecture.
 
 **Current limitation:** the MySQL adapter is implemented but not yet verified against the developer's local MySQL Server. The next verification step is a live MySQL integration test using migration 001; only then will the MySQL FD-01 persistence path be marked verified.
+
+
+## 16. Figure integration policy and current placement
+
+System diagrams are maintained as **individual academic figures**, not as a multi-diagram poster. Each figure is introduced in the prose immediately before it, carries its own number and caption, and is discussed immediately after it. Figure numbering is provisional until the final Chapter Three section order is frozen.
+
+### 16.1 Use Case Model
+The use case model identifies the principal actors and the functionality available from each role. It provides the bridge between the requirements specification and later interaction/API design.
+
+**Figure 3.3.1 shows the Use Case Diagram for the Intelligent Coding Examination Platform.**
+
+> **Figure 3.3.1 — Use Case Diagram of the Intelligent Coding Examination Platform**
+>
+> Individual rendered figure: Administrator, Examiner/Lecturer, Candidate/Student and Independent Assessor interacting with authentication, examination management, submission, evidence review, verification, reporting and audit capabilities.
+
+As shown in Figure 3.3.1, authentication is a shared prerequisite while privileged management operations are separated by role. The Independent Assessor remains distinct from routine examiner activity because the frozen research evaluation requires independent judgment.
+
+### 16.2 High-Level System Architecture
+The platform uses a layered architecture to separate user interaction, application logic, persistence and research-critical evidence analysis. This reduces coupling and makes it possible to evolve the user-facing product without silently changing the EGPCV mechanism.
+
+**Figure 3.4.1 shows the high-level architecture of the Intelligent Coding Examination Platform.**
+
+> **Figure 3.4.1 — High-Level System Architecture of the Intelligent Coding Examination Platform**
+>
+> Individual rendered figure: role-based web clients → FastAPI application/services → MySQL persistence, with EGPCV, audit/logging and controlled execution/evidence-storage boundaries.
+
+Figure 3.4.1 distinguishes MySQL Server, which stores operational data, from MySQL Workbench, which is used to administer and inspect the database. It also shows that EGPCV is a subsystem of the platform rather than the entire product.
+
+### 16.3 Component Design
+The component view decomposes the software into independently understandable modules and identifies their major dependencies.
+
+**Figure 3.4.2 shows the principal software components and their interactions.**
+
+> **Figure 3.4.2 — Component Diagram of the Intelligent Coding Examination Platform**
+>
+> Individual rendered figure: web client, authentication/RBAC, examination management, submission, EGPCV, reporting, audit/logging, MySQL persistence, file/evidence storage and controlled compiler/test-runner boundary.
+
+The component structure supports separation of concerns. In particular, database-specific behavior is confined to persistence adapters while application services express platform behavior independently of the SQL dialect.
+
+### 16.4 Candidate Examination Activity
+The activity model describes the candidate-facing workflow from authentication to final submission and automated processing.
+
+**Figure 3.5.1 illustrates the activity flow for a candidate taking an examination.**
+
+> **Figure 3.5.1 — Activity Diagram: Candidate Examination Workflow**
+>
+> Individual rendered figure: login → credential validation → assigned examinations → select/read instructions → start → answer/save questions → completion decision → final submission → persistence → automated checks/evidence processing → completion.
+
+Figure 3.5.1 is currently a target-state workflow. FD-01 implements the authentication foundation; the examination, question, assignment and submission activities become implemented progressively in FD-02 and subsequent increments.
+
+### 16.5 Figures to be inserted progressively
+The authentication sequence diagram is inserted when the MySQL-backed authentication path is verified. The physical MySQL ERD is inserted after the operational schema reaches the corresponding implementation increment. Level-0/Level-1 DFDs, submission sequence, class and deployment diagrams are inserted or revised when their represented components become sufficiently stable.
+
+**Documentation rule:** a figure may describe either an implemented state or an explicitly identified target design, but the surrounding text must state which. No target-state diagram may be used to imply that unimplemented functionality already exists.

@@ -218,3 +218,37 @@ No cheating/authorship inference is introduced by this baseline. A gap in eviden
 
 ## 12. Next design increments
 The next implementation increments are authentication/RBAC, operational examination/session/submission domain, database migrations, API endpoints, then a lightweight web interface. Each increment must update this design, the RTM, tests, and work log.
+
+
+## 13. Implemented design increment FD-01 — Identity and access
+The operational persistence layer now contains `users`, `user_roles`, and `auth_sessions`. Roles are Candidate, Examiner, Administrator, and Independent Assessor. Authentication uses salted PBKDF2-HMAC-SHA256 password hashes. Login creates an opaque random bearer token; only its SHA-256 digest is stored with expiry/revocation state.
+
+The platform API now exposes `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, and initial protected role-boundary endpoints used to verify RBAC behavior. This establishes the security boundary needed before examination-management endpoints are introduced.
+
+### Identity ERD increment
+```text
+User 1---* UserRole
+User 1---* AuthSession
+
+User
+- user_id PK
+- username UNIQUE
+- password_hash
+- display_name
+- is_active
+
+UserRole
+- user_id FK
+- role
+PK(user_id, role)
+
+AuthSession
+- session_id PK
+- user_id FK
+- token_hash UNIQUE
+- created_at
+- expires_at
+- revoked_at
+```
+
+**Still designed, not yet implemented:** administrator account-management UI/API, account recovery, production-grade abuse controls, and the examination/question/session entities from Section 9.

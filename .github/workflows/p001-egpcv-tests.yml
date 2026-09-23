@@ -3,6 +3,7 @@ name: P001 EGPCV Tests
 on:
   push:
     branches:
+      - main
       - p001-egpcv-implementation
     paths:
       - "projects/project-007-coding-examination-platform/**"

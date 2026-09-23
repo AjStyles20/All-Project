@@ -252,3 +252,14 @@ AuthSession
 ```
 
 **Still designed, not yet implemented:** administrator account-management UI/API, account recovery, production-grade abuse controls, and the examination/question/session entities from Section 9.
+
+
+## 14. Database technology decision — MySQL Server
+The canonical operational DBMS for the full platform is **MySQL Server**. **MySQL Workbench** is the developer's graphical administration and modelling client. SQLite remains useful for the historical research prototype and isolated fast tests, but it is not the target operational database.
+
+**Rationale:** the full platform is relational and multi-user; it requires referential integrity, transactions, indexes, concurrent connections, auditable relationships, and an independently inspectable server database. MySQL fits those requirements while matching the developer's local toolchain. PostgreSQL would also be technically suitable, but no current requirement justifies introducing a second DBMS toolchain. A document/NoSQL store is not selected as the primary database because the core entities have strong relational constraints.
+
+The first versioned MySQL migration is `database/mysql/migrations/001_identity_rbac.sql`. It materializes the FD-01 identity/RBAC tables using InnoDB, foreign keys, indexes and MySQL-compatible types. This migration is a schema contract; MySQL-backed application integration must still be implemented and tested before being marked complete.
+
+### Figure placement
+The formal diagram register is maintained in `documentation/DIAGRAM_REGISTER.md`. The current design figure set covers: system architecture, use cases, candidate activity, login sequence, Level-0 DFD, ERD, component architecture, deployment and key domain classes. These figures are target-state analysis/design artifacts unless the RTM/work log marks the represented feature as implemented.

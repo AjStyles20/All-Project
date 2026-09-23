@@ -46,3 +46,13 @@
 
 ## 2026-09-23 — Academic figure integration correction
 The earlier consolidated multi-diagram sheet is no longer treated as a final report figure. The design document now introduces and discusses individual figures in their proper analysis/design sections: Figure 3.3.1 Use Case Diagram, Figure 3.4.1 High-Level System Architecture, Figure 3.4.2 Component Diagram, and Figure 3.5.1 Candidate Examination Activity Diagram. Future figures will be inserted progressively as the corresponding components stabilize. Final numbering remains subject to Chapter Three reconciliation.
+
+
+## 2026-09-23 — Increment FD-01C: executable local MySQL verification
+**Added:** least-privilege Workbench bootstrap SQL; non-destructive Python connection/schema checker; opt-in live MySQL identity/authentication integration test; step-by-step Workbench/PowerShell verification guide.
+
+**Security reasoning:** normal application credentials receive data-manipulation privileges (SELECT/INSERT/UPDATE/DELETE) but not schema-destructive CREATE/ALTER/DROP privileges. Schema changes remain explicit administrator/migration operations.
+
+**Verification semantics:** (1) migration success verifies schema creation; (2) connection checker verifies Python-to-MySQL connectivity and required tables; (3) live integration test verifies create-user/login/authenticate/logout behavior against MySQL. These claims are intentionally separate.
+
+**Current status:** implementation path is ready, but the live test is not marked passed until it is executed against an actual MySQL Server. Ordinary CI skips this test unless `P001_RUN_MYSQL_TESTS=1`.

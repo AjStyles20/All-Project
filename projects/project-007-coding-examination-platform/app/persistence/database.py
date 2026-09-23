@@ -12,6 +12,36 @@ from typing import Iterator
 SCHEMA = """
 PRAGMA foreign_keys = ON;
 
+CREATE TABLE IF NOT EXISTS users (
+    user_id TEXT PRIMARY KEY,
+    username TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    display_name TEXT NOT NULL,
+    is_active INTEGER NOT NULL CHECK (is_active IN (0, 1))
+);
+
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id TEXT NOT NULL,
+    role TEXT NOT NULL CHECK (role IN (
+        'CANDIDATE', 'EXAMINER', 'ADMINISTRATOR', 'INDEPENDENT_ASSESSOR'
+    )),
+    PRIMARY KEY (user_id, role),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS auth_sessions (
+    session_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    token_hash TEXT NOT NULL UNIQUE,
+    created_at TEXT NOT NULL,
+    expires_at TEXT NOT NULL,
+    revoked_at TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_auth_sessions_token
+    ON auth_sessions(token_hash);
+
 CREATE TABLE IF NOT EXISTS programming_cases (
     case_id TEXT PRIMARY KEY,
     title TEXT NOT NULL,

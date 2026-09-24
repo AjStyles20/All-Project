@@ -102,3 +102,9 @@ GitHub Actions run #294 completed successfully for PR #19. Job `test` result: SU
 The skipped test is consistent with the opt-in live-MySQL boundary: ordinary CI does not by itself establish successful execution against the user's local MySQL Server. The warning is a Starlette TestClient/httpx deprecation warning; GitHub Actions also emitted a Node.js action-runtime deprecation warning. Neither caused test failure, but both are retained as maintenance notes.
 
 PR #19 was rechecked after CI and GitHub reported it mergeable. It remains draft/unmerged because FD-02 still requires final completion review and live-MySQL evidence before the subsystem is represented as fully verified.
+
+
+### MySQL host/account consistency correction
+During pre-live-MySQL review, the application default host (`127.0.0.1`) was compared with the bootstrap account host (`'p001_app'@'localhost'`). Because MySQL account identity includes the host component and host matching can differ between TCP loopback and localhost/socket behavior, the bootstrap was corrected to create/grant `'p001_app'@'127.0.0.1'`, matching `P001_DB_HOST`'s default exactly.
+
+This is recorded as a pre-verification defect found and corrected, not as live-database evidence. The least-privilege application account still receives only SELECT/INSERT/UPDATE/DELETE; schema DDL remains outside normal application privileges.

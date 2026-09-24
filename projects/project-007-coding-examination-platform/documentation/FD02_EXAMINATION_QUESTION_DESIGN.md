@@ -46,3 +46,61 @@ As shown in Figure 3.7.1, `examination_questions` resolves the many-to-many rela
 
 ## Implementation status
 Domain objects and MySQL migration 002 are implemented in this increment. Repository/service/API behavior and MySQL integration tests remain to be implemented before FD-02 is complete.
+
+
+## Figure 3.5.2 — Examination Lifecycle Activity Diagram
+**Figure 3.5.2 shows how an examiner progresses an examination through its controlled lifecycle.**
+
+```text
+[Create Examination]
+        |
+        v
+      DRAFT <----------------.
+        |                     |
+        | schedule            | return to draft
+        v                     |
+    SCHEDULED ----------------'
+        |
+        | activate
+        v
+      ACTIVE
+        |
+        | close
+        v
+      CLOSED
+        |
+        | archive
+        v
+     ARCHIVED
+        |
+       [End]
+```
+
+*Figure 3.5.2: Activity/state diagram for the controlled examination lifecycle.*
+
+The application service, rather than the user interface, enforces these transitions. This prevents a client from bypassing lifecycle rules by calling persistence code directly. Question membership may be changed only while an examination remains in DRAFT.
+
+## Figure 3.5.3 — Examiner Management Sequence
+**Figure 3.5.3 shows the implemented interaction path for an authenticated examiner creating examination content.**
+
+```text
+Examiner       FastAPI/RBAC      ExamService       MySQL Repository       MySQL
+   |                |                |                    |                  |
+   | POST exam      |                |                    |                  |
+   |--------------->| verify role    |                    |                  |
+   |                |--------------->| validate domain    |                  |
+   |                |                |------------------->| INSERT exam      |
+   |                |                |                    |----------------->|
+   |                |                |                    |<-----------------|
+   |                |<---------------|                    |                  |
+   |<---------------| 201 + exam id  |                    |                  |
+```
+
+*Figure 3.5.3: Sequence diagram for examiner examination creation.*
+
+The same layered path is used for programming-question creation, question attachment and lifecycle transitions. Authorization is performed at the API boundary, business/lifecycle rules in the service, and SQL in the repository.
+
+## Current FD-02 implementation boundary
+Implemented: domain validation, MySQL repository, lifecycle/ownership service, MySQL schema migration and protected Examiner endpoints for creating examinations/questions, attaching questions and requesting state transitions.
+
+Pending: API-level tests with dependency-isolated fakes, live MySQL integration evidence, list/read/update operations required by the final UI, and final rendered diagram assets. FD-02 is therefore still IN PROGRESS.

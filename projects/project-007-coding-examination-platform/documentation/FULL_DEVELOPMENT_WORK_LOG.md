@@ -56,3 +56,63 @@ The earlier consolidated multi-diagram sheet is no longer treated as a final rep
 **Verification semantics:** (1) migration success verifies schema creation; (2) connection checker verifies Python-to-MySQL connectivity and required tables; (3) live integration test verifies create-user/login/authenticate/logout behavior against MySQL. These claims are intentionally separate.
 
 **Current status:** implementation path is ready, but the live test is not marked passed until it is executed against an actual MySQL Server. Ordinary CI skips this test unless `P001_RUN_MYSQL_TESTS=1`.
+
+
+## 2026-09-24 — FD-02 opened: Examination and Question Management
+**Branch:** `p001-fd02-exam-question-management`.
+
+**Designed and implemented in this slice:** Examination and ProgrammingQuestion domain objects with validation; examination lifecycle vocabulary; MySQL migration 002 for `examinations`, `questions`, and normalized junction table `examination_questions`; unit tests for domain invariants; dedicated FD-02 design document with Figure 3.7.1 ERD increment and explanatory text.
+
+**Design reasoning:** questions are independent/versioned entities rather than duplicated inside examination rows. The junction table represents the many-to-many relationship and carries display order and score weight. Ownership is linked to the FD-01 user identity model.
+
+**Not yet complete:** repository, service/state-transition policy, protected examiner APIs, live MySQL migration/integration evidence, and UI. No FD-02 completion claim is permitted until those are implemented and tested.
+
+**Documentation synchronization:** the ERD has been expanded in the FD-02 design document at the same time as migration 002. The final rendered ERD will be regenerated from the stabilized physical schema rather than allowing a stale diagram to survive.
+
+
+### FD-02 continuation — repository, lifecycle and protected API
+**Implemented:** MySQLExaminationRepository; ExaminationService; explicit transition matrix; owner-only modification rule; DRAFT-only question attachment; protected Examiner endpoints for examination creation, programming-question creation, attachment and lifecycle transition.
+
+**Design artifacts updated:** FD-02 now contains Figure 3.5.2 examination lifecycle activity/state diagram and Figure 3.5.3 examiner-management sequence diagram, each introduced, captioned and explained in its relevant design narrative.
+
+**Important boundary:** authorization at the API layer and ownership/lifecycle policy at the service layer are intentionally separate. This is defense-in-depth and separation of concerns, not duplicate logic.
+
+**Verification status:** unit tests exist for lifecycle/ownership rules. API and live-MySQL integration verification remain pending; no pass claim has been recorded.
+
+
+### FD-02 verification increment — API authorization and policy mapping
+Added a dependency-injection seam to the MySQL FastAPI factory so HTTP-layer tests can use deterministic fake authentication/repositories while production still defaults to real MySQL services. Added integration tests covering Candidate denial, Examiner happy path, ownership denial, illegal lifecycle conflict and Administrator role-boundary access.
+
+Corrected role consistency: FD-01 defined the Examiner boundary as EXAMINER or ADMINISTRATOR; FD-02 management endpoints now preserve that role policy. Ownership remains a separate service-layer constraint.
+
+No test-pass claim is made yet. The files exist; execution evidence is still required.
+
+
+### FD-02 verification gate opened — Pull Request #19
+Draft Pull Request #19 (`P001 FD-02: Examination and Question Management`) was opened against `main` specifically to trigger the repository's pull-request CI path before merge. At opening, the branch contained 15 commits and 10 changed files relative to main.
+
+GitHub Actions run #293 (`P001 EGPCV Tests`) was triggered for head `7df05f2d...`. Initial observed state: QUEUED; no conclusion recorded yet. Therefore this log does not claim a pass or failure.
+
+The PR is intentionally draft and remains unmerged while automated verification is pending. Live MySQL execution remains a separate verification boundary even if the ordinary test suite passes.
+
+
+### FD-02 CI evidence — Run #294
+GitHub Actions run #294 completed successfully for PR #19. Job `test` result: SUCCESS. Pytest summary from the job log: **152 passed, 1 skipped, 1 warning in 4.85s**.
+
+The skipped test is consistent with the opt-in live-MySQL boundary: ordinary CI does not by itself establish successful execution against the user's local MySQL Server. The warning is a Starlette TestClient/httpx deprecation warning; GitHub Actions also emitted a Node.js action-runtime deprecation warning. Neither caused test failure, but both are retained as maintenance notes.
+
+PR #19 was rechecked after CI and GitHub reported it mergeable. It remains draft/unmerged because FD-02 still requires final completion review and live-MySQL evidence before the subsystem is represented as fully verified.
+
+
+### MySQL host/account consistency correction
+During pre-live-MySQL review, the application default host (`127.0.0.1`) was compared with the bootstrap account host (`'p001_app'@'localhost'`). Because MySQL account identity includes the host component and host matching can differ between TCP loopback and localhost/socket behavior, the bootstrap was corrected to create/grant `'p001_app'@'127.0.0.1'`, matching `P001_DB_HOST`'s default exactly.
+
+This is recorded as a pre-verification defect found and corrected, not as live-database evidence. The least-privilege application account still receives only SELECT/INSERT/UPDATE/DELETE; schema DDL remains outside normal application privileges.
+
+
+### FD-02 live-MySQL verification path completed in code
+The local Workbench guide now applies both migration 001 and migration 002 and correctly identifies the application account as `p001_app@127.0.0.1`. The non-destructive connection checker now requires all six current operational tables: `users`, `user_roles`, `auth_sessions`, `examinations`, `questions`, and `examination_questions`.
+
+Added opt-in live test `test_mysql_fd02_live.py`. Against a configured MySQL Server it creates a unique Examiner identity, persists an examination and programming question, attaches the question to the DRAFT examination, reads the examination back, transitions DRAFT→SCHEDULED through the service, and confirms the persisted state.
+
+This closes the implementation gap in the verification path but does not constitute live execution evidence. The test remains skipped in ordinary CI unless `P001_RUN_MYSQL_TESTS=1`.

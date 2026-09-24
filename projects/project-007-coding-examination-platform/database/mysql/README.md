@@ -7,7 +7,7 @@ This guide connects the full P001 platform to a local MySQL Server administered 
 Open MySQL Workbench, connect using a MySQL administrative account, then open:
 `database/mysql/bootstrap/000_create_database_and_user.sql`.
 
-Before running it, replace only `CHANGE_ME_LOCAL_PASSWORD` with a strong local password. The script creates `p001_coding_exam`, creates `p001_app@localhost`, and grants only SELECT/INSERT/UPDATE/DELETE on that schema.
+Before running it, replace only `CHANGE_ME_LOCAL_PASSWORD` with a strong local password. The script creates `p001_coding_exam`, creates `p001_app@127.0.0.1`, and grants only SELECT/INSERT/UPDATE/DELETE on that schema.
 
 **Reason:** the web application should not normally have permission to CREATE, ALTER or DROP tables. Schema changes are an explicit migration/administrator responsibility.
 
@@ -17,7 +17,13 @@ In Workbench select the `p001_coding_exam` schema and execute:
 
 It creates `users`, `user_roles` and `auth_sessions` with foreign keys and indexes.
 
-## Step 3 — Configure the application locally
+## Step 3 — Apply migration 002
+In Workbench, with `p001_coding_exam` selected, execute:
+`database/mysql/migrations/002_examinations_questions.sql`.
+
+It creates `examinations`, `questions` and `examination_questions`, including ownership foreign keys, lifecycle status, positive-score/order constraints and examination-question membership integrity.
+
+## Step 4 — Configure the application locally
 In PowerShell for the current terminal session:
 
 ```powershell
@@ -30,7 +36,7 @@ $env:P001_DB_PASSWORD="<your local password>"
 
 Do not put the real password in Git.
 
-## Step 4 — Install dependencies and verify the schema
+## Step 5 — Install dependencies and verify the schema
 From `projects/project-007-coding-examination-platform`:
 
 ```powershell
@@ -39,14 +45,14 @@ python scripts/check_mysql_connection.py
 ```
 
 Expected final line:
-`P001 MySQL FD-01 schema check: PASS`.
+`P001 MySQL FD-02 schema check: PASS`.
 
-## Step 5 — Run the live integration test
+## Step 6 — Run the live integration tests
 The live test is deliberately opt-in:
 
 ```powershell
 $env:P001_RUN_MYSQL_TESTS="1"
-python -m pytest tests/integration/test_mysql_identity_live.py -q
+python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py -q
 ```
 
 This creates a uniquely named temporary-style candidate account, logs in, verifies the principal/role, revokes the session and verifies the token is no longer accepted.

@@ -86,3 +86,11 @@ Added a dependency-injection seam to the MySQL FastAPI factory so HTTP-layer tes
 Corrected role consistency: FD-01 defined the Examiner boundary as EXAMINER or ADMINISTRATOR; FD-02 management endpoints now preserve that role policy. Ownership remains a separate service-layer constraint.
 
 No test-pass claim is made yet. The files exist; execution evidence is still required.
+
+
+### FD-02 verification gate opened — Pull Request #19
+Draft Pull Request #19 (`P001 FD-02: Examination and Question Management`) was opened against `main` specifically to trigger the repository's pull-request CI path before merge. At opening, the branch contained 15 commits and 10 changed files relative to main.
+
+GitHub Actions run #293 (`P001 EGPCV Tests`) was triggered for head `7df05f2d...`. Initial observed state: QUEUED; no conclusion recorded yet. Therefore this log does not claim a pass or failure.
+
+The PR is intentionally draft and remains unmerged while automated verification is pending. Live MySQL execution remains a separate verification boundary even if the ordinary test suite passes.

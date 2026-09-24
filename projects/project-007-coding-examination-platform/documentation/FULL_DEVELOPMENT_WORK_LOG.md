@@ -78,3 +78,11 @@ The earlier consolidated multi-diagram sheet is no longer treated as a final rep
 **Important boundary:** authorization at the API layer and ownership/lifecycle policy at the service layer are intentionally separate. This is defense-in-depth and separation of concerns, not duplicate logic.
 
 **Verification status:** unit tests exist for lifecycle/ownership rules. API and live-MySQL integration verification remain pending; no pass claim has been recorded.
+
+
+### FD-02 verification increment — API authorization and policy mapping
+Added a dependency-injection seam to the MySQL FastAPI factory so HTTP-layer tests can use deterministic fake authentication/repositories while production still defaults to real MySQL services. Added integration tests covering Candidate denial, Examiner happy path, ownership denial, illegal lifecycle conflict and Administrator role-boundary access.
+
+Corrected role consistency: FD-01 defined the Examiner boundary as EXAMINER or ADMINISTRATOR; FD-02 management endpoints now preserve that role policy. Ownership remains a separate service-layer constraint.
+
+No test-pass claim is made yet. The files exist; execution evidence is still required.

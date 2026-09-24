@@ -94,3 +94,11 @@ Draft Pull Request #19 (`P001 FD-02: Examination and Question Management`) was o
 GitHub Actions run #293 (`P001 EGPCV Tests`) was triggered for head `7df05f2d...`. Initial observed state: QUEUED; no conclusion recorded yet. Therefore this log does not claim a pass or failure.
 
 The PR is intentionally draft and remains unmerged while automated verification is pending. Live MySQL execution remains a separate verification boundary even if the ordinary test suite passes.
+
+
+### FD-02 CI evidence — Run #294
+GitHub Actions run #294 completed successfully for PR #19. Job `test` result: SUCCESS. Pytest summary from the job log: **152 passed, 1 skipped, 1 warning in 4.85s**.
+
+The skipped test is consistent with the opt-in live-MySQL boundary: ordinary CI does not by itself establish successful execution against the user's local MySQL Server. The warning is a Starlette TestClient/httpx deprecation warning; GitHub Actions also emitted a Node.js action-runtime deprecation warning. Neither caused test failure, but both are retained as maintenance notes.
+
+PR #19 was rechecked after CI and GitHub reported it mergeable. It remains draft/unmerged because FD-02 still requires final completion review and live-MySQL evidence before the subsystem is represented as fully verified.

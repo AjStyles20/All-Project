@@ -36,10 +36,10 @@ class TransitionInput(BaseModel):
     target_status: ExaminationStatus
 
 
-def create_mysql_platform_app(settings: MySQLSettings | None = None) -> FastAPI:
+def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_service=None, examination_service=None) -> FastAPI:
     database = MySQLDatabase(settings)
-    auth = AuthService(MySQLUserRepository(database))
-    examinations = ExaminationService(MySQLExaminationRepository(database))
+    auth = auth_service or AuthService(MySQLUserRepository(database))
+    examinations = examination_service or ExaminationService(MySQLExaminationRepository(database))
     app = FastAPI(title="P001 Intelligent Coding Examination Platform", version="0.3.0")
 
     def current_principal(authorization: str | None = Header(default=None)):
@@ -95,19 +95,19 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None) -> FastAPI:
         return {"status": "ok", "user_id": principal.user_id}
 
     @app.post("/examiner/examinations", status_code=201)
-    def create_examination(payload: ExaminationInput, principal=Depends(require_roles(Role.EXAMINER))):
+    def create_examination(payload: ExaminationInput, principal=Depends(require_roles(Role.EXAMINER, Role.ADMINISTRATOR))):
         exam = Examination(str(uuid4()), payload.title, payload.description, principal.user_id, ExaminationStatus.DRAFT)
         examinations.create_examination(exam)
         return {"examination_id": exam.examination_id, "status": exam.status.value}
 
     @app.post("/examiner/questions", status_code=201)
-    def create_question(payload: QuestionInput, principal=Depends(require_roles(Role.EXAMINER))):
+    def create_question(payload: QuestionInput, principal=Depends(require_roles(Role.EXAMINER, Role.ADMINISTRATOR))):
         question = ProgrammingQuestion(str(uuid4()), payload.title, payload.prompt, payload.language, payload.max_score)
         examinations.create_question(question, principal.user_id)
         return {"question_id": question.question_id, "version": question.version}
 
     @app.post("/examiner/examinations/{examination_id}/questions", status_code=204)
-    def attach_question(examination_id: str, payload: AttachQuestionInput, principal=Depends(require_roles(Role.EXAMINER))):
+    def attach_question(examination_id: str, payload: AttachQuestionInput, principal=Depends(require_roles(Role.EXAMINER, Role.ADMINISTRATOR))):
         try:
             examinations.attach_question(examination_id, payload.question_id, principal.user_id, payload.display_order, payload.score_weight)
         except ExaminationNotFoundError as exc:
@@ -119,7 +119,7 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None) -> FastAPI:
         return None
 
     @app.post("/examiner/examinations/{examination_id}/transition")
-    def transition_examination(examination_id: str, payload: TransitionInput, principal=Depends(require_roles(Role.EXAMINER))):
+    def transition_examination(examination_id: str, payload: TransitionInput, principal=Depends(require_roles(Role.EXAMINER, Role.ADMINISTRATOR))):
         try:
             exam = examinations.transition(examination_id, principal.user_id, payload.target_status)
         except ExaminationNotFoundError as exc:

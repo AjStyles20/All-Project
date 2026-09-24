@@ -68,3 +68,13 @@ The earlier consolidated multi-diagram sheet is no longer treated as a final rep
 **Not yet complete:** repository, service/state-transition policy, protected examiner APIs, live MySQL migration/integration evidence, and UI. No FD-02 completion claim is permitted until those are implemented and tested.
 
 **Documentation synchronization:** the ERD has been expanded in the FD-02 design document at the same time as migration 002. The final rendered ERD will be regenerated from the stabilized physical schema rather than allowing a stale diagram to survive.
+
+
+### FD-02 continuation — repository, lifecycle and protected API
+**Implemented:** MySQLExaminationRepository; ExaminationService; explicit transition matrix; owner-only modification rule; DRAFT-only question attachment; protected Examiner endpoints for examination creation, programming-question creation, attachment and lifecycle transition.
+
+**Design artifacts updated:** FD-02 now contains Figure 3.5.2 examination lifecycle activity/state diagram and Figure 3.5.3 examiner-management sequence diagram, each introduced, captioned and explained in its relevant design narrative.
+
+**Important boundary:** authorization at the API layer and ownership/lifecycle policy at the service layer are intentionally separate. This is defense-in-depth and separation of concerns, not duplicate logic.
+
+**Verification status:** unit tests exist for lifecycle/ownership rules. API and live-MySQL integration verification remain pending; no pass claim has been recorded.

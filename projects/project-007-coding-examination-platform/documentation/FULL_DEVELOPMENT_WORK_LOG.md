@@ -108,3 +108,11 @@ PR #19 was rechecked after CI and GitHub reported it mergeable. It remains draft
 During pre-live-MySQL review, the application default host (`127.0.0.1`) was compared with the bootstrap account host (`'p001_app'@'localhost'`). Because MySQL account identity includes the host component and host matching can differ between TCP loopback and localhost/socket behavior, the bootstrap was corrected to create/grant `'p001_app'@'127.0.0.1'`, matching `P001_DB_HOST`'s default exactly.
 
 This is recorded as a pre-verification defect found and corrected, not as live-database evidence. The least-privilege application account still receives only SELECT/INSERT/UPDATE/DELETE; schema DDL remains outside normal application privileges.
+
+
+### FD-02 live-MySQL verification path completed in code
+The local Workbench guide now applies both migration 001 and migration 002 and correctly identifies the application account as `p001_app@127.0.0.1`. The non-destructive connection checker now requires all six current operational tables: `users`, `user_roles`, `auth_sessions`, `examinations`, `questions`, and `examination_questions`.
+
+Added opt-in live test `test_mysql_fd02_live.py`. Against a configured MySQL Server it creates a unique Examiner identity, persists an examination and programming question, attaches the question to the DRAFT examination, reads the examination back, transitions DRAFT→SCHEDULED through the service, and confirms the persisted state.
+
+This closes the implementation gap in the verification path but does not constitute live execution evidence. The test remains skipped in ordinary CI unless `P001_RUN_MYSQL_TESTS=1`.

@@ -104,3 +104,13 @@ The same layered path is used for programming-question creation, question attach
 Implemented: domain validation, MySQL repository, lifecycle/ownership service, MySQL schema migration and protected Examiner endpoints for creating examinations/questions, attaching questions and requesting state transitions.
 
 Pending: API-level tests with dependency-isolated fakes, live MySQL integration evidence, list/read/update operations required by the final UI, and final rendered diagram assets. FD-02 is therefore still IN PROGRESS.
+
+
+## Verification design — API boundary
+The MySQL application factory now accepts explicit authentication and examination-service dependencies for tests. Production behavior is unchanged when these are omitted: the factory constructs the real MySQL-backed services. This dependency-injection seam lets API tests verify HTTP authorization and business-policy mapping without requiring a live MySQL Server.
+
+The API test suite covers: Candidate rejection from Examiner operations (HTTP 403); Examiner creation of an examination and question; DRAFT question attachment; legal DRAFT→SCHEDULED transition; rejection of non-owner modification; illegal DRAFT→ACTIVE transition mapped to HTTP 409; and Administrator access at the role boundary.
+
+Administrator role access is intentionally distinct from ownership. Passing the role check does not automatically make an Administrator the owner of an existing Examiner examination.
+
+**Verification boundary:** these tests have been committed but are not recorded as passed until an actual test runner/CI execution confirms them.

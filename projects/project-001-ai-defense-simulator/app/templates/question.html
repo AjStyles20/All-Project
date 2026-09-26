@@ -4,12 +4,20 @@
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <a href="/">Workspaces</a> <span aria-hidden="true">/</span>
   <a href="/workspaces/{{ workspace.id }}">{{ workspace.name }}</a> <span aria-hidden="true">/</span>
-  <span>Question</span>
+  {% if session %}
+    <a href="/workspaces/{{ workspace.id }}/sessions/{{ session.session_id }}">Defense session</a> <span aria-hidden="true">/</span>
+    <span>Turn {{ session.turn_index }}</span>
+  {% else %}
+    <span>Question</span>
+  {% endif %}
 </nav>
 
 <header class="page-header">
   <div>
     <p class="eyebrow">{{ question.reviewer_role }} reviewer</p>
+    {% if session %}
+      <p><strong>Defense turn {{ session.turn_index }} of {{ session.max_turns }}</strong> · Session {{ session.status }}</p>
+    {% endif %}
     <h1>{{ question.question_text }}</h1>
     <p class="muted">Topic: {{ question.topic }} · Retrieval: {{ question.retrieval_mode }} · {{ question.created_at }}</p>
     <div class="speech-controls"
@@ -44,8 +52,14 @@
 
 <section class="panel" aria-labelledby="answer-title">
   <h2 id="answer-title">Your answer</h2>
-  {% if evaluation_configured %}
-    <form method="post" action="/ui/workspaces/{{ workspace.id }}/questions/{{ question.id }}/answers" id="answer-form">
+  {% if session and session.answered %}
+    <div class="notice neutral" role="status">This turn already has recorded feedback. You can review it below before continuing the session.</div>
+  {% elif evaluation_configured %}
+    {% if session %}
+      <form method="post" action="/ui/workspaces/{{ workspace.id }}/sessions/{{ session.session_id }}/questions/{{ question.id }}/answers" id="answer-form">
+    {% else %}
+      <form method="post" action="/ui/workspaces/{{ workspace.id }}/questions/{{ question.id }}/answers" id="answer-form">
+    {% endif %}
       <label for="answer">Answer the reviewer question</label>
       <textarea id="answer" name="answer" maxlength="8000" rows="10" required></textarea>
 
@@ -105,6 +119,21 @@
     <p class="muted">No answer evaluations yet.</p>
   {% endif %}
 </section>
+
+{% if session %}
+<section class="panel" aria-labelledby="session-next-title">
+  <h2 id="session-next-title">Defense session</h2>
+  {% if session.status == 'complete' %}
+    <div class="notice neutral" role="status">This bounded rehearsal is complete. No additional turn will be created.</div>
+    <p><a href="/workspaces/{{ workspace.id }}/sessions/{{ session.session_id }}">Review completed session</a></p>
+  {% elif evaluations %}
+    <p>Your feedback is recorded. Return to the session to request the next evidence-grounded challenge when available.</p>
+    <p><a href="/workspaces/{{ workspace.id }}/sessions/{{ session.session_id }}">Continue defense session</a></p>
+  {% else %}
+    <p class="muted">Answer this turn before continuing the session.</p>
+  {% endif %}
+</section>
+{% endif %}
 {% endblock %}
 {% block scripts %}
 <script src="/static/speech_output.js" defer></script>

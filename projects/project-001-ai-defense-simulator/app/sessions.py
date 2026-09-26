@@ -155,8 +155,60 @@ def attach_initial_question(database: Database, *, session_id: str, workspace_id
     return {"session_id": session_id, "turn_index": 1, "question_id": question_id}
 
 
+def question_session_context(database: Database, *, workspace_id: str, session_id: str, question_id: str) -> dict:
+    """Return authoritative session membership for one question or fail closed."""
+    ensure_session_schema(database)
+    with database.connect() as connection:
+        row = connection.execute(
+            """
+            SELECT ps.id AS session_id, ps.workspace_id, ps.status, ps.max_turns,
+                   pst.turn_index, pst.question_id,
+                   (SELECT COUNT(*) FROM practice_session_turns x WHERE x.session_id = ps.id) AS turn_count
+            FROM practice_sessions ps
+            JOIN practice_session_turns pst ON pst.session_id = ps.id
+            JOIN generated_questions gq ON gq.id = pst.question_id
+            WHERE ps.id = ? AND ps.workspace_id = ? AND pst.question_id = ? AND gq.workspace_id = ?
+            """,
+            (session_id, workspace_id, question_id, workspace_id),
+        ).fetchone()
+    if row is None:
+        raise ValueError("question does not belong to session in workspace")
+    return dict(row)
+
+
+def reconcile_session_completion(database: Database, *, workspace_id: str, session_id: str) -> dict:
+    """Mark an exhausted answered session complete without consulting a provider."""
+    ensure_session_schema(database)
+    with database.connect() as connection:
+        session = connection.execute(
+            "SELECT id, status, max_turns FROM practice_sessions WHERE id = ? AND workspace_id = ?",
+            (session_id, workspace_id),
+        ).fetchone()
+        if session is None:
+            raise ValueError("session not found in workspace")
+        latest = connection.execute(
+            "SELECT turn_index, question_id FROM practice_session_turns WHERE session_id = ? ORDER BY turn_index DESC LIMIT 1",
+            (session_id,),
+        ).fetchone()
+        if latest is None:
+            return {"status": session["status"], "completed_now": False}
+        answered = connection.execute(
+            "SELECT 1 FROM answer_evaluations WHERE workspace_id = ? AND question_id = ? LIMIT 1",
+            (workspace_id, latest["question_id"]),
+        ).fetchone() is not None
+        exhausted = int(latest["turn_index"]) >= int(session["max_turns"])
+        if session["status"] == "active" and exhausted and answered:
+            connection.execute(
+                "UPDATE practice_sessions SET status = 'complete', completed_at = COALESCE(completed_at, CURRENT_TIMESTAMP) WHERE id = ? AND workspace_id = ?",
+                (session_id, workspace_id),
+            )
+            return {"status": "complete", "completed_now": True}
+    return {"status": session["status"], "completed_now": False}
+
+
 def _load_followup_context(database: Database, *, session_id: str, workspace_id: str) -> tuple[sqlite3.Row, sqlite3.Row, sqlite3.Row, tuple[EvidenceItem, ...], tuple[dict, ...]]:
     ensure_session_schema(database)
+    reconcile_session_completion(database, workspace_id=workspace_id, session_id=session_id)
     with database.connect() as connection:
         session = connection.execute(
             "SELECT * FROM practice_sessions WHERE id = ? AND workspace_id = ?", (session_id, workspace_id)

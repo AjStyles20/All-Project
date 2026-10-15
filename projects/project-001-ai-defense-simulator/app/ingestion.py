@@ -1,10 +1,20 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from io import BytesIO
 import hashlib
+from pathlib import Path
 import re
 
-SUPPORTED_EXTENSIONS = {".txt", ".md"}
+from docx import Document
+from pypdf import PdfReader
+from pptx import Presentation
+
+SUPPORTED_EXTENSIONS = {".txt", ".md", ".pdf", ".docx", ".pptx"}
+
+
+class DocumentExtractionError(ValueError):
+    """Raised when an accepted document cannot be safely/readably extracted."""
 
 
 @dataclass(frozen=True)
@@ -65,10 +75,6 @@ def chunk_text(
             body = "\n\n".join(current).strip()
             staged.append((start_paragraph, paragraph_number - 1, body))
 
-            # Restrict overlap to the immediately preceding paragraph. This keeps
-            # the locator truthful even when the previous chunk contains several
-            # short paragraphs; a raw tail of the whole chunk could otherwise
-            # include text from an earlier paragraph that the locator omits.
             previous_paragraph = current[-1]
             overlap = previous_paragraph[-overlap_chars:].strip() if overlap_chars else ""
             current = [overlap, paragraph] if overlap else [paragraph]
@@ -96,3 +102,120 @@ def chunk_text(
             )
         )
     return chunks
+
+
+def _prefix_and_reindex(
+    chunks: list[TextChunk], *, locator_prefix: str, start_index: int
+) -> list[TextChunk]:
+    result: list[TextChunk] = []
+    for offset, chunk in enumerate(chunks):
+        locator = locator_prefix
+        if len(chunks) > 1:
+            locator = f"{locator_prefix}; {chunk.locator}"
+        result.append(
+            TextChunk(
+                index=start_index + offset,
+                locator=locator,
+                text=chunk.text,
+                content_hash=chunk.content_hash,
+            )
+        )
+    return result
+
+
+def _extract_pdf(data: bytes) -> list[TextChunk]:
+    try:
+        reader = PdfReader(BytesIO(data))
+    except Exception as exc:
+        raise DocumentExtractionError("PDF could not be opened") from exc
+
+    if reader.is_encrypted:
+        raise DocumentExtractionError("Encrypted PDF is not supported")
+
+    chunks: list[TextChunk] = []
+    for page_number, page in enumerate(reader.pages, start=1):
+        try:
+            text = (page.extract_text() or "").strip()
+        except Exception as exc:
+            raise DocumentExtractionError(
+                f"Text extraction failed on PDF page {page_number}"
+            ) from exc
+        if not text:
+            continue
+        chunks.extend(
+            _prefix_and_reindex(
+                chunk_text(text),
+                locator_prefix=f"page {page_number}",
+                start_index=len(chunks),
+            )
+        )
+    return chunks
+
+
+def _extract_docx(data: bytes) -> list[TextChunk]:
+    try:
+        document = Document(BytesIO(data))
+    except Exception as exc:
+        raise DocumentExtractionError("DOCX could not be opened") from exc
+
+    chunks: list[TextChunk] = []
+    for paragraph_number, paragraph in enumerate(document.paragraphs, start=1):
+        text = paragraph.text.strip()
+        if not text:
+            continue
+        chunks.extend(
+            _prefix_and_reindex(
+                chunk_text(text),
+                locator_prefix=f"paragraph {paragraph_number}",
+                start_index=len(chunks),
+            )
+        )
+    return chunks
+
+
+def _extract_pptx(data: bytes) -> list[TextChunk]:
+    try:
+        presentation = Presentation(BytesIO(data))
+    except Exception as exc:
+        raise DocumentExtractionError("PPTX could not be opened") from exc
+
+    chunks: list[TextChunk] = []
+    for slide_number, slide in enumerate(presentation.slides, start=1):
+        parts: list[str] = []
+        for shape in slide.shapes:
+            if not hasattr(shape, "text"):
+                continue
+            text = (shape.text or "").strip()
+            if text:
+                parts.append(text)
+        if not parts:
+            continue
+        chunks.extend(
+            _prefix_and_reindex(
+                chunk_text("\n\n".join(parts)),
+                locator_prefix=f"slide {slide_number}",
+                start_index=len(chunks),
+            )
+        )
+    return chunks
+
+
+def extract_document_chunks(filename: str, data: bytes) -> list[TextChunk]:
+    """Extract supported input into indexed chunks with truthful source locators."""
+    extension = Path(filename).suffix.lower()
+    if extension not in SUPPORTED_EXTENSIONS:
+        raise DocumentExtractionError(f"Unsupported extension: {extension or '(none)'}")
+
+    if extension in {".txt", ".md"}:
+        try:
+            return chunk_text(decode_text_file(data))
+        except UnicodeDecodeError as exc:
+            raise DocumentExtractionError("Text file must contain valid UTF-8") from exc
+    if extension == ".pdf":
+        return _extract_pdf(data)
+    if extension == ".docx":
+        return _extract_docx(data)
+    if extension == ".pptx":
+        return _extract_pptx(data)
+
+    raise DocumentExtractionError(f"No extractor configured for {extension}")

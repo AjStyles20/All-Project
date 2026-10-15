@@ -6,7 +6,12 @@ import os
 from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
 
 from .db import Database
-from .ingestion import SUPPORTED_EXTENSIONS, chunk_text, decode_text_file, sha256_bytes
+from .ingestion import (
+    DocumentExtractionError,
+    SUPPORTED_EXTENSIONS,
+    extract_document_chunks,
+    sha256_bytes,
+)
 
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
@@ -21,7 +26,7 @@ db.initialize()
 
 app = FastAPI(
     title="Project 001 — Source-Grounded Review Simulator",
-    version="0.1.0",
+    version="0.2.0",
 )
 
 
@@ -70,11 +75,10 @@ async def upload_document(workspace_id: str, file: UploadFile = File(...)) -> di
         raise HTTPException(status_code=422, detail="File is empty")
 
     try:
-        text = decode_text_file(data)
-    except UnicodeDecodeError as exc:
-        raise HTTPException(status_code=422, detail="File must contain valid UTF-8 text") from exc
+        chunks = extract_document_chunks(filename, data)
+    except DocumentExtractionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    chunks = chunk_text(text)
     if not chunks:
         raise HTTPException(status_code=422, detail="File contains no extractable text")
 

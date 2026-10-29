@@ -330,3 +330,9 @@ AJ approved DR-013 (Option A) and answered Q1–Q5 with the proposed defaults. T
 **Known limitation:** exception extra time is recorded but not applied to FD-03 deadlines, and is labelled as such. This is an open point for AJ.
 
 **Live evidence:** full suite at `e502488`, fresh disposable MySQL 8.4.9 instance, migrations 001–005: **256 passed, 0 skipped** (TE-011).
+
+### FD-05 — DR-014 applied: extra time extends the candidate's deadline (2026-10-29)
+AJ chose to apply exception extra time.
+- **Implementation:** `CandidateSessionService.effective_ends_at` returns `ends_at` plus the largest single grant for that candidate. It is used by the start and save window checks and exposed as `my_ends_at`.
+- **Test defect corrected during the work:** the first draft of the new unit test expected `ExaminationConflictError` for a late save. The service correctly raises `SessionConflictError`. Classification: test bug.
+- **Live evidence:** full suite at `c17ccb5`, fresh disposable MySQL 8.4.9 instance: **257 passed, 0 skipped** (TE-012).

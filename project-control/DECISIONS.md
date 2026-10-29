@@ -191,3 +191,14 @@ DECISION REQUEST DR-013
   - FR-15 is SPECIFIED / APPROVED;
   - FD-05 (ECC management) is unblocked;
   - FD-06 (evidence bridge) needs an explicit research-link step.
+
+
+## DR-014 — Apply ECC exception extra time to the candidate's deadline
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A2 (product-layer behaviour)
+- Context: FD-05 (PR #23) recorded exception extra time but did not apply it to FD-03 deadlines, so a candidate promised more time could have been cut off.
+- Decision: a candidate's effective deadline is the examination's `ends_at` plus the **largest single** extra-time grant recorded for that candidate. Start and save checks use it, and the candidate's session view shows it (`my_ends_at`).
+- Rationale: candidates must actually receive accommodations they were granted. Using the largest grant rather than the sum means re-recording an exception never silently stacks time; an examiner who wants more time grants a larger exception.
+- Consequences: `CandidateSessionService` takes an optional contract repository. Other capabilities in exceptions remain declarative (DECLARED, NOT ENFORCED).
+- Approved by: AJ, in the Claude Code session of 2026-10-29. The "largest single grant" rule is the implementing agent's choice and is flagged here for AJ review.

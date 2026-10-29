@@ -140,3 +140,14 @@ All verification evidence should be reproducible where practical. Do not record 
 - Observed result: schema check PASS; 256 passed, 0 skipped in 167.63s.
 - Status: PASS
 - Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification.
+
+### TE-012 — P001 FD-05 extra time applied (DR-014) live re-run
+- Date: 2026-10-29
+- Requirement(s): RTM FR-18; DR-014
+- Test type: Live + full regression
+- Environment: fresh disposable MySQL 8.4.9 instance (same setup as TE-005, migrations 001–005).
+- Procedure: `P001_RUN_MYSQL_TESTS=1 python -m pytest -q -W error::DeprecationWarning` at `c17ccb5` on `p001-fd05-ecc-management`.
+- Expected result: whole suite passes with no skips. The live FD-05 test should show the timed exam's effective deadline for the candidate as `ends_at` + 25 minutes.
+- Observed result: schema check PASS; 257 passed, 0 skipped in 88.05s.
+- Status: PASS
+- Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification.

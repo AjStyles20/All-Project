@@ -88,8 +88,8 @@ As Figure 3.5.7 shows, no transition rewrites an existing bound version. Every c
 
 Every contract body carries `"enforcement": "DECLARED_NOT_ENFORCED"`. Bound versions also carry their `policy_version` label (`ecc:<exam>@v<n>#<hash prefix>`).
 
-## Known limitation (truthful labelling)
-- **Extra time is recorded but not applied** to FD-03 session deadlines. Exception bodies say so explicitly (`extra_time_applied_to_deadline: false`). Applying it is an open point for AJ.
+## Exceptions and labelling
+- **Extra time is applied** (DR-014). A candidate's effective deadline is `ends_at` plus their largest single extra-time grant. FD-03 start and save checks use it, and the session view shows `my_ends_at`.
 - No capability is enforced at runtime; the whole contract is declarative (spec §3, R7).
 
 ## Verification status
@@ -100,5 +100,5 @@ Every contract body carries `"enforcement": "DECLARED_NOT_ENFORCED"`. Bound vers
 
 FD-05 is **IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED** on that instance.
 
-## Open point for AJ
-1. Apply exception extra time to the candidate's FD-03 deadline (`ends_at` + minutes), or keep recording it only until the UI work?
+## Resolved
+- Exception extra time is applied to the candidate's deadline (DR-014, AJ 2026-10-29). The live re-run is recorded as TE-012.

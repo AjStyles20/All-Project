@@ -116,3 +116,30 @@ The local Workbench guide now applies both migration 001 and migration 002 and c
 Added opt-in live test `test_mysql_fd02_live.py`. Against a configured MySQL Server it creates a unique Examiner identity, persists an examination and programming question, attaches the question to the DRAFT examination, reads the examination back, transitions DRAFT→SCHEDULED through the service, and confirms the persisted state.
 
 This closes the implementation gap in the verification path but does not constitute live execution evidence. The test remains skipped in ordinary CI unless `P001_RUN_MYSQL_TESTS=1`.
+
+
+## 2026-10-29 — FD-02 completion increment (Claude Code, Engineering)
+**Branch:** `p001-fd02-exam-question-management` (PR #19, still draft).
+
+**CI maintenance:** cleared both warnings recorded at run #294.
+- `actions/checkout` v4 → v5 and `actions/setup-python` v5 → v6, the Node 24 runtimes.
+- `httpx` replaced by `httpx2` (pydantic/httpx2, which Starlette 1.x's TestClient prefers and lists in its own `full` extra). Classification: dependency issue. Application code does not import httpx directly.
+
+**Implemented:** list/read/update/detach operations named as pending in the FD-02 design: `GET /examiner/examinations`, `GET /examiner/examinations/{id}`, `PATCH /examiner/examinations/{id}`, `GET /examiner/questions`, `DELETE /examiner/examinations/{id}/questions/{question_id}`. Examination time windows can now be set through the API. HTTP error mapping is centralised.
+
+**Defects found in review and corrected** (classification: application bug; none had been reported by CI because the tests did not exercise these paths):
+1. A whitespace-only title passed Pydantic `min_length=1` but failed domain validation. The resulting `ValueError` surfaced as HTTP 500 and now returns 422.
+2. Attaching the same question twice, or reusing a display order, raised MySQL `IntegrityError`, which surfaced as 500. It now returns 409 through a service pre-check, with repository translation of `IntegrityError` as the race backstop.
+3. Lifecycle transitions were read-then-write, so two concurrent requests could both pass. The UPDATE is now compare-and-set on the expected status.
+4. Attach, detach and detail edits are DRAFT-guarded in SQL as well as in the service.
+5. mysql-connector does not set `CLIENT_FOUND_ROWS` by default. MySQL therefore reports 0 rows for an UPDATE that writes identical values, and a no-op PATCH would have returned a false 409. Connections now set the flag. The existing `revoke_session` update is unaffected because it always changes `revoked_at`.
+
+**Policy decision (A2, logged for AJ):** DRAFT → SCHEDULED requires at least one attached question.
+
+**Rejected alternative:** catching `IntegrityError` only in the API layer was rejected. It would leak a MySQL-specific exception type above the persistence boundary.
+
+**Tests:** the duplicated fake repositories in the unit and API tests were replaced by one shared `tests/examination_fakes.py`. The fake follows the repository's guarded semantics. New service, API and SQL-contract tests were added, and the live MySQL test was extended to cover every new repository operation and guard.
+
+**Local evidence:** Windows, Python 3.14.0, `python -m pytest -q -W error::DeprecationWarning` → **176 passed, 2 skipped**. The two skips are the opt-in live MySQL tests. CI evidence is recorded separately once the run completes.
+
+**Not verified:** live MySQL execution. No MySQL Server was available in this environment.

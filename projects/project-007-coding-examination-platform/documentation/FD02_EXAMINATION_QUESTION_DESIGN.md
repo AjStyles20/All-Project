@@ -114,3 +114,47 @@ The API test suite covers: Candidate rejection from Examiner operations (HTTP 40
 Administrator role access is intentionally distinct from ownership. Passing the role check does not automatically make an Administrator the owner of an existing Examiner examination.
 
 **Verification boundary:** these tests have been committed but are not recorded as passed until an actual test runner/CI execution confirms them.
+
+
+## FD-02 completion increment (2026-10-29)
+This section supersedes the "Pending" list in *Current FD-02 implementation boundary* above. Earlier notes are kept as history.
+
+### Examiner API surface
+All endpoints require the EXAMINER or ADMINISTRATOR role. Every operation on an existing examination also requires ownership; the Administrator role does not grant ownership.
+
+| Method | Path | Purpose | Lifecycle constraint |
+|---|---|---|---|
+| POST | `/examiner/examinations` | create (title, description, optional `starts_at`/`ends_at`) | created as DRAFT |
+| GET | `/examiner/examinations` | list the caller's examinations | — |
+| GET | `/examiner/examinations/{id}` | examination plus its ordered questions | owner only |
+| PATCH | `/examiner/examinations/{id}` | update title/description/time window | DRAFT only |
+| POST | `/examiner/questions` | create a programming question | — |
+| GET | `/examiner/questions` | list questions the caller created | — |
+| POST | `/examiner/examinations/{id}/questions` | attach question with display order and weight | DRAFT only |
+| DELETE | `/examiner/examinations/{id}/questions/{question_id}` | detach question | DRAFT only |
+| POST | `/examiner/examinations/{id}/transition` | lifecycle transition (Figure 3.5.2) | transition matrix |
+
+Error mapping is centralised in the API layer: not found → 404, ownership → 403, lifecycle or content conflict → 409, domain validation → 422.
+
+### Policy added
+- **Scheduling requires content.** DRAFT → SCHEDULED is refused while the examination has no questions. This was logged as an A2 implementation decision for AJ review (FD-02 handoff, 2026-10-29). It does not change the lifecycle states in Figure 3.5.2.
+
+### Concurrency and integrity
+- Status transitions are compare-and-set: `UPDATE … WHERE examination_id=? AND status=<status read by the service>`. If two requests race, only one can apply. The other gets 409 and must reload.
+- Attach, detach and detail updates carry a `status='DRAFT'` predicate in SQL as well as the service check. Membership therefore cannot change after a concurrent schedule.
+- The service pre-checks duplicate questions and display orders. The repository also converts MySQL `IntegrityError` into `ExaminationConflictError`, so a race that slips past the pre-check still returns 409 instead of 500.
+- Connections set `CLIENT_FOUND_ROWS`. Without it MySQL reports changed rows, not matched rows, and re-saving identical details would wrongly look like a lifecycle conflict.
+
+### Time values
+MySQL `DATETIME` has no zone. Timezone-aware API inputs are converted to UTC and stored naive. Naive inputs are stored as given and are assumed to be UTC.
+
+### Verification status
+- Unit, service and API tests run against an in-memory repository (`tests/examination_fakes.py`). That fake follows the MySQL repository's guarded semantics.
+- SQL-contract tests (`tests/unit/test_mysql_examination_repository.py`) pin the status predicates and the error translation on every CI run, without a server.
+- `tests/integration/test_mysql_fd02_live.py` now exercises every repository operation and guard against a real server. It is still opt-in (`P001_RUN_MYSQL_TESTS=1`) and **has not been executed**. FD-02 is therefore **IMPLEMENTED / UNIT + API TESTED** and **not LIVE VERIFIED**.
+
+### Still open
+- Live MySQL execution evidence (requires AJ's local MySQL Server).
+- Whether an examiner may attach a question created by a different examiner. This is currently allowed because questions are designed to be reusable. Flagged for AJ.
+- Whether SCHEDULED should require a start/end window. This is not enforced.
+- Final rendered diagram assets.

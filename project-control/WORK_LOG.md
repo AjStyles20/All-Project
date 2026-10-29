@@ -72,3 +72,15 @@ Record meaningful project activity chronologically. Preserve failures and correc
 - Tests/evidence: TE-009. Full suite with live MySQL: 227 passed, 0 skipped.
 - Status: FD-04 IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED (disposable MySQL 8.4.9).
 - Next action: AJ's three open points (weighted total, mark history, release to candidates); then PR merge.
+
+### 2026-10-29 — P001 ECC specification v0.1 drafted
+- Agent/role: Claude Code / Engineering (specification at AJ's request)
+- Objective: draft the Examination Capability Contract (FR-15) so the operational → EGPCV evidence bridge can be designed.
+- Files changed: new `specification/EXAMINATION_CAPABILITY_CONTRACT_SPECIFICATION.md`; DECISIONS (DR-013 Proposed); RTM FR-15; PROJECT_STATE (also corrected the FD-04 line to merged).
+- Status: PROPOSED. A3 decision awaiting AJ. No implementation.
+- Next action: AJ answers DR-013 and Q1–Q5.
+
+### 2026-10-29 — DR-013 approved: ECC v1.0
+- Agent/role: Claude Code / Engineering (recording AJ's decision)
+- Work completed: DR-013 marked Approved with AJ's answers to Q1–Q5; spec set to v1.0 APPROVED; RTM FR-15 set to SPECIFIED / APPROVED; PROJECT_STATE updated.
+- Next action: FD-05 (ECC management).

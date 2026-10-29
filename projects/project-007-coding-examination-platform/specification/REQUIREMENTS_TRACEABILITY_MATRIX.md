@@ -20,7 +20,7 @@ A **Requirements Traceability Matrix (RTM)** connects the research problem to so
 | FR-12 | Evidence Update | VerificationWorkflow + persistence | IMPLEMENTED / TESTED |
 | FR-13 | Stop Rule | generic StopRule with continue/complete/human-review outcomes | IMPLEMENTED / TESTED for current claim-control model |
 | FR-14 | Human Escalation | no adequate unused executable probe → HUMAN_REVIEW_REQUIRED | IMPLEMENTED / TESTED |
-| FR-15 | Examination Capability Contract (ECC) Management | conceptual/specification boundary only | PENDING; later examination-platform work |
+| FR-15 | Examination Capability Contract (ECC) Management | specification v1.0 (`EXAMINATION_CAPABILITY_CONTRACT_SPECIFICATION.md`); no implementation | SPECIFIED / APPROVED (DR-013, 2026-10-29); implementation planned as FD-05 |
 | FR-16 | Programming-Process Capture | baseline accepts process evidence but capture subsystem absent | PENDING; needed before real B1 process collection |
 | FR-17 | Integrity Observation Management | competence/integrity separation specified, no module | PENDING |
 | FR-18 | Authorized Exception Handling | policy/accessibility concept only | PENDING |

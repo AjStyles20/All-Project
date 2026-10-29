@@ -6,7 +6,9 @@ revision compare-and-set on response updates.
 """
 from dataclasses import replace
 
-from app.domain.candidate_session import SessionConflictError, SessionStatus
+from datetime import datetime, timezone
+
+from app.domain.candidate_session import SessionConflictError, SessionStatus, SubmissionMode
 
 
 class InMemoryCandidateSessionRepository:
@@ -58,8 +60,17 @@ class InMemoryCandidateSessionRepository:
         if session is None or session.status is not SessionStatus.IN_PROGRESS:
             return False
         self.sessions[session_id] = replace(session, status=SessionStatus.SUBMITTED,
-                                            submitted_at=submitted_at)
+                                            submitted_at=submitted_at,
+                                            submission_mode=SubmissionMode.CANDIDATE)
         return True
+
+    def finalize_open_sessions(self, examination_id):
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
+        for sid, s in list(self.sessions.items()):
+            a = self.assignments[s.assignment_id]
+            if a.examination_id == examination_id and s.status is SessionStatus.IN_PROGRESS:
+                self.sessions[sid] = replace(s, status=SessionStatus.SUBMITTED, submitted_at=now,
+                                             submission_mode=SubmissionMode.AUTO_ON_CLOSE)
 
     def get_response(self, session_id, question_id):
         return self.responses.get((session_id, question_id))

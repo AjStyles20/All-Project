@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS examination_sessions (
     status ENUM('IN_PROGRESS','SUBMITTED') NOT NULL DEFAULT 'IN_PROGRESS',
     started_at DATETIME(6) NOT NULL,
     submitted_at DATETIME(6) NULL,
+    -- Who finalised the session: the candidate, or the examination closing (DR-011).
+    submission_mode ENUM('CANDIDATE','AUTO_ON_CLOSE') NULL,
     UNIQUE KEY uq_session_assignment (assignment_id),
     CONSTRAINT fk_sessions_assignment FOREIGN KEY (assignment_id)
         REFERENCES candidate_assignments(assignment_id)

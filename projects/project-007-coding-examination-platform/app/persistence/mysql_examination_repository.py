@@ -79,6 +79,17 @@ class MySQLExaminationRepository:
                 (status.value, examination_id, expected.value),
             )
             changed = cursor.rowcount
+            if changed == 1 and status is ExaminationStatus.CLOSED:
+                # DR-011 (6): closing finalises every open session in the same transaction,
+                # so saved work is never left unsubmitted and the close cannot half-apply.
+                cursor.execute(
+                    "UPDATE examination_sessions s "
+                    "JOIN candidate_assignments a ON a.assignment_id = s.assignment_id "
+                    "SET s.status='SUBMITTED', s.submitted_at=UTC_TIMESTAMP(6), "
+                    "s.submission_mode='AUTO_ON_CLOSE' "
+                    "WHERE a.examination_id=%s AND s.status='IN_PROGRESS'",
+                    (examination_id,),
+                )
             cursor.close()
         return changed == 1
 

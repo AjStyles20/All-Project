@@ -23,7 +23,9 @@ def bearer(token): return {"Authorization": "Bearer " + token}
 
 def active_exam_client():
     exams = InMemoryExaminationRepository()
-    sessions = CandidateSessionService(InMemoryCandidateSessionRepository({"student-1", "student-2"}), exams)
+    session_repo = InMemoryCandidateSessionRepository({"student-1", "student-2"})
+    exams.on_close.append(session_repo.finalize_open_sessions)
+    sessions = CandidateSessionService(session_repo, exams)
     client = TestClient(create_mysql_platform_app(
         auth_service=FakeAuth(), examination_service=ExaminationService(exams),
         candidate_session_service=sessions))
@@ -106,3 +108,15 @@ def test_session_cannot_start_before_activation():
     eid = client.post("/examiner/examinations", json={"title": "Draft"}, headers=bearer("examiner-token")).json()["examination_id"]
     client.post(f"/examiner/examinations/{eid}/assignments", json={"candidate_user_id": "student-1"}, headers=bearer("examiner-token"))
     assert client.post(f"/candidate/examinations/{eid}/session", headers=bearer("student-token")).status_code == 409
+
+
+def test_close_auto_submits_and_reports_submission_mode():
+    client, eid, qid = active_exam_client()
+    student = bearer("student-token")
+    sid = client.post(f"/candidate/examinations/{eid}/session", headers=student).json()["session_id"]
+    client.put(f"/candidate/sessions/{sid}/responses/{qid}", json={"content": "draft"}, headers=student)
+    closed = client.post(f"/examiner/examinations/{eid}/transition", json={"target_status": "CLOSED"}, headers=bearer("examiner-token"))
+    assert closed.status_code == 200
+    view = client.get(f"/candidate/sessions/{sid}", headers=student).json()
+    assert view["status"] == "SUBMITTED" and view["submission_mode"] == "AUTO_ON_CLOSE"
+    assert view["questions"][0]["response"]["content"] == "draft"

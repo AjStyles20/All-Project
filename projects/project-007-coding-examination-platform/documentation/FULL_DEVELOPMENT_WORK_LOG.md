@@ -214,3 +214,19 @@ The FD-03 test covered:
 
 ### FD-02 — DR-011 applied (2026-10-29)
 AJ resolved the FD-02 policy points. The one change is that examiners may now attach only questions they created; another examiner's question returns 404. This is implemented with `question_created_by` in the repository and fake, and covered by service, API and live tests. The other points stay as built: scheduling requires a question, and the time window is optional.
+
+### FD-03 — DR-011 applied: auto-submit on close (2026-10-29)
+AJ approved auto-finalising open sessions when an examination closes.
+
+**Implementation:**
+- `MySQLExaminationRepository.update_status` runs a second UPDATE on the same connection whenever a CLOSED compare-and-set succeeds, so both changes commit or roll back together.
+- That UPDATE (`examination_sessions JOIN candidate_assignments`) sets `status='SUBMITTED'`, `submitted_at=UTC_TIMESTAMP(6)` and `submission_mode='AUTO_ON_CLOSE'`.
+- Candidate submissions now record `submission_mode='CANDIDATE'`.
+- Migration 003 gained the nullable `submission_mode` column. It was amended in place because it had only been applied to the disposable test instance.
+- The in-memory examination fake runs `on_close` callbacks to stand in for the same-transaction update.
+
+**Rejected alternative:** finalising sessions from the service after the close commits. If the second step failed, sessions would be stuck IN_PROGRESS on a CLOSED examination, where they can no longer be saved or submitted.
+
+**Tests:** service, API, SQL-contract (second statement only after a successful CLOSE; none on other transitions or a lost race) and live.
+
+The other FD-03 points stay as built: one attempt, late submit allowed, latest content only (history parked as SP-001).

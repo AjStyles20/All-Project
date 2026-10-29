@@ -96,7 +96,8 @@ def _assignment_body(assignment: CandidateAssignment) -> dict:
 
 def _session_body(session: ExaminationSession) -> dict:
     return {"session_id": session.session_id, "status": session.status.value,
-            "started_at": _iso(session.started_at), "submitted_at": _iso(session.submitted_at)}
+            "started_at": _iso(session.started_at), "submitted_at": _iso(session.submitted_at),
+            "submission_mode": session.submission_mode.value if session.submission_mode else None}
 
 
 def _response_body(response: SavedResponse) -> dict:

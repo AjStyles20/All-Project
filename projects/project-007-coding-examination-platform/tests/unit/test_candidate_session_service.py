@@ -171,3 +171,25 @@ def test_candidate_lists_only_own_assignments():
     service, _, _, _ = assigned()
     assert [exam.examination_id for _, exam in service.list_candidate_examinations("student-1")] == ["e1"]
     assert service.list_candidate_examinations("student-2") == []
+
+
+def test_closing_examination_auto_submits_open_sessions():
+    # DR-011 (6): the close transition finalises open sessions as AUTO_ON_CLOSE.
+    from app.domain.candidate_session import SubmissionMode
+    from app.services.examination_service import ExaminationService
+    service, repo, exams, _ = assigned()
+    exams.on_close.append(repo.finalize_open_sessions)
+    service.assign_candidate("e1", "student-2", "lecturer-1")
+    done = service.start_session("e1", "student-1").session_id
+    service.submit(done, "student-1")
+    open_sid = service.start_session("e1", "student-2").session_id
+    service.save_response(open_sid, "q1", "student-2", "saved before close")
+
+    ExaminationService(exams).transition("e1", "lecturer-1", ExaminationStatus.CLOSED)
+
+    auto = repo.get_session(open_sid)
+    assert auto.status is SessionStatus.SUBMITTED and auto.submission_mode is SubmissionMode.AUTO_ON_CLOSE
+    assert repo.get_session(done).submission_mode is SubmissionMode.CANDIDATE
+    assert service.get_session_view(open_sid, "student-2").responses["q1"].content == "saved before close"
+    # A retried submit after close is still idempotent rather than an error.
+    assert service.submit(open_sid, "student-2").submission_mode is SubmissionMode.AUTO_ON_CLOSE

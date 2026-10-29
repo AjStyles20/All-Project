@@ -3,6 +3,7 @@ from mysql.connector import errors as mysql_errors
 
 from app.domain.candidate_session import (
     CandidateAssignment, ExaminationSession, SavedResponse, SessionConflictError, SessionStatus,
+    SubmissionMode,
 )
 from app.persistence.mysql_database import MySQLDatabase
 
@@ -13,8 +14,10 @@ def _assignment(row) -> CandidateAssignment:
 
 
 def _session(row) -> ExaminationSession:
+    mode = row["submission_mode"]
     return ExaminationSession(row["session_id"], row["assignment_id"],
-                              SessionStatus(row["status"]), row["started_at"], row["submitted_at"])
+                              SessionStatus(row["status"]), row["started_at"], row["submitted_at"],
+                              SubmissionMode(mode) if mode else None)
 
 
 def _response(row) -> SavedResponse:
@@ -119,7 +122,8 @@ class MySQLCandidateSessionRepository:
 
     def mark_submitted(self, session_id: str, submitted_at) -> bool:
         changed = self._write(
-            "UPDATE examination_sessions SET status='SUBMITTED', submitted_at=%s "
+            "UPDATE examination_sessions SET status='SUBMITTED', submitted_at=%s, "
+            "submission_mode='CANDIDATE' "
             "WHERE session_id=%s AND status='IN_PROGRESS'",
             (submitted_at, session_id),
             "Session could not be submitted.",

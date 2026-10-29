@@ -32,9 +32,9 @@ users 1 ----< candidate_assignments >---- 1 examinations
 As Figure 3.7.2 shows, a candidate is linked to an examination through `candidate_assignments`. `uq_assignment_exam_candidate` prevents duplicate assignment. Each assignment has at most one session (`uq_session_assignment`). Each session holds at most one current response per question; the primary key is (`session_id`, `question_id`), and a `revision` counter records how many times the response has been saved.
 
 ### Deliberate narrowing of the logical model
-The logical baseline allows `CandidateAssignment 1---* ExaminationSession`. FD-03 enforces **one session per assignment**, and a repeated start resumes that session. This meets NFR-06 ("interrupted requests must not silently duplicate or lose finalized submissions") without inventing a multi-attempt policy that no requirement defines. Multiple attempts would require relaxing `uq_session_assignment` and an explicit attempt policy. This is logged as an A2 decision for AJ.
+The logical baseline allows `CandidateAssignment 1---* ExaminationSession`. FD-03 enforces **one session per assignment**, and a repeated start resumes that session. This meets NFR-06 ("interrupted requests must not silently duplicate or lose finalized submissions") without inventing a multi-attempt policy that no requirement defines. Multiple attempts would require relaxing `uq_session_assignment` and an explicit attempt policy. AJ approved this in DR-011 (4).
 
-Only the latest content of each response is stored, not every revision. A full revision history may matter for later evidence and process capture (EGPCV process evidence). It is deferred rather than assumed.
+Only the latest content of each response is stored, not every revision. A full revision history may matter for later evidence and process capture (EGPCV process evidence). It is deferred rather than assumed and parked as SP-001 (DR-011 (7)).
 
 ## Figure 3.5.4 — Candidate session state diagram
 **Figure 3.5.4 shows the session lifecycle and the examination conditions that gate each step.**
@@ -50,7 +50,8 @@ Only the latest content of each response is stored, not every revision. A full r
                 |     \  question in exam, revision matches)
                 |      '--> IN_PROGRESS (revision + 1)
                 |
-                | submit (exam ACTIVE; allowed after ends_at)
+                | submit (exam ACTIVE; allowed after ends_at)   -> mode CANDIDATE
+                | or examiner closes exam (same transaction)   -> mode AUTO_ON_CLOSE
                 v
             SUBMITTED  --- submit again = same result (idempotent)
                 |
@@ -59,7 +60,7 @@ Only the latest content of each response is stored, not every revision. A full r
 
 *Figure 3.5.4: Candidate examination-session state diagram.*
 
-The service, not the client, enforces every transition in Figure 3.5.4. Submitting after `ends_at` is allowed because it only locks content that was saved before the deadline. New saves are already refused once the window has ended. A CLOSED examination refuses submission. Automatically finalising open sessions at close is future work.
+The service, not the client, enforces every transition in Figure 3.5.4. Submitting after `ends_at` is allowed because it only locks content that was saved before the deadline. New saves are already refused once the window has ended. When the examiner closes the examination, every session still IN_PROGRESS is finalised in the same transaction as the status change. These sessions are recorded with `submission_mode = AUTO_ON_CLOSE`, as distinct from `CANDIDATE` (DR-011 (6)), so saved work is never left unsubmitted and reviewers can tell the two cases apart. A candidate's retried submit after close returns the finalised session.
 
 ## Figure 3.5.5 — Save-response sequence
 **Figure 3.5.5 shows how a save travels through the layers and where each guard is applied.**
@@ -114,8 +115,8 @@ Privacy and leakage choices:
 
 FD-03 is therefore **LIVE VERIFIED** on that instance.
 
-## Open points for AJ
-1. One session per assignment (no re-attempts). Keep?
-2. Submission permitted after `ends_at` (locks earlier saves only). Keep?
-3. Should open sessions be auto-finalised when the examiner closes the examination?
-4. Store a full revision history of responses (useful for later process evidence) or only the latest content?
+## Policy decisions (DR-011, approved by AJ 2026-10-29)
+1. One session per assignment, with no re-attempts. Kept.
+2. Submission permitted after `ends_at`. It locks only earlier saves. Kept.
+3. Open sessions are auto-submitted when the examination closes (`AUTO_ON_CLOSE`). Implemented.
+4. Only the latest response content is stored; revision history is parked as SP-001.

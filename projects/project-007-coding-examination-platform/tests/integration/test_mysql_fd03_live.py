@@ -3,7 +3,7 @@ import os
 from uuid import uuid4
 import pytest
 
-from app.domain.candidate_session import SessionConflictError, SessionStatus
+from app.domain.candidate_session import SessionConflictError, SessionStatus, SubmissionMode
 from app.domain.examination import Examination, ExaminationStatus, ProgrammingQuestion
 from app.domain.identity import Role
 from app.persistence.mysql_candidate_session_repository import MySQLCandidateSessionRepository
@@ -66,3 +66,20 @@ def test_mysql_fd03_assignment_session_save_submit():
 
     view = sessions.get_session_view(started.session_id, student)
     assert view.responses[question.question_id].content == "for i in range(1, 6): print(i)"
+    assert submitted.submission_mode is SubmissionMode.CANDIDATE
+
+    # DR-011 (6): closing the examination auto-submits a session still in progress.
+    late = "fd03-cand2-" + suffix
+    auth.create_user(late, "fd03_candidate2_" + suffix, "TemporaryTestPass123!", "FD03 Candidate 2", {Role.CANDIDATE})
+    sessions.assign_candidate(exam.examination_id, late, lecturer)
+    open_session = sessions.start_session(exam.examination_id, late)
+    sessions.save_response(open_session.session_id, question.question_id, late, "unsubmitted work")
+
+    exams.transition(exam.examination_id, lecturer, ExaminationStatus.CLOSED)
+
+    auto = session_repo.get_session(open_session.session_id)
+    assert auto.status is SessionStatus.SUBMITTED and auto.submission_mode is SubmissionMode.AUTO_ON_CLOSE
+    assert auto.submitted_at is not None
+    unchanged = session_repo.get_session(started.session_id)
+    assert unchanged.submission_mode is SubmissionMode.CANDIDATE and unchanged.submitted_at == submitted.submitted_at
+    assert sessions.get_session_view(open_session.session_id, late).responses[question.question_id].content == "unsubmitted work"

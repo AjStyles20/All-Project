@@ -13,6 +13,12 @@ class SessionStatus(str, Enum):
     SUBMITTED = "SUBMITTED"
 
 
+class SubmissionMode(str, Enum):
+    CANDIDATE = "CANDIDATE"
+    # Finalised because the examiner closed the examination (DR-011 (6)).
+    AUTO_ON_CLOSE = "AUTO_ON_CLOSE"
+
+
 @dataclass(frozen=True)
 class CandidateAssignment:
     assignment_id: str
@@ -28,6 +34,7 @@ class ExaminationSession:
     status: SessionStatus
     started_at: datetime
     submitted_at: datetime | None = None
+    submission_mode: SubmissionMode | None = None
 
 
 @dataclass(frozen=True)

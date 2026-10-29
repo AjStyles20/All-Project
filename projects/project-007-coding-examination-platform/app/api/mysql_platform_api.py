@@ -143,8 +143,8 @@ def _exception_body(exception: ContractException) -> dict:
             "contract_version": exception.contract_version,
             "capability_overrides": exception.capability_overrides,
             "extra_time_minutes": exception.extra_time_minutes,
-            # Recorded but not yet applied to FD-03 session deadlines (DECLARED, NOT ENFORCED).
-            "extra_time_applied_to_deadline": False,
+            # Applied to the candidate's FD-03 deadline (largest single grant wins).
+            "extra_time_applied_to_deadline": exception.extra_time_minutes > 0,
             "reason_category": exception.reason_category.value,
             "approved_at": _iso(exception.approved_at)}
 
@@ -192,7 +192,8 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
     auth = auth_service or AuthService(MySQLUserRepository(database))
     examinations = examination_service or ExaminationService(MySQLExaminationRepository(database))
     sessions = candidate_session_service or CandidateSessionService(
-        MySQLCandidateSessionRepository(database), MySQLExaminationRepository(database))
+        MySQLCandidateSessionRepository(database), MySQLExaminationRepository(database),
+        contract_repository=MySQLContractRepository(database))
     contracts = contract_service or ContractService(
         MySQLContractRepository(database), MySQLExaminationRepository(database),
         MySQLCandidateSessionRepository(database))
@@ -436,7 +437,8 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
                 "examination": {"examination_id": view.examination.examination_id,
                                 "title": view.examination.title,
                                 "status": view.examination.status.value,
-                                "ends_at": _iso(view.examination.ends_at)},
+                                "ends_at": _iso(view.examination.ends_at),
+                                "my_ends_at": _iso(view.effective_ends_at)},
                 "questions": [{"question_id": e.question.question_id, "title": e.question.title,
                                "prompt": e.question.prompt, "language": e.question.language,
                                "display_order": e.display_order,

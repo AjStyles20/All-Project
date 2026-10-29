@@ -79,6 +79,21 @@ def test_mysql_fd05_contract_binding_amendment_and_exceptions():
     assert [(e.exception_id, e.capability_overrides, e.extra_time_minutes) for e in view.exceptions] == \
         [(granted.exception_id, {"external_ide": "ALLOW"}, 30)]
 
+    # Extra time is applied to this candidate's deadline (largest single grant).
+    deadline_view = CandidateSessionService(session_repo, exam_repo, contract_repository=contract_repo)
+    timed = Examination("fd05-timed-" + suffix, "FD05 Timed Exam", "", lecturer, ExaminationStatus.DRAFT,
+                        bound.bound_at, bound.bound_at + timedelta(hours=1))
+    exams.create_examination(timed)
+    exams.attach_question(timed.examination_id, question.question_id, lecturer, 1, 10)
+    deadline_view.assign_candidate(timed.examination_id, student, lecturer)
+    contracts.save_draft(timed.examination_id, lecturer, ContractDeclaration(dict(LAB_CAPABILITIES)))
+    exams.transition(timed.examination_id, lecturer, ExaminationStatus.SCHEDULED)
+    exams.transition(timed.examination_id, lecturer, ExaminationStatus.ACTIVE)
+    contracts.grant_exception(timed.examination_id, lecturer, student, ExceptionReason.ACCESSIBILITY,
+                              extra_time_minutes=25)
+    assert deadline_view.effective_ends_at(exam_repo.get_examination(timed.examination_id), student) == \
+        timed.ends_at + timedelta(minutes=25)
+
     contracts.clock = lambda: bound.bound_at + timedelta(minutes=10)
     v2 = contracts.amend(exam.examination_id, lecturer,
                          ContractDeclaration({**LAB_CAPABILITIES, "internet": "ALLOW"}), "Docs mirror down")

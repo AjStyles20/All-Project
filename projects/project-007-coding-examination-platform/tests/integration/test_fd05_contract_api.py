@@ -63,7 +63,7 @@ def test_contract_lifecycle_through_api():
     exc = client.post(f"/examiner/examinations/{eid}/contract/exceptions",
                       json={"candidate_user_id": "student-1", "reason_category": "ACCESSIBILITY",
                             "extra_time_minutes": 25}, headers=lecturer)
-    assert exc.status_code == 201 and exc.json()["extra_time_applied_to_deadline"] is False
+    assert exc.status_code == 201 and exc.json()["extra_time_applied_to_deadline"] is True
     mine = client.get(f"/candidate/examinations/{eid}/contract", headers=student).json()["my_exceptions"]
     assert [e["extra_time_minutes"] for e in mine] == [25]
 

@@ -1,6 +1,6 @@
 """FD-03 candidate assignment, examination-session and response policy."""
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from app.domain.candidate_session import (
@@ -38,13 +38,18 @@ class SessionView:
     examination: Examination
     questions: list[ExaminationQuestionEntry]
     responses: dict[str, SavedResponse]
+    # This candidate's deadline: the examination's ends_at plus any granted extra time.
+    effective_ends_at: datetime | None = None
 
 
 class CandidateSessionService:
-    def __init__(self, repository, examination_repository, clock=utc_now):
+    def __init__(self, repository, examination_repository, clock=utc_now, contract_repository=None):
         self.repository = repository
         self.examinations = examination_repository
         self.clock = clock
+        # Optional: FD-05 exceptions can extend a candidate's deadline. Without it, the
+        # examination's own window applies to everyone.
+        self.contracts = contract_repository
 
     # Examiner side
 
@@ -80,7 +85,7 @@ class CandidateSessionService:
         if assignment is None:
             # Same answer whether the examination exists or not, so ids cannot be probed.
             raise AssignmentNotFoundError("No assignment for this examination.")
-        self._require_open_for_work(self.examinations.get_examination(examination_id))
+        self._require_open_for_work(self.examinations.get_examination(examination_id), candidate_user_id)
 
         existing = self.repository.get_session_for_assignment(assignment.assignment_id)
         if existing is not None:
@@ -99,7 +104,8 @@ class CandidateSessionService:
         exam = self.examinations.get_examination(assignment.examination_id)
         entries = self.examinations.list_examination_questions(exam.examination_id)
         responses = {r.question_id: r for r in self.repository.list_responses(session_id)}
-        return SessionView(session, exam, entries, responses)
+        return SessionView(session, exam, entries, responses,
+                           self.effective_ends_at(exam, assignment.candidate_user_id))
 
     def save_response(self, session_id: str, question_id: str, candidate_user_id: str,
                       content: str, base_revision: int | None = None) -> SavedResponse:
@@ -107,7 +113,7 @@ class CandidateSessionService:
         if session.status is not SessionStatus.IN_PROGRESS:
             raise SessionConflictError("Session has been submitted; responses are locked.")
         exam = self.examinations.get_examination(assignment.examination_id)
-        self._require_open_for_work(exam)
+        self._require_open_for_work(exam, candidate_user_id)
         entries = self.examinations.list_examination_questions(exam.examination_id)
         if question_id not in {entry.question.question_id for entry in entries}:
             raise QuestionNotFoundError("Question is not part of this examination.")
@@ -158,11 +164,24 @@ class CandidateSessionService:
             raise SessionNotFoundError("Session not found.")
         return session, assignment
 
-    def _require_open_for_work(self, exam: Examination | None) -> None:
+    def effective_ends_at(self, exam: Examination, candidate_user_id: str) -> datetime | None:
+        """ends_at plus the largest extra time granted to this candidate (FD-05 exceptions).
+
+        The largest single grant applies rather than the sum, so re-recording an
+        exception never silently stacks time; an examiner who wants more grants more.
+        """
+        if exam.ends_at is None or self.contracts is None:
+            return exam.ends_at
+        extra = max((e.extra_time_minutes for e in
+                     self.contracts.list_exceptions(exam.examination_id, candidate_user_id)), default=0)
+        return exam.ends_at + timedelta(minutes=extra)
+
+    def _require_open_for_work(self, exam: Examination | None, candidate_user_id: str) -> None:
         if exam is None or exam.status is not ExaminationStatus.ACTIVE:
             raise SessionConflictError("Examination is not open.")
         now = self.clock()
         if exam.starts_at and now < exam.starts_at:
             raise SessionConflictError("Examination has not started yet.")
-        if exam.ends_at and now >= exam.ends_at:
+        deadline = self.effective_ends_at(exam, candidate_user_id)
+        if deadline and now >= deadline:
             raise SessionConflictError("Examination time window has ended.")

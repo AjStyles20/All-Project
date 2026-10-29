@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
+from app.domain.candidate_session import SessionConflictError
 from app.domain.capability_contract import (
     CapabilityContract, ContractException, ContractRequiredError, ContractStatus, ExceptionReason,
     IntegrityMode,
@@ -183,3 +184,36 @@ def test_only_owner_manages_contract():
         contracts.save_draft("e1", "lecturer-2", DECLARATION)
     with pytest.raises(ExaminationOwnershipError):
         contracts.list_versions("e1", "lecturer-2")
+
+
+# ---- extra time applied to the candidate deadline ----
+
+def test_extra_time_extends_only_that_candidates_deadline():
+    contracts, exams, _, repo = setup()
+    ends = NOW + timedelta(hours=2)
+    exams.repository.exams["e1"] = replace(exams.repository.exams["e1"], starts_at=NOW, ends_at=ends)
+    session_repo = InMemoryCandidateSessionRepository({"student-1", "student-2"})
+    clock = {"now": NOW}
+    candidates = CandidateSessionService(session_repo, exams.repository, lambda: clock["now"], repo)
+    contracts.sessions = session_repo
+    candidates.assign_candidate("e1", "student-1", "lecturer-1")
+    candidates.assign_candidate("e1", "student-2", "lecturer-1")
+    contracts.save_draft("e1", "lecturer-1", DECLARATION)
+    exams.transition("e1", "lecturer-1", ExaminationStatus.SCHEDULED)
+    exams.transition("e1", "lecturer-1", ExaminationStatus.ACTIVE)
+    s1 = candidates.start_session("e1", "student-1").session_id
+    s2 = candidates.start_session("e1", "student-2").session_id
+    contracts.grant_exception("e1", "lecturer-1", "student-1", ExceptionReason.ACCESSIBILITY, extra_time_minutes=20)
+    contracts.grant_exception("e1", "lecturer-1", "student-1", ExceptionReason.TECHNICAL, extra_time_minutes=30)
+
+    clock["now"] = ends + timedelta(minutes=10)
+    candidates.save_response(s1, "q1", "student-1", "still within extra time")
+    with pytest.raises(SessionConflictError):
+        candidates.save_response(s2, "q1", "student-2", "too late")
+    view = candidates.get_session_view(s1, "student-1")
+    # Largest single grant applies (30), not the sum (50).
+    assert view.effective_ends_at == ends + timedelta(minutes=30)
+    assert candidates.get_session_view(s2, "student-2").effective_ends_at == ends
+    clock["now"] = ends + timedelta(minutes=30)
+    with pytest.raises(SessionConflictError):
+        candidates.save_response(s1, "q1", "student-1", "past extended deadline")

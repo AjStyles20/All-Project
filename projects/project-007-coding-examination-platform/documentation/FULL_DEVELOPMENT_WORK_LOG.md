@@ -230,3 +230,10 @@ AJ approved auto-finalising open sessions when an examination closes.
 **Tests:** service, API, SQL-contract (second statement only after a successful CLOSE; none on other transitions or a lost race) and live.
 
 The other FD-03 points stay as built: one attempt, late submit allowed, latest content only (history parked as SP-001).
+
+### FD-03 live MySQL re-run after DR-011 (2026-10-29)
+Environment: fresh disposable MySQL 8.4.9 instance (re-initialised after migration 003 changed), same setup as TE-005: bootstrap 000, migrations 001–003, least-privilege `p001_app`. Head `dbbe8eb`.
+- `python -m scripts.check_mysql_connection`: PASS.
+- Entire P001 suite with `P001_RUN_MYSQL_TESTS=1`: **212 passed, 0 skipped**.
+
+The live FD-03 test confirmed on a real server that closing the examination set the open session to SUBMITTED / `AUTO_ON_CLOSE` with its saved work intact, and left the already-submitted session's `CANDIDATE` mode and timestamp unchanged (TE-008).

@@ -80,3 +80,14 @@ All verification evidence should be reproducible where practical. Do not record 
 - Evidence: `FULL_DEVELOPMENT_WORK_LOG.md`, entry "FD-03 live MySQL evidence (2026-10-29)".
 - Performed by: Claude Code (Engineering)
 - Notes: implementing agent's own run, not independent Verification.
+
+### TE-008 — P001 FD-03 live MySQL re-run after DR-011
+- Date: 2026-10-29
+- Requirement(s): baseline FR-05/06/07; DR-011 (6)
+- Test type: Live + full regression
+- Environment: fresh disposable MySQL 8.4.9 instance (re-initialised after migration 003 changed), same setup as TE-005: bootstrap 000, migrations 001–003, least-privilege `p001_app`.
+- Procedure: `python -m scripts.check_mysql_connection`; `P001_RUN_MYSQL_TESTS=1 python -m pytest -q -W error::DeprecationWarning` at `dbbe8eb` on `p001-fd03-candidate-sessions`.
+- Expected result: schema check PASS; whole suite passes with no skips, including auto-submit on close.
+- Observed result: schema check PASS; 212 passed, 0 skipped in 66.57s.
+- Status: PASS
+- Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification.

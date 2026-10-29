@@ -64,3 +64,11 @@ Record meaningful project activity chronologically. Preserve failures and correc
 - Tests/evidence: see PR for CI; live MySQL NOT RUN.
 - Status: FD-03 IMPLEMENTED / UNIT + API TESTED; NOT LIVE VERIFIED.
 - Next action: AJ policy decisions (handoff 2026-10-29_P001_FD03_OPENED.md); live MySQL verification of FD-01..FD-03.
+
+### 2026-10-29 — P001 FD-04 opened (review and marking)
+- Agent/role: Claude Code / Engineering
+- Objective: examiner review of submitted sessions and per-question marking (operational FR-12). Scope chosen by AJ; the EGPCV evidence bridge waits for the ECC.
+- Work completed: migration 004, review domain/service/repository, three examiner endpoints, design doc with Figures 3.7.3 and 3.5.6.
+- Tests/evidence: TE-009. Full suite with live MySQL: 227 passed, 0 skipped.
+- Status: FD-04 IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED (disposable MySQL 8.4.9).
+- Next action: AJ's three open points (weighted total, mark history, release to candidates); then PR merge.

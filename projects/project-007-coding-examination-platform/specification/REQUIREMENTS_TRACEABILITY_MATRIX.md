@@ -35,7 +35,7 @@ A **Requirements Traceability Matrix (RTM)** connects the research problem to so
 | FR-27 | Independent Assessor Judgments | persistent separate reference judgment with claim/rubric checks | IMPLEMENTED / TESTED as infrastructure; independent human validation pending |
 | FR-28 | Audit Trace | immutable state/gap/selection/result/control events + candidate dispositions | IMPLEMENTED / TESTED for bounded B4 slice |
 | FR-29 | Lecturer Review | full review interface absent | DEFERRED to later interface/platform milestone |
-| FR-30 | Examination Workflow | FD-02 examiner-side examination/question management; FD-03 candidate assignment, session start/resume, response save (revisioned) and idempotent submission via MySQL product layer; examiner review, evidence registration and UI absent | PARTIAL: FD-02 and FD-03 IMPLEMENTED / UNIT + API TESTED, neither live-MySQL verified; review/evidence/UI PENDING |
+| FR-30 | Examination Workflow | FD-02 examiner-side examination/question management; FD-03 candidate assignment, session start/resume, response save (revisioned) and idempotent submission; FD-04 examiner review and per-question marking, all via MySQL product layer; EGPCV evidence registration (needs ECC) and UI absent | PARTIAL: FD-02, FD-03 and FD-04 IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED (MySQL 8.4.9 disposable instance, TE-005..TE-009); evidence registration and UI PENDING |
 
 ## Non-functional requirements
 

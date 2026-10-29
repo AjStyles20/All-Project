@@ -100,3 +100,14 @@ All verification evidence should be reproducible where practical. Do not record 
 - Observed result: schema check PASS; 212 passed, 0 skipped in 66.57s.
 - Status: PASS
 - Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification.
+
+### TE-009 — P001 FD-04 review/marking live MySQL integration
+- Date: 2026-10-29
+- Requirement(s): baseline FR-12 (operational review); P001 FR-30
+- Test type: Live + full regression
+- Environment: fresh disposable MySQL 8.4.9 instance (same setup as TE-005, migrations 001–004, least-privilege `p001_app`).
+- Procedure: `python -m scripts.check_mysql_connection`; `P001_RUN_MYSQL_TESTS=1 python -m pytest -q -W error::DeprecationWarning` at `f9f8331` on `p001-fd04-review-marking`.
+- Expected result: FD-04 schema check PASS; whole suite passes with no skips. The live FD-04 test should show: marking refused while in progress; revision recorded; re-mark replaces; unanswered question markable; identical re-mark counts as saved; auto-submitted session markable after close; marks frozen after archive.
+- Observed result: schema check PASS; 227 passed, 0 skipped in 79.90s.
+- Status: PASS
+- Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification.

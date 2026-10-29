@@ -5,7 +5,7 @@ from app.persistence.mysql_database import MySQLDatabase
 REQUIRED_TABLES = {"users", "user_roles", "auth_sessions", "examinations", "questions", "examination_questions",
                    "candidate_assignments", "examination_sessions", "submission_responses",
                    "response_marks", "response_mark_history",
-                   "examination_result_releases"}
+                   "examination_result_releases", "capability_contracts", "contract_exceptions"}
 
 
 def main() -> int:
@@ -25,7 +25,7 @@ def main() -> int:
     if missing:
         print(f"Missing required tables: {missing}")
         return 1
-    print("P001 MySQL FD-04 schema check: PASS")
+    print("P001 MySQL FD-05 schema check: PASS")
     return 0
 
 

@@ -15,6 +15,8 @@ from app.services.examination_service import (
     ExaminationService, InvalidExaminationTransition, QuestionNotFoundError,
 )
 
+from tests.contract_helpers import save_lab_contract
+
 pytestmark = pytest.mark.skipif(
     os.getenv("P001_RUN_MYSQL_TESTS") != "1",
     reason="Set P001_RUN_MYSQL_TESTS=1 to run live MySQL integration tests.",
@@ -81,6 +83,7 @@ def test_mysql_fd02_exam_question_lifecycle():
     # Re-saving identical values still counts as found (FOUND_ROWS client flag).
     assert repo.update_details(stored)
 
+    save_lab_contract(database, exam.examination_id, owner_id)
     scheduled = service.transition(exam.examination_id, owner_id, ExaminationStatus.SCHEDULED)
     assert scheduled.status is ExaminationStatus.SCHEDULED
     assert repo.get_examination(exam.examination_id).status is ExaminationStatus.SCHEDULED

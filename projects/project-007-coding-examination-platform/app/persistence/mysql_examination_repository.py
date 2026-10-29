@@ -5,6 +5,7 @@ from app.domain.examination import (
     Examination, ExaminationConflictError, ExaminationQuestionEntry, ExaminationStatus,
     ProgrammingQuestion,
 )
+from app.domain.capability_contract import ContractRequiredError
 from app.persistence.mysql_database import MySQLDatabase
 
 
@@ -79,6 +80,8 @@ class MySQLExaminationRepository:
                 (status.value, examination_id, expected.value),
             )
             changed = cursor.rowcount
+            if changed == 1 and status is ExaminationStatus.SCHEDULED:
+                self._bind_contract(cursor, examination_id)
             if changed == 1 and status is ExaminationStatus.CLOSED:
                 # DR-011 (6): closing finalises every open session in the same transaction,
                 # so saved work is never left unsubmitted and the close cannot half-apply.
@@ -92,6 +95,33 @@ class MySQLExaminationRepository:
                 )
             cursor.close()
         return changed == 1
+
+    def has_bindable_contract(self, examination_id: str) -> bool:
+        with self.database.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT COUNT(*) FROM capability_contracts "
+                           "WHERE examination_id=%s AND status IN ('DRAFT','BOUND')", (examination_id,))
+            count = cursor.fetchone()[0]
+            cursor.close()
+        return count > 0
+
+    @staticmethod
+    def _bind_contract(cursor, examination_id: str) -> None:
+        # ECC spec §5.2 (DR-013 Q2): scheduling binds the draft contract in the same
+        # transaction. Raising here rolls the status change back as well.
+        cursor.execute("SELECT version FROM capability_contracts "
+                       "WHERE examination_id=%s AND status='DRAFT' FOR UPDATE", (examination_id,))
+        draft = cursor.fetchone()
+        if draft is not None:
+            cursor.execute("UPDATE capability_contracts SET status='SUPERSEDED' "
+                           "WHERE examination_id=%s AND status='BOUND'", (examination_id,))
+            cursor.execute("UPDATE capability_contracts SET status='BOUND', bound_at=UTC_TIMESTAMP(6) "
+                           "WHERE examination_id=%s AND version=%s", (examination_id, draft[0]))
+        # A previously bound contract (exam returned to DRAFT unedited) stays in force.
+        cursor.execute("SELECT COUNT(*) FROM capability_contracts "
+                       "WHERE examination_id=%s AND status='BOUND'", (examination_id,))
+        if cursor.fetchone()[0] != 1:
+            raise ContractRequiredError("Scheduling requires a capability contract (ECC spec §5.2).")
 
     def create_question(self, question: ProgrammingQuestion, created_by_user_id: str) -> None:
         question.validate()

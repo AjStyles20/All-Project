@@ -76,7 +76,23 @@ def test_mysql_fd04_review_and_marking():
     # Close auto-submits the idle session; it becomes markable. Archive then freezes marks.
     exams.transition(exam.examination_id, lecturer, ExaminationStatus.CLOSED)
     assert reviews.mark(open_sid, q1.question_id, lecturer, 0, "No work saved.").response_revision is None
+    # DR-012 (2): every save is kept; q1 was marked 7 then 9.
+    assert [m.score for m in reviews.get_review(sid, lecturer).history[q1.question_id]] == [7, 9]
+
+    # DR-012 (3): release needs every session fully marked, then locks marking.
+    with pytest.raises(MarkingConflictError):
+        reviews.release_results(exam.examination_id, lecturer)
+    with pytest.raises(MarkingConflictError):
+        reviews.candidate_result(sid, student)
+    reviews.mark(open_sid, q2.question_id, lecturer, 0, "No work saved.")
+    release = reviews.release_results(exam.examination_id, lecturer)
+    assert reviews.release_results(exam.examination_id, lecturer).released_at == release.released_at
+    assert not review_repo.save_mark(review.marks[q1.question_id])
+
+    result = reviews.candidate_result(sid, student)
+    # (9/10*10 + 0/5*5) / 15 * 100 = 60.0  (weights equal max scores here)
+    assert (result.raw_score, result.raw_max, result.weighted_percent) == (9, 15, 60.0)
+
     exams.transition(exam.examination_id, lecturer, ExaminationStatus.ARCHIVED)
     with pytest.raises(MarkingConflictError):
         reviews.mark(sid, q1.question_id, lecturer, 10, "Too late.")
-    assert not review_repo.save_mark(review.marks[q1.question_id])

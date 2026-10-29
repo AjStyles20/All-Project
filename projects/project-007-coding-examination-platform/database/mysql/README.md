@@ -33,7 +33,10 @@ It creates `candidate_assignments`, `examination_sessions` and `submission_respo
 In Workbench, with `p001_coding_exam` selected, execute:
 `database/mysql/migrations/004_response_marks.sql`.
 
-It creates `response_marks`: one examiner mark per session and question, recording which response revision was marked.
+It creates three tables:
+- `response_marks`: the current mark per session and question, including which response revision was marked.
+- `response_mark_history`: an append-only log of every mark saved.
+- `examination_result_releases`: the release record. Candidates see marks only after it exists.
 
 ## Step 4 — Configure the application locally
 In PowerShell for the current terminal session:

@@ -84,3 +84,25 @@ def test_auto_submitted_session_is_markable_after_close_and_frozen_after_archive
     assert client.put(f"/examiner/sessions/{sid}/marks/{qid}", json={"score": 4}, headers=lecturer).status_code == 200
     client.post(f"/examiner/examinations/{eid}/transition", json={"target_status": "ARCHIVED"}, headers=lecturer)
     assert client.put(f"/examiner/sessions/{sid}/marks/{qid}", json={"score": 6}, headers=lecturer).status_code == 409
+
+
+def test_release_flow_and_candidate_result():
+    client, eid, qid, sid = submitted_session_client()
+    lecturer, student = bearer("examiner-token"), bearer("student-token")
+    assert client.get(f"/candidate/sessions/{sid}/result", headers=student).status_code == 409
+    client.post(f"/examiner/examinations/{eid}/transition", json={"target_status": "CLOSED"}, headers=lecturer)
+    assert client.post(f"/examiner/examinations/{eid}/release", headers=lecturer).status_code == 409  # unmarked
+    client.put(f"/examiner/sessions/{sid}/marks/{qid}", json={"score": 6, "comment": "first"}, headers=lecturer)
+    client.put(f"/examiner/sessions/{sid}/marks/{qid}", json={"score": 7, "comment": "Solid loop."}, headers=lecturer)
+    history = client.get(f"/examiner/sessions/{sid}", headers=lecturer).json()["questions"][0]["mark_history"]
+    assert [h["score"] for h in history] == [6, 7]
+
+    released = client.post(f"/examiner/examinations/{eid}/release", headers=lecturer)
+    assert released.status_code == 200 and released.json()["released_by_user_id"] == "lecturer-1"
+    assert client.put(f"/examiner/sessions/{sid}/marks/{qid}", json={"score": 9}, headers=lecturer).status_code == 409
+
+    result = client.get(f"/candidate/sessions/{sid}/result", headers=student).json()
+    assert (result["raw_score"], result["raw_max"], result["weighted_percent"]) == (7, 10, 70.0)
+    assert result["questions"][0]["comment"] == "Solid loop." and "marked_by_user_id" not in result["questions"][0]
+    totals = client.get(f"/examiner/examinations/{eid}/sessions", headers=lecturer).json()[0]
+    assert totals["weighted_percent"] == 70.0

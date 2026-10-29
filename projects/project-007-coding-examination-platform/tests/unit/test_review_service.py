@@ -96,3 +96,63 @@ def test_session_summaries_report_raw_totals():
     summaries = {s.session.session_id: s for s in reviews.list_sessions("e1", "lecturer-1")}
     assert (summaries[sid].marked_questions, summaries[sid].raw_score, summaries[sid].raw_max) == (1, 8, 15)
     assert summaries[open_sid].marked_questions == 0 and summaries[open_sid].total_questions == 2
+
+
+# ---- DR-012 ----
+
+def test_weighted_percent_formula_and_incomplete_marking():
+    from app.domain.examination import ExaminationQuestionEntry
+    from app.domain.review import ResponseMark, weighted_percent
+    q = lambda qid, mx: ProgrammingQuestion(qid, qid, "p", "python", mx)
+    entries = [ExaminationQuestionEntry(q("a", 10), 1, 1), ExaminationQuestionEntry(q("b", 4), 2, 3)]
+    m = lambda qid, sc: ResponseMark("s", qid, sc, "", None, "l", NOW)
+    # (5/10*1 + 4/4*3) / 4 * 100 = 87.5; weight, not max_score, decides importance.
+    assert weighted_percent(entries, {"a": m("a", 5), "b": m("b", 4)}) == 87.5
+    assert weighted_percent(entries, {"a": m("a", 10)}) is None
+    assert weighted_percent(entries, {"a": m("a", 1), "b": m("b", 1)}) == round((0.1 + 0.75) / 4 * 100, 2)
+
+
+def test_every_mark_is_kept_in_history():
+    reviews, _, sid, _ = setup()
+    reviews.mark(sid, "q1", "lecturer-1", 7, "first")
+    reviews.mark(sid, "q1", "lecturer-1", 9, "second")
+    review = reviews.get_review(sid, "lecturer-1")
+    assert [(m.score, m.comment) for m in review.history["q1"]] == [(7, "first"), (9, "second")]
+    assert review.marks["q1"].score == 9
+
+
+def fully_marked_closed(reviews, exams, sid, open_sid):
+    reviews.sessions.finalize_open_sessions("e1")
+    exams.exams["e1"] = replace(exams.exams["e1"], status=ExaminationStatus.CLOSED)
+    for session_id in (sid, open_sid):
+        reviews.mark(session_id, "q1", "lecturer-1", 8, "q1")
+        reviews.mark(session_id, "q2", "lecturer-1", 5, "q2")
+
+
+def test_release_requires_closed_exam_and_complete_marking():
+    reviews, exams, sid, open_sid = setup()
+    with pytest.raises(MarkingConflictError):
+        reviews.release_results("e1", "lecturer-1")  # still ACTIVE
+    reviews.sessions.finalize_open_sessions("e1")
+    exams.exams["e1"] = replace(exams.exams["e1"], status=ExaminationStatus.CLOSED)
+    reviews.mark(sid, "q1", "lecturer-1", 8, "")
+    with pytest.raises(MarkingConflictError):
+        reviews.release_results("e1", "lecturer-1")  # incomplete
+    with pytest.raises(ExaminationOwnershipError):
+        reviews.release_results("e1", "lecturer-2")
+
+
+def test_release_locks_marking_is_idempotent_and_shows_candidate_result():
+    reviews, exams, sid, open_sid = setup()
+    with pytest.raises(MarkingConflictError):
+        reviews.candidate_result(sid, "student-1")  # not released yet
+    fully_marked_closed(reviews, exams, sid, open_sid)
+    release = reviews.release_results("e1", "lecturer-1")
+    assert reviews.release_results("e1", "lecturer-1") == release
+    with pytest.raises(MarkingConflictError):
+        reviews.mark(sid, "q1", "lecturer-1", 10, "too late")
+    result = reviews.candidate_result(sid, "student-1")
+    # weights: q1=10, q2=5 -> (8/10*10 + 5/5*5) / 15 * 100 = 86.67
+    assert (result.raw_score, result.raw_max, result.weighted_percent) == (13, 15, 86.67)
+    with pytest.raises(SessionNotFoundError):
+        reviews.candidate_result(sid, "student-2")

@@ -13,7 +13,7 @@ from app.domain.candidate_session import (
     MAX_RESPONSE_CHARS, CandidateAssignment, ExaminationSession, SavedResponse, SessionConflictError,
 )
 from app.persistence.mysql_candidate_session_repository import MySQLCandidateSessionRepository
-from app.domain.review import MAX_COMMENT_CHARS, MarkingConflictError, ResponseMark
+from app.domain.review import MAX_COMMENT_CHARS, MarkingConflictError, ResponseMark, ResultRelease
 from app.persistence.mysql_examination_repository import MySQLExaminationRepository
 from app.persistence.mysql_review_repository import MySQLReviewRepository
 from app.services.review_service import ReviewService
@@ -111,6 +111,11 @@ def _mark_body(mark: ResponseMark) -> dict:
     return {"score": mark.score, "comment": mark.comment,
             "response_revision": mark.response_revision,
             "marked_by_user_id": mark.marked_by_user_id, "marked_at": _iso(mark.marked_at)}
+
+
+def _release_body(release: ResultRelease | None) -> dict | None:
+    return None if release is None else {"released_at": _iso(release.released_at),
+                                         "released_by_user_id": release.released_by_user_id}
 
 
 def _response_body(response: SavedResponse) -> dict:
@@ -283,7 +288,8 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
             summaries = reviews.list_sessions(examination_id, principal.user_id)
         return [{**_session_body(s.session), "candidate_user_id": s.assignment.candidate_user_id,
                  "marked_questions": s.marked_questions, "total_questions": s.total_questions,
-                 "raw_score": s.raw_score, "raw_max": s.raw_max}
+                 "raw_score": s.raw_score, "raw_max": s.raw_max,
+                 "weighted_percent": s.weighted_percent}
                 for s in summaries]
 
     @app.get("/examiner/sessions/{session_id}")
@@ -293,11 +299,14 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
         return {**_session_body(review.session),
                 "candidate_user_id": review.assignment.candidate_user_id,
                 "examination_id": review.examination.examination_id,
+                "release": _release_body(review.release),
                 "questions": [{**_entry_body(e),
                                "response": _response_body(review.responses[e.question.question_id])
                                if e.question.question_id in review.responses else None,
                                "mark": _mark_body(review.marks[e.question.question_id])
-                               if e.question.question_id in review.marks else None}
+                               if e.question.question_id in review.marks else None,
+                               "mark_history": [_mark_body(m) for m in
+                                                review.history.get(e.question.question_id, [])]}
                               for e in review.questions]}
 
     @app.put("/examiner/sessions/{session_id}/marks/{question_id}")
@@ -305,6 +314,12 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
         with _policy_errors():
             mark = reviews.mark(session_id, question_id, principal.user_id, payload.score, payload.comment)
         return _mark_body(mark)
+
+    @app.post("/examiner/examinations/{examination_id}/release")
+    def release_results(examination_id: str, principal=Depends(examiner)):
+        with _policy_errors():
+            release = reviews.release_results(examination_id, principal.user_id)
+        return _release_body(release)
 
     candidate = require_roles(Role.CANDIDATE)
 
@@ -349,6 +364,22 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
             response = sessions.save_response(session_id, question_id, principal.user_id,
                                               payload.content, payload.base_revision)
         return _response_body(response)
+
+    @app.get("/candidate/sessions/{session_id}/result")
+    def candidate_result(session_id: str, principal=Depends(candidate)):
+        with _policy_errors():
+            result = reviews.candidate_result(session_id, principal.user_id)
+        # Candidates see their scores and comments, not who marked or the mark history.
+        return {"session_id": result.session.session_id,
+                "examination_id": result.examination.examination_id,
+                "released_at": _iso(result.release.released_at),
+                "raw_score": result.raw_score, "raw_max": result.raw_max,
+                "weighted_percent": result.weighted_percent,
+                "questions": [{"question_id": e.question.question_id, "title": e.question.title,
+                               "max_score": e.question.max_score,
+                               "score": result.marks[e.question.question_id].score,
+                               "comment": result.marks[e.question.question_id].comment}
+                              for e in result.questions]}
 
     @app.post("/candidate/sessions/{session_id}/submit")
     def submit_session(session_id: str, principal=Depends(candidate)):

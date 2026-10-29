@@ -4,7 +4,8 @@ from app.persistence.mysql_database import MySQLDatabase
 
 REQUIRED_TABLES = {"users", "user_roles", "auth_sessions", "examinations", "questions", "examination_questions",
                    "candidate_assignments", "examination_sessions", "submission_responses",
-                   "response_marks"}
+                   "response_marks", "response_mark_history",
+                   "examination_result_releases"}
 
 
 def main() -> int:

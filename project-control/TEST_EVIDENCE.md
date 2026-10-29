@@ -65,3 +65,18 @@ All verification evidence should be reproducible where practical. Do not record 
 - Evidence: `FULL_DEVELOPMENT_WORK_LOG.md`, entry "FD-01/FD-02 live MySQL evidence (2026-10-29)".
 - Performed by: Claude Code (Engineering)
 - Notes: this is the implementing agent's own run, not independent Verification (PROJECT_RULES §6). It was not run on AJ's configured server.
+
+### TE-006 — P001 FD-03 live MySQL integration
+- Date: 2026-10-29
+- Requirement(s): baseline FR-05, FR-06, FR-07; P001 FR-30 (candidate side)
+- Feature/subsystem: P001 MySQL product layer, candidate sessions
+- Test type: Live
+- Environment: same as TE-005.
+- Preconditions: migrations 001–003 applied; branch `p001-fd03-candidate-sessions`.
+- Procedure: `python -m scripts.check_mysql_connection`; `P001_RUN_MYSQL_TESTS=1 python -m pytest -q -W error::DeprecationWarning` (entire suite) at `c5780a3`.
+- Expected result: FD-03 schema check PASS; whole suite passes with no skips.
+- Observed result: schema check PASS (nine tables); 206 passed, 0 skipped in 99.75s.
+- Status: PASS
+- Evidence: `FULL_DEVELOPMENT_WORK_LOG.md`, entry "FD-03 live MySQL evidence (2026-10-29)".
+- Performed by: Claude Code (Engineering)
+- Notes: implementing agent's own run, not independent Verification.

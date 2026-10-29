@@ -192,3 +192,22 @@ This exercised every FD-02 repository operation and SQL guard against a real ser
 **Defect found by the live run:** the documented `python scripts/check_mysql_connection.py` crashed with `ModuleNotFoundError: No module named 'app'`. Running a file puts `scripts/` on `sys.path`, not the project root. Classification: command/documentation issue; the script itself was correct. The guide now uses `python -m scripts.check_mysql_connection`.
 
 **Status:** FD-01 and FD-02 are LIVE VERIFIED against MySQL 8.4.9 on the disposable instance described above. A run on AJ's own configured server would be additional, user-environment evidence.
+
+### FD-03 live MySQL evidence (2026-10-29)
+**Environment:** same disposable instance as the FD-01/FD-02 entry. MySQL Community Server **8.4.9**: a disposable local instance started from the MySQL 8.4 binaries installed on AJ's Windows PC (`--initialize-insecure`, scratch data directory, 127.0.0.1:3399, X Protocol off). This is **not** AJ's own configured server on port 3307, and that server was not touched. Setup followed `database/mysql/README.md`: bootstrap 000 with a one-off generated test password, then migrations 001–003 as root. Tests connected as the least-privilege `p001_app@127.0.0.1` account (SELECT/INSERT/UPDATE/DELETE only). Python 3.14.0, mysql-connector-python 9.x.
+
+**Result on branch `p001-fd03-candidate-sessions` at `c5780a3` (FD-03 plus the merged FD-02 fixes):**
+- `python -m scripts.check_mysql_connection`: `P001 MySQL FD-03 schema check: PASS` (all nine tables).
+- Entire P001 suite with `P001_RUN_MYSQL_TESTS=1` (unit, API, SQL-contract and all three live MySQL tests): **206 passed, 0 skipped in 99.75s**.
+
+The FD-03 test covered:
+- only CANDIDATE-role users assignable;
+- duplicate assignment refused;
+- start then resume of the same session;
+- revisioned saves;
+- stale revision refused by the SQL compare-and-set;
+- idempotent submit;
+- saves refused after submit;
+- saved content read back.
+
+**Status:** FD-03 is LIVE VERIFIED against MySQL 8.4.9 on that instance.

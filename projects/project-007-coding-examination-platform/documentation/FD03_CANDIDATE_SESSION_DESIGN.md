@@ -110,9 +110,9 @@ Privacy and leakage choices:
 - Service tests (`tests/unit/test_candidate_session_service.py`) use an injectable clock for window and deadline cases.
 - API tests (`tests/integration/test_fd03_candidate_api.py`) cover the full flow, role boundaries, 404 isolation and validation.
 - SQL-contract tests (`tests/unit/test_mysql_candidate_session_repository.py`) pin the IN_PROGRESS predicates, the revision compare-and-set and the conflict translation.
-- `tests/integration/test_mysql_fd03_live.py` is opt-in and **not executed**.
+- `tests/integration/test_mysql_fd03_live.py` is opt-in. It was **executed and passed on 2026-10-29** against MySQL 8.4.9 on a disposable local instance (see the work log).
 
-FD-03 is therefore **IMPLEMENTED / UNIT + API TESTED**, not LIVE VERIFIED.
+FD-03 is therefore **LIVE VERIFIED** on that instance.
 
 ## Open points for AJ
 1. One session per assignment (no re-attempts). Keep?

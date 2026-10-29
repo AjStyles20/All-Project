@@ -65,3 +65,14 @@ All verification evidence should be reproducible where practical. Do not record 
 - Evidence: `FULL_DEVELOPMENT_WORK_LOG.md`, entry "FD-01/FD-02 live MySQL evidence (2026-10-29)".
 - Performed by: Claude Code (Engineering)
 - Notes: this is the implementing agent's own run, not independent Verification (PROJECT_RULES §6). It was not run on AJ's configured server.
+
+### TE-007 — P001 FD-02 live MySQL re-run after DR-011
+- Date: 2026-10-29
+- Requirement(s): P001 FR-30 (examiner side); DR-011 (2)
+- Test type: Live + full regression
+- Environment: fresh disposable MySQL 8.4.9 instance (re-initialised after migration 003 changed), same setup as TE-005: bootstrap 000, migrations 001–003, least-privilege `p001_app`.
+- Procedure: `P001_RUN_MYSQL_TESTS=1 python -m pytest -q -W error::DeprecationWarning` at `c757a96` on `p001-fd02-exam-question-management`.
+- Expected result: whole suite passes with no skips, including the foreign-question refusal.
+- Observed result: 180 passed, 0 skipped in 93.51s.
+- Status: PASS
+- Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification.

@@ -215,6 +215,9 @@ The FD-03 test covered:
 ### FD-02 — DR-011 applied (2026-10-29)
 AJ resolved the FD-02 policy points. The one change is that examiners may now attach only questions they created; another examiner's question returns 404. This is implemented with `question_created_by` in the repository and fake, and covered by service, API and live tests. The other points stay as built: scheduling requires a question, and the time window is optional.
 
+### FD-02 live MySQL re-run after DR-011 (2026-10-29)
+Environment: fresh disposable MySQL 8.4.9 instance (re-initialised after migration 003 changed), same setup as TE-005: bootstrap 000, migrations 001–003, least-privilege `p001_app`. Head `c757a96`, entire P001 suite with `P001_RUN_MYSQL_TESTS=1` and deprecations treated as errors: **180 passed, 0 skipped**. This included the live check that another examiner's question cannot be attached (TE-007).
+
 ### FD-03 — DR-011 applied: auto-submit on close (2026-10-29)
 AJ approved auto-finalising open sessions when an examination closes.
 

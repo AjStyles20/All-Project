@@ -148,3 +148,28 @@ This closes the implementation gap in the verification path but does not constit
 GitHub Actions run #302 (`P001 EGPCV Tests`, head `5493e02`) completed with SUCCESS. Pytest summary: **176 passed, 2 skipped in 5.03s**. The Starlette httpx and Node 20 deprecation warnings from run #294 no longer appear. One informational GitHub notice remains: `ubuntu-latest` is moving to Ubuntu 26. It does not affect results and needs no action now.
 
 This is software verification only. The two skips are the opt-in live MySQL tests, so live-MySQL verification is still outstanding.
+
+
+## 2026-10-29 — FD-03 opened: Candidate Assignment, Session and Response Capture (Claude Code, Engineering)
+**Branch:** `p001-fd03-candidate-sessions`. It is stacked on `p001-fd02-exam-question-management` because FD-03 depends on FD-02's examination repository. Its draft PR targets the FD-02 branch so the diff shows only FD-03.
+
+**Designed and implemented:**
+- Migration 003 (`candidate_assignments`, `examination_sessions`, `submission_responses`).
+- Domain module `app/domain/candidate_session.py`.
+- `CandidateSessionService` with an injectable clock.
+- `MySQLCandidateSessionRepository`.
+- Examiner assignment endpoints and candidate list/start/view/save/submit endpoints.
+- Design document `FD03_CANDIDATE_SESSION_DESIGN.md` with Figure 3.7.2 (ERD increment), Figure 3.5.4 (session state) and Figure 3.5.5 (save sequence).
+- Workbench guide and schema-check script updated for migration 003.
+
+**Design reasoning:**
+- One session per assignment, with resume on repeated start, gives the NFR-06 no-duplicate guarantee.
+- Revision-number compare-and-set on saves stops a stale browser tab from silently overwriting newer work.
+- Save and submit statements carry `status='IN_PROGRESS'` predicates, so a save that races a submit cannot alter locked content.
+- Submit is idempotent so a retried request after a network drop succeeds.
+
+**Test defect found and corrected:** the first version of `test_racing_start_resumes_the_winner` patched the fake's session lookup globally. That also disabled the fake's unique-key check, so the test failed by creating a second session. Classification: test bug. The corrected test blinds only the service's first lookup and keeps the uniqueness check real.
+
+**Policy decisions logged for AJ (A2):** one session per assignment; submission allowed after `ends_at`; no auto-finalisation at close; only the latest response content is stored.
+
+**Verification status:** service, API and SQL-contract tests added. The opt-in live MySQL test was added but not executed. No FD-03 completion claim is made beyond IMPLEMENTED / UNIT + API TESTED.

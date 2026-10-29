@@ -28,6 +28,7 @@ Research-critical implementation: branch `p001-egpcv-implementation`, PR #17, **
 Full-product layer (MySQL, per the MySQL technology decision in `documentation/DATABASE_TECHNOLOGY_DECISION_MYSQL.md`):
 - **FD-01 Identity/RBAC** — on main. Live MySQL path exists; live execution evidence not recorded in this file.
 - **FD-02 Examination & Question Management** — branch `p001-fd02-exam-question-management`, **draft PR #19, not merged**. Status: IMPLEMENTED / UNIT + API TESTED. **Not live-MySQL verified.** As of 2026-10-29 it includes examiner list/read/update/detach endpoints, compare-and-set lifecycle transitions, DRAFT-guarded SQL, and a scheduling-requires-a-question rule (A2, awaiting AJ review). See `documentation/FD02_EXAMINATION_QUESTION_DESIGN.md`.
+- **FD-03 Candidate Assignment, Session & Response Capture**: branch `p001-fd03-candidate-sessions`, stacked on FD-02, with a draft PR targeting the FD-02 branch. Status: IMPLEMENTED / UNIT + API TESTED. **Not live-MySQL verified.** Four policy points await AJ. See `documentation/FD03_CANDIDATE_SESSION_DESIGN.md`.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -59,7 +60,7 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 
 ## Current Work
 1. Obtain live-MySQL evidence for FD-01/FD-02 (`P001_RUN_MYSQL_TESTS=1` against AJ's local server), then AJ review and merge of PR #19.
-2. FD-03, the candidate-side examination session and submission increment, on its own branch after FD-02.
+2. Review FD-03 (opened 2026-10-29) and resolve its policy points, then live-MySQL verification. Next increment after FD-03: examiner review of submissions and evidence registration (FR-08, FR-12).
 3. Prepare pilot and method-freeze materials without treating development fixtures as independent ground truth.
 4. Do not begin P003 implementation until the P001 checkpoint is reached unless AJ changes the order.
 

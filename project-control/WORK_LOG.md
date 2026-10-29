@@ -55,3 +55,12 @@ Record meaningful project activity chronologically. Preserve failures and correc
 - Tests/evidence: local 176 passed, 2 skipped; CI result recorded on PR #19; live MySQL NOT RUN.
 - Status: FD-02 IMPLEMENTED / UNIT + API TESTED; NOT LIVE VERIFIED.
 - Next action: AJ decisions listed in the handoff; live-MySQL verification; FD-03.
+
+### 2026-10-29 — P001 FD-03 opened
+- Agent/role: Claude Code / Engineering
+- Objective: Start FD-03 (candidate assignment, examination session, response capture; FR-05/06/07) on its own branch.
+- Work completed: migration 003, domain, service, MySQL repository, examiner assignment + candidate session API, design doc with Figures 3.7.2/3.5.4/3.5.5, Workbench guide and schema check updated.
+- Problem(s) encountered: one test bug in a race-simulation test (details in FULL_DEVELOPMENT_WORK_LOG.md).
+- Tests/evidence: see PR for CI; live MySQL NOT RUN.
+- Status: FD-03 IMPLEMENTED / UNIT + API TESTED; NOT LIVE VERIFIED.
+- Next action: AJ policy decisions (handoff 2026-10-29_P001_FD03_OPENED.md); live MySQL verification of FD-01..FD-03.

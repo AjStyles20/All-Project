@@ -16,6 +16,8 @@ from app.services.candidate_session_service import CandidateSessionService
 from app.services.examination_service import ExaminationService
 from app.services.review_service import ReviewService
 
+from tests.contract_helpers import save_lab_contract
+
 pytestmark = pytest.mark.skipif(
     os.getenv("P001_RUN_MYSQL_TESTS") != "1",
     reason="Set P001_RUN_MYSQL_TESTS=1 to run live MySQL integration tests.",
@@ -47,6 +49,7 @@ def test_mysql_fd04_review_and_marking():
         exams.attach_question(exam.examination_id, question.question_id, lecturer, order, question.max_score)
     candidates.assign_candidate(exam.examination_id, student, lecturer)
     candidates.assign_candidate(exam.examination_id, idle, lecturer)
+    save_lab_contract(database, exam.examination_id, lecturer)
     exams.transition(exam.examination_id, lecturer, ExaminationStatus.SCHEDULED)
     exams.transition(exam.examination_id, lecturer, ExaminationStatus.ACTIVE)
 

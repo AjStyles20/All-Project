@@ -20,10 +20,10 @@ A **Requirements Traceability Matrix (RTM)** connects the research problem to so
 | FR-12 | Evidence Update | VerificationWorkflow + persistence | IMPLEMENTED / TESTED |
 | FR-13 | Stop Rule | generic StopRule with continue/complete/human-review outcomes | IMPLEMENTED / TESTED for current claim-control model |
 | FR-14 | Human Escalation | no adequate unused executable probe → HUMAN_REVIEW_REQUIRED | IMPLEMENTED / TESTED |
-| FR-15 | Examination Capability Contract (ECC) Management | specification v1.0 (`EXAMINATION_CAPABILITY_CONTRACT_SPECIFICATION.md`); no implementation | SPECIFIED / APPROVED (DR-013, 2026-10-29); implementation planned as FD-05 |
+| FR-15 | Examination Capability Contract (ECC) Management | spec v1.0 (DR-013); FD-05 contract storage, draft/bind-on-schedule/amend, hash, candidate view, DECLARED_NOT_ENFORCED | IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED (TE-011); runtime enforcement PENDING |
 | FR-16 | Programming-Process Capture | baseline accepts process evidence but capture subsystem absent | PENDING; needed before real B1 process collection |
 | FR-17 | Integrity Observation Management | competence/integrity separation specified, no module | PENDING |
-| FR-18 | Authorized Exception Handling | policy/accessibility concept only | PENDING |
+| FR-18 | Authorized Exception Handling | FD-05 per-candidate exceptions (capability overrides, extra time, reason category only) recorded against the bound contract version | PARTIAL: recorded and live verified (TE-011); extra time applied to the candidate's deadline (DR-014, TE-012); capability overrides declarative only |
 | FR-19 | Evidence Provenance | EvidenceItem source metadata + fixed-viva/targeted-verification separation | SUBSTANTIALLY IMPLEMENTED for research slice; broader ECC/assistance provenance pending |
 | FR-20 | B0 Engine | Baseline0Engine / common runner | IMPLEMENTED / TESTED |
 | FR-21 | B1 Engine | Baseline1Engine / common runner | IMPLEMENTED / TESTED |

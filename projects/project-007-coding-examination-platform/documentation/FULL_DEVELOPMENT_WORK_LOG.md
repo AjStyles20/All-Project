@@ -309,3 +309,30 @@ At AJ's request, drafted `specification/EXAMINATION_CAPABILITY_CONTRACT_SPECIFIC
 
 ### ECC approved as v1.0 (2026-10-29)
 AJ approved DR-013 (Option A) and answered Q1–Q5 with the proposed defaults. The spec is now **v1.0 APPROVED** and frozen, with no content change from v0.1 beyond recording the decisions. Next increment: FD-05 (ECC management).
+
+
+## 2026-10-29 — FD-05: Examination Capability Contract management (Claude Code, Engineering)
+**Branch:** `p001-fd05-ecc-management`, from main at `5f8a235`. Implements the approved ECC v1.0 (DR-013).
+
+**Implemented:**
+- Migration 005 (`capability_contracts`, `contract_exceptions`).
+- Domain `app/domain/capability_contract.py`: schema validation, canonical hash, policy-version label.
+- `ContractService` and `MySQLContractRepository`.
+- Binding inside the DRAFT → SCHEDULED transaction.
+- Six endpoints.
+- Design document `FD05_CAPABILITY_CONTRACT_DESIGN.md` with Figure 3.7.4 (ERD) and Figure 3.5.7 (version lifecycle).
+- Schema check and Workbench guide updated for migration 005.
+
+**Effect on earlier increments:** scheduling now requires a contract (spec §5.2). The FD-02 to FD-04 live tests were updated to store a contract first. Pre-FD-05 unit and API tests keep scheduling freely, because their in-memory examination fake only models contracts when a contract fake is attached. This is documented in the fake.
+
+**Implementation detail recorded (not a spec change):** the binder (`bound_by_user_id`) is inside the content hash, as spec §8 requires. Because only the owner can bind, it is known when the draft is saved, so the hash is fixed before binding and does not depend on `bound_at`.
+
+**Known limitation:** exception extra time is recorded but not applied to FD-03 deadlines, and is labelled as such. This is an open point for AJ.
+
+**Live evidence:** full suite at `e502488`, fresh disposable MySQL 8.4.9 instance, migrations 001–005: **256 passed, 0 skipped** (TE-011).
+
+### FD-05 — DR-014 applied: extra time extends the candidate's deadline (2026-10-29)
+AJ chose to apply exception extra time.
+- **Implementation:** `CandidateSessionService.effective_ends_at` returns `ends_at` plus the largest single grant for that candidate. It is used by the start and save window checks and exposed as `my_ends_at`.
+- **Test defect corrected during the work:** the first draft of the new unit test expected `ExaminationConflictError` for a late save. The service correctly raises `SessionConflictError`. Classification: test bug.
+- **Live evidence:** full suite at `c17ccb5`, fresh disposable MySQL 8.4.9 instance: **257 passed, 0 skipped** (TE-012).

@@ -20,6 +20,9 @@ class InMemoryExaminationRepository:
         # Callbacks run after a successful CLOSE, standing in for the session
         # finalisation the MySQL repository performs in the same transaction.
         self.on_close = []
+        # Set to an InMemoryContractRepository to model ECC binding (FD-05). Left as
+        # None, contracts are not modelled, so pre-FD-05 tests can schedule freely.
+        self.contract_repository = None
 
     def create_examination(self, exam):
         exam.validate()
@@ -42,11 +45,19 @@ class InMemoryExaminationRepository:
         current = self.exams.get(examination_id)
         if current is None or current.status is not expected:
             return False
+        if status is ExaminationStatus.SCHEDULED and self.contract_repository is not None:
+            # Raises ContractRequiredError before any change, like the MySQL rollback.
+            self.contract_repository.bind(examination_id)
         self.exams[examination_id] = replace(current, status=status)
         if status is ExaminationStatus.CLOSED:
             for callback in self.on_close:
                 callback(examination_id)
         return True
+
+    def has_bindable_contract(self, examination_id):
+        if self.contract_repository is None:
+            return True
+        return self.contract_repository.has_bindable(examination_id)
 
     def create_question(self, question, created_by_user_id):
         question.validate()

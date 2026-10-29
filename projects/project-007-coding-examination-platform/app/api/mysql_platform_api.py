@@ -13,6 +13,12 @@ from app.domain.candidate_session import (
     MAX_RESPONSE_CHARS, CandidateAssignment, ExaminationSession, SavedResponse, SessionConflictError,
 )
 from app.persistence.mysql_candidate_session_repository import MySQLCandidateSessionRepository
+from app.domain.capability_contract import (
+    AssistanceConstruct, CapabilityContract, ContractException, ContractStatus, ExceptionReason,
+    IntegrityMode,
+)
+from app.persistence.mysql_contract_repository import MySQLContractRepository
+from app.services.contract_service import ContractDeclaration, ContractService
 from app.domain.review import MAX_COMMENT_CHARS, MarkingConflictError, ResponseMark, ResultRelease
 from app.persistence.mysql_examination_repository import MySQLExaminationRepository
 from app.persistence.mysql_review_repository import MySQLReviewRepository
@@ -57,6 +63,24 @@ class TransitionInput(BaseModel):
 
 class AssignCandidateInput(BaseModel):
     candidate_user_id: str = Field(min_length=1, max_length=64)
+
+class ContractInput(BaseModel):
+    capabilities: dict
+    integrity_mode: IntegrityMode = IntegrityMode.LAB_CONTROLLED
+    assistance_default: AssistanceConstruct = AssistanceConstruct.INDEPENDENT
+    assistance_per_claim: dict[str, AssistanceConstruct] = Field(default_factory=dict)
+    remote_proctoring_justification: str | None = Field(default=None, max_length=2000)
+    amendment_reason: str | None = Field(default=None, max_length=2000)
+
+    def declaration(self) -> ContractDeclaration:
+        return ContractDeclaration(self.capabilities, self.integrity_mode, self.assistance_default,
+                                   dict(self.assistance_per_claim), self.remote_proctoring_justification)
+
+class ExceptionInput(BaseModel):
+    candidate_user_id: str = Field(min_length=1, max_length=64)
+    reason_category: ExceptionReason
+    capability_overrides: dict = Field(default_factory=dict)
+    extra_time_minutes: int = Field(default=0, ge=0, le=1440)
 
 class MarkInput(BaseModel):
     score: int = Field(ge=0)
@@ -107,6 +131,24 @@ def _session_body(session: ExaminationSession) -> dict:
             "submission_mode": session.submission_mode.value if session.submission_mode else None}
 
 
+def _contract_body(contract: CapabilityContract) -> dict:
+    return {**contract.hashed_document(), "status": contract.status.value,
+            "bound_at": _iso(contract.bound_at), "content_hash": contract.content_hash,
+            "policy_version": contract.policy_version_label()
+            if contract.status is not ContractStatus.DRAFT else None}
+
+
+def _exception_body(exception: ContractException) -> dict:
+    return {"exception_id": exception.exception_id, "candidate_user_id": exception.candidate_user_id,
+            "contract_version": exception.contract_version,
+            "capability_overrides": exception.capability_overrides,
+            "extra_time_minutes": exception.extra_time_minutes,
+            # Applied to the candidate's FD-03 deadline (largest single grant wins).
+            "extra_time_applied_to_deadline": exception.extra_time_minutes > 0,
+            "reason_category": exception.reason_category.value,
+            "approved_at": _iso(exception.approved_at)}
+
+
 def _mark_body(mark: ResponseMark) -> dict:
     return {"score": mark.score, "comment": mark.comment,
             "response_revision": mark.response_revision,
@@ -145,12 +187,16 @@ def _policy_errors():
 
 def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_service=None,
                               examination_service=None, candidate_session_service=None,
-                              review_service=None) -> FastAPI:
+                              review_service=None, contract_service=None) -> FastAPI:
     database = MySQLDatabase(settings)
     auth = auth_service or AuthService(MySQLUserRepository(database))
     examinations = examination_service or ExaminationService(MySQLExaminationRepository(database))
     sessions = candidate_session_service or CandidateSessionService(
-        MySQLCandidateSessionRepository(database), MySQLExaminationRepository(database))
+        MySQLCandidateSessionRepository(database), MySQLExaminationRepository(database),
+        contract_repository=MySQLContractRepository(database))
+    contracts = contract_service or ContractService(
+        MySQLContractRepository(database), MySQLExaminationRepository(database),
+        MySQLCandidateSessionRepository(database))
     reviews = review_service or ReviewService(
         MySQLReviewRepository(database), MySQLCandidateSessionRepository(database),
         MySQLExaminationRepository(database))
@@ -321,7 +367,49 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
             release = reviews.release_results(examination_id, principal.user_id)
         return _release_body(release)
 
+    @app.get("/examiner/examinations/{examination_id}/contract")
+    def contract_versions(examination_id: str, principal=Depends(examiner)):
+        with _policy_errors():
+            versions = contracts.list_versions(examination_id, principal.user_id)
+        return [_contract_body(contract) for contract in versions]
+
+    @app.put("/examiner/examinations/{examination_id}/contract")
+    def save_contract_draft(examination_id: str, payload: ContractInput, principal=Depends(examiner)):
+        with _policy_errors():
+            contract = contracts.save_draft(examination_id, principal.user_id, payload.declaration(),
+                                            payload.amendment_reason)
+        return _contract_body(contract)
+
+    @app.post("/examiner/examinations/{examination_id}/contract/amendments", status_code=201)
+    def amend_contract(examination_id: str, payload: ContractInput, principal=Depends(examiner)):
+        with _policy_errors():
+            contract = contracts.amend(examination_id, principal.user_id, payload.declaration(),
+                                       payload.amendment_reason or "")
+        return _contract_body(contract)
+
+    @app.post("/examiner/examinations/{examination_id}/contract/exceptions", status_code=201)
+    def grant_exception(examination_id: str, payload: ExceptionInput, principal=Depends(examiner)):
+        with _policy_errors():
+            exception = contracts.grant_exception(
+                examination_id, principal.user_id, payload.candidate_user_id, payload.reason_category,
+                payload.capability_overrides, payload.extra_time_minutes)
+        return _exception_body(exception)
+
+    @app.get("/examiner/examinations/{examination_id}/contract/exceptions")
+    def list_exceptions(examination_id: str, principal=Depends(examiner)):
+        with _policy_errors():
+            exceptions = contracts.list_exceptions(examination_id, principal.user_id)
+        return [_exception_body(exception) for exception in exceptions]
+
     candidate = require_roles(Role.CANDIDATE)
+
+    @app.get("/candidate/examinations/{examination_id}/contract")
+    def candidate_contract(examination_id: str, principal=Depends(candidate)):
+        # Candidates can read the rules in force before and during the exam (spec §9).
+        with _policy_errors():
+            view = contracts.candidate_view(examination_id, principal.user_id)
+        return {**_contract_body(view.contract),
+                "my_exceptions": [_exception_body(e) for e in view.exceptions]}
 
     @app.get("/candidate/ping")
     def candidate_ping(principal=Depends(candidate)):
@@ -349,7 +437,8 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
                 "examination": {"examination_id": view.examination.examination_id,
                                 "title": view.examination.title,
                                 "status": view.examination.status.value,
-                                "ends_at": _iso(view.examination.ends_at)},
+                                "ends_at": _iso(view.examination.ends_at),
+                                "my_ends_at": _iso(view.effective_ends_at)},
                 "questions": [{"question_id": e.question.question_id, "title": e.question.title,
                                "prompt": e.question.prompt, "language": e.question.language,
                                "display_order": e.display_order,

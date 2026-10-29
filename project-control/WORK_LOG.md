@@ -84,3 +84,11 @@ Record meaningful project activity chronologically. Preserve failures and correc
 - Agent/role: Claude Code / Engineering (recording AJ's decision)
 - Work completed: DR-013 marked Approved with AJ's answers to Q1–Q5; spec set to v1.0 APPROVED; RTM FR-15 set to SPECIFIED / APPROVED; PROJECT_STATE updated.
 - Next action: FD-05 (ECC management).
+
+### 2026-10-29 — P001 FD-05 ECC management
+- Agent/role: Claude Code / Engineering
+- Objective: implement ECC v1.0 management (spec §9 FD-05).
+- Work completed: migration 005, contract domain/service/repository, binding on schedule in one transaction, amendments, exceptions, examiner and candidate API, design doc with Figures 3.7.4 and 3.5.7.
+- Tests/evidence: TE-011. Full suite with live MySQL: 256 passed, 0 skipped.
+- Status: FD-05 IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED (disposable MySQL 8.4.9).
+- Next action: AJ's open point (apply extra time to deadlines?); then PR merge; then FD-06.

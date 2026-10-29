@@ -23,15 +23,20 @@ class FakeCursor:
         if self.database.raise_on_execute:
             raise self.database.raise_on_execute
 
+    def fetchone(self):
+        # Scripted results for repository code that reads rows (e.g. contract binding).
+        return self.database.fetch_results.pop(0) if self.database.fetch_results else None
+
     def close(self):
         pass
 
 
 class FakeDatabase:
-    def __init__(self, rowcount=1, raise_on_execute=None):
+    def __init__(self, rowcount=1, raise_on_execute=None, fetch_results=None):
         self.rowcount = rowcount
         self.raise_on_execute = raise_on_execute
         self.statements = []
+        self.fetch_results = list(fetch_results or [])
 
     @contextmanager
     def connect(self):
@@ -44,7 +49,8 @@ class FakeDatabase:
 
 
 def test_status_update_is_compare_and_set():
-    database = FakeDatabase()
+    # Scheduling also binds the contract: a draft (version 1) exists, then one BOUND row.
+    database = FakeDatabase(fetch_results=[(1,), (1,)])
     repo = MySQLExaminationRepository(database)
     assert repo.update_status("e1", ExaminationStatus.SCHEDULED, expected=ExaminationStatus.DRAFT)
     sql, params = database.statements[0]

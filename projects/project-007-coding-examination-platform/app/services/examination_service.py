@@ -2,6 +2,7 @@
 from dataclasses import replace
 from datetime import datetime
 
+from app.domain.capability_contract import ContractRequiredError
 from app.domain.examination import (
     Examination, ExaminationConflictError, ExaminationQuestionEntry, ExaminationStatus,
     ProgrammingQuestion,
@@ -101,6 +102,9 @@ class ExaminationService:
             )
         if target is ExaminationStatus.SCHEDULED and not self.repository.list_examination_questions(examination_id):
             raise InvalidExaminationTransition("An examination needs at least one question before scheduling.")
+        if target is ExaminationStatus.SCHEDULED and not self.repository.has_bindable_contract(examination_id):
+            # ECC spec §5.2; the repository re-checks inside the binding transaction.
+            raise ContractRequiredError("An examination needs a capability contract before scheduling.")
         # Compare-and-set on the status read above: two racing requests cannot both apply.
         if not self.repository.update_status(examination_id, target, expected=exam.status):
             raise InvalidExaminationTransition("Examination status changed concurrently; reload and retry.")

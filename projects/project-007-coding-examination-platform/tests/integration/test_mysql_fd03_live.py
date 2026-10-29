@@ -14,6 +14,8 @@ from app.services.auth_service import AuthService
 from app.services.candidate_session_service import CandidateNotFoundError, CandidateSessionService
 from app.services.examination_service import ExaminationService
 
+from tests.contract_helpers import save_lab_contract
+
 pytestmark = pytest.mark.skipif(
     os.getenv("P001_RUN_MYSQL_TESTS") != "1",
     reason="Set P001_RUN_MYSQL_TESTS=1 to run live MySQL integration tests.",
@@ -46,6 +48,7 @@ def test_mysql_fd03_assignment_session_save_submit():
     with pytest.raises(SessionConflictError):
         session_repo.create_assignment(sessions.list_assignments(exam.examination_id, lecturer)[0])
 
+    save_lab_contract(database, exam.examination_id, lecturer)
     exams.transition(exam.examination_id, lecturer, ExaminationStatus.SCHEDULED)
     exams.transition(exam.examination_id, lecturer, ExaminationStatus.ACTIVE)
 

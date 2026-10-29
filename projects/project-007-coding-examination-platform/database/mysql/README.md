@@ -38,6 +38,12 @@ It creates three tables:
 - `response_mark_history`: an append-only log of every mark saved.
 - `examination_result_releases`: the release record. Candidates see marks only after it exists.
 
+## Step 3d — Apply migration 005
+In Workbench, with `p001_coding_exam` selected, execute:
+`database/mysql/migrations/005_capability_contracts.sql`.
+
+It creates `capability_contracts` (every version of each examination's Examination Capability Contract, stored as its canonical JSON document with a SHA-256 hash) and `contract_exceptions` (per-candidate authorized exceptions). From FD-05 onward, an examination cannot be scheduled without a contract.
+
 ## Step 4 — Configure the application locally
 In PowerShell for the current terminal session:
 
@@ -60,14 +66,14 @@ python -m scripts.check_mysql_connection
 ```
 
 Expected final line:
-`P001 MySQL FD-04 schema check: PASS`.
+`P001 MySQL FD-05 schema check: PASS`.
 
 ## Step 6 — Run the live integration tests
 The live test is deliberately opt-in:
 
 ```powershell
 $env:P001_RUN_MYSQL_TESTS="1"
-python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py tests/integration/test_mysql_fd04_live.py -q
+python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py tests/integration/test_mysql_fd04_live.py tests/integration/test_mysql_fd05_live.py -q
 ```
 
 This creates a uniquely named temporary-style candidate account, logs in, verifies the principal/role, revokes the session and verifies the token is no longer accepted.

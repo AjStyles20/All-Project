@@ -122,3 +122,32 @@ All verification evidence should be reproducible where practical. Do not record 
 - Observed result: schema check PASS; 235 passed, 0 skipped in 81.45s.
 - Status: PASS
 - Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification.
+
+### TE-011 — P001 FD-05 ECC management live MySQL integration
+- Date: 2026-10-29
+- Requirement(s): RTM FR-15, FR-18 (recording); ECC v1.0 §5, §8
+- Test type: Live + full regression
+- Environment: fresh disposable MySQL 8.4.9 instance (same setup as TE-005, migrations 001–005, least-privilege `p001_app`).
+- Procedure: `python -m scripts.check_mysql_connection`; `P001_RUN_MYSQL_TESTS=1 python -m pytest -q -W error::DeprecationWarning` at `e502488` on `p001-fd05-ecc-management`.
+- Expected result: whole suite passes with no skips. The live FD-05 test should show:
+  - scheduling without a contract refused, with the SQL backstop rolling back;
+  - an identical re-save found;
+  - a bound contract whose recomputed hash equals the stored hash after the MySQL JSON round trip;
+  - bound versions not editable;
+  - exception visible to its candidate;
+  - an amendment superseding v1 without rewriting it;
+  - `in_force_at` resolving v1 then v2.
+- Observed result: schema check PASS; 256 passed, 0 skipped in 167.63s.
+- Status: PASS
+- Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification.
+
+### TE-012 — P001 FD-05 extra time applied (DR-014) live re-run
+- Date: 2026-10-29
+- Requirement(s): RTM FR-18; DR-014
+- Test type: Live + full regression
+- Environment: fresh disposable MySQL 8.4.9 instance (same setup as TE-005, migrations 001–005).
+- Procedure: `P001_RUN_MYSQL_TESTS=1 python -m pytest -q -W error::DeprecationWarning` at `c17ccb5` on `p001-fd05-ecc-management`.
+- Expected result: whole suite passes with no skips. The live FD-05 test should show the timed exam's effective deadline for the candidate as `ends_at` + 25 minutes.
+- Observed result: schema check PASS; 257 passed, 0 skipped in 88.05s.
+- Status: PASS
+- Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification.

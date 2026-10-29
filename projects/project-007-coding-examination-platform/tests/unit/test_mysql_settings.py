@@ -25,3 +25,27 @@ def test_mysql_defaults_are_local_and_non_secret(monkeypatch):
     assert settings.database == "p001_coding_exam"
     assert settings.user == "p001_app"
     assert settings.password == ""
+
+
+def test_connections_report_matched_rows(monkeypatch):
+    # Guarded UPDATEs treat rowcount == 1 as "row found"; without FOUND_ROWS MySQL
+    # reports 0 when the new values equal the old ones.
+    import mysql.connector
+    from mysql.connector.constants import ClientFlag
+    from app.persistence.mysql_database import MySQLDatabase
+
+    captured = {}
+
+    class Connection:
+        def commit(self): pass
+        def rollback(self): pass
+        def close(self): pass
+
+    def fake_connect(**kwargs):
+        captured.update(kwargs)
+        return Connection()
+
+    monkeypatch.setattr(mysql.connector, "connect", fake_connect)
+    with MySQLDatabase(MySQLSettings()).connect():
+        pass
+    assert ClientFlag.FOUND_ROWS in captured["client_flags"]

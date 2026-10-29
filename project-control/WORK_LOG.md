@@ -45,3 +45,13 @@ Record meaningful project activity chronologically. Preserve failures and correc
 - Regression impact: None; repository was initially empty.
 - Status: STARTER KIT IMPLEMENTED; END-TO-END WORKFLOW NOT YET VERIFIED.
 - Next action: Obtain AJ approval for Project 001 identity/scope, then instantiate the project and run the first full agent cycle.
+
+### 2026-10-29 — P001 FD-02 completion increment
+- Agent/role: Claude Code / Engineering (automated developer; scope agreed with AJ in session)
+- Objective: Close FD-02 pending gaps, clear CI warnings, synchronize project-control state.
+- Files changed: see `project-control/AGENT_HANDOFFS/2026-10-29_P001_FD02_COMPLETION.md`.
+- Work completed: examiner list/read/update/detach API; compare-and-set lifecycle; DRAFT-guarded SQL; conflict/validation error mapping; CLIENT_FOUND_ROWS on MySQL connections; Node 24 actions; httpx -> httpx2.
+- Problem(s) encountered: five application defects found in review (details in FULL_DEVELOPMENT_WORK_LOG.md 2026-10-29).
+- Tests/evidence: local 176 passed, 2 skipped; CI result recorded on PR #19; live MySQL NOT RUN.
+- Status: FD-02 IMPLEMENTED / UNIT + API TESTED; NOT LIVE VERIFIED.
+- Next action: AJ decisions listed in the handoff; live-MySQL verification; FD-03.

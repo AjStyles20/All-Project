@@ -10,6 +10,7 @@ from typing import Iterator
 
 import mysql.connector
 from mysql.connector import MySQLConnection
+from mysql.connector.constants import ClientFlag
 
 
 @dataclass(frozen=True)
@@ -44,6 +45,9 @@ class MySQLDatabase:
             user=self.settings.user,
             password=self.settings.password,
             autocommit=False,
+            # Report matched rather than changed rows, so an UPDATE that writes identical
+            # values still counts as found (guarded updates rely on rowcount == 1).
+            client_flags=[ClientFlag.FOUND_ROWS],
         )
         try:
             yield connection

@@ -4,7 +4,7 @@
 - Project name: AJ Project OS
 - Project type: Research-first final-year-project portfolio and implementation workspace
 - Project owner: AJ
-- Last verified date: 2026-09-20
+- Last verified date: 2026-10-29 (P001 implementation/PR status; research sections unchanged since 2026-09-20)
 - Repository: AjStyles20/All-Project
 - Default branch: main
 
@@ -23,8 +23,11 @@ Decision Record DR-010 prospectively supersedes the earlier implementation prohi
 
 ## P001 Current State
 Historical GitHub folder: `projects/project-007-coding-examination-platform`.
-Active implementation branch: `p001-egpcv-implementation`.
-Draft pull request: #17. Main remains untouched unless explicitly merged.
+Research-critical implementation: branch `p001-egpcv-implementation`, PR #17, **merged into main on 2026-09-22** (merge commit `cb29f06…`). Latest main CI: run #292, success, head `2596768…`.
+
+Full-product layer (MySQL, per the MySQL technology decision in `documentation/DATABASE_TECHNOLOGY_DECISION_MYSQL.md`):
+- **FD-01 Identity/RBAC** — on main. Live MySQL test passed on 2026-10-29 (MySQL 8.4.9 disposable local instance; see TE-005).
+- **FD-02 Examination & Question Management** — branch `p001-fd02-exam-question-management`, **draft PR #19, not merged**. Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** (disposable local instance, 2026-10-29; AJ's own server not used). As of 2026-10-29 it includes examiner list/read/update/detach endpoints, compare-and-set lifecycle transitions, DRAFT-guarded SQL, and a scheduling-requires-a-question rule (A2, awaiting AJ review). See `documentation/FD02_EXAMINATION_QUESTION_DESIGN.md`.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -49,8 +52,17 @@ No superiority, authorship, AI-use detection, perfect cheating detection, lectur
 ## Historical P011 Warning
 Historical Source-Grounded AI Defense Simulator / canonical P011 test claims must not be transferred to P001. Any historical approximately-146-test claim belongs to a different implementation lineage and remains separate from the verified P001 suite.
 
+## Open Pull Requests (observed 2026-10-29)
+- **#19** P001 FD-02. Draft and mergeable. Merge awaits AJ plus live-MySQL evidence.
+- **#18** P003 ETEC research-critical implementation. Draft, 100 commits, currently **conflicting** with main. Not touched in the 2026-10-29 cycle.
+- **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
+
 ## Current Work
-1. Keep P001 on its separate implementation branch until the agreed merge gate.
-2. Complete governance/documentation synchronization and remaining M6 hardening.
+1. Obtain live-MySQL evidence for FD-01/FD-02 (`P001_RUN_MYSQL_TESTS=1` against AJ's local server), then AJ review and merge of PR #19.
+2. FD-03, the candidate-side examination session and submission increment, on its own branch after FD-02.
 3. Prepare pilot and method-freeze materials without treating development fixtures as independent ground truth.
 4. Do not begin P003 implementation until the P001 checkpoint is reached unless AJ changes the order.
+
+### Superseded current-work list (2026-09-20)
+1. Keep P001 on its separate implementation branch until the agreed merge gate. *(PR #17 has since merged.)*
+2. Complete governance/documentation synchronization and remaining M6 hardening.

@@ -1,6 +1,7 @@
-# P001 Examination Capability Contract (ECC) — Specification v0.1
+# P001 Examination Capability Contract (ECC) — Specification v1.0
 
-**Status:** PROPOSED. Awaiting AJ approval as an A3 methodology decision (DR-013). Nothing in this document is implemented. Until approved, it is a draft and must not be cited as the frozen ECC.
+**Status:** **APPROVED v1.0.** AJ approved it on 2026-10-29 (DR-013, A3), answering open questions Q1–Q5 (§10). This is the frozen ECC schema named in the development-corpus versioning list. Nothing in it is implemented yet; implementation is planned as FD-05/FD-06. Changing it requires a new versioned decision.
+**History:** v0.1 drafted 2026-10-29 (PR #22) → v1.0 approved the same day with no change to the drafted content. The JSON shape in §8 is labelled schema v1.0 from approval onwards.
 **Requirement:** RTM FR-15 (ECC Management). It also bounds FR-16 (process capture), FR-17 (integrity observations), FR-18 (authorized exceptions) and FR-19 (evidence provenance).
 **Drafted:** 2026-10-29 by Claude Code (Engineering), at AJ's request.
 
@@ -95,7 +96,7 @@ When operational artifacts are registered as EGPCV evidence (the deferred "evide
 - `EvidenceItem.assistance_context` = a canonical summary of the assistance-relevant capabilities (`ai_assistance`, `documentation`, `internet`, `clipboard`), the assistance construct and the active exception state;
 - the bound contract itself is registered once per case as `EvidenceType.POLICY_CONTEXT` evidence, so reviewers and assessors see the policy alongside the artifact.
 
-**Proposed mapping, for AJ to confirm (open question Q3):**
+**Mapping (Q3, approved):**
 - a submitted FD-03 response becomes `ARTIFACT` evidence;
 - process/event capture becomes `PROCESS` evidence (FR-16, not yet built);
 - FD-04 examiner marks are **not** mapped automatically, because they are operational judgments, not evidence states.
@@ -114,7 +115,7 @@ When operational artifacts are registered as EGPCV evidence (the deferred "evide
 - **R6:** behaviour covered by an authorized accessibility exception is labelled `WITHIN_CONTRACT` and is never surfaced as suspicious (PASS_004 C1 point 5).
 - **R7:** while a contract is DECLARED, NOT ENFORCED, an absence of observed deviations must not be reported as evidence of compliance.
 
-## 8. Schema v0.1 (proposed shape)
+## 8. Schema v1.0
 ```json
 {
   "contract_id": "ecc-<examination_id>",
@@ -139,7 +140,7 @@ When operational artifacts are registered as EGPCV evidence (the deferred "evide
 ```
 The content hash covers every field except `status`, `bound_at` and `content_hash` itself, with keys in canonical (sorted) order.
 
-## 9. Proposed implementation increments (only after approval)
+## 9. Implementation increments
 - **FD-05, ECC management:**
   - storage (migration 005);
   - DRAFT editing;
@@ -148,15 +149,15 @@ The content hash covers every field except `status`, `bound_at` and `content_has
   - examiner API;
   - a candidate-visible read-only view, so candidates know what is permitted;
   - DECLARED, NOT ENFORCED labelling.
-- **FD-06, evidence bridge:** register submitted responses and the bound contract as EGPCV evidence for a configured case and claims, with full provenance (§6). This also requires deciding how operational examinations map to research cases (Q4).
+- **FD-06, evidence bridge:** register submitted responses and the bound contract as EGPCV evidence for a configured case and claims, with full provenance (§6). Per Q4, the link is an **explicit research step**: a researcher links an examination question to a `ProgrammingCase` and its claims. Nothing becomes EGPCV evidence by default.
 - **Later:** process capture (FR-16), integrity observations (FR-17), runtime enforcement and secure execution.
 
-## 10. Open questions for AJ
-1. **Q1 Capability set:** accept the PASS_003 key list and values in §4.2 as schema v0.1?
-2. **Q2 Binding point:** bind at DRAFT → SCHEDULED (proposed), or at ACTIVE?
-3. **Q3 Evidence mapping:** submitted responses become `ARTIFACT` and marks are not mapped (proposed)?
-4. **Q4 Case mapping:** does an operational examination question correspond to one EGPCV `ProgrammingCase`, or is case construction a separate research step?
-5. **Q5 Default integrity mode:** `LAB_CONTROLLED` as the default (proposed, following PASS_005 invariant 10)?
+## 10. Resolved decisions (AJ, 2026-10-29, DR-013)
+1. **Q1 Capability set:** accepted exactly as §4.2 (the PASS_003 list). Adding keys later, for example runtime limits once secure execution exists, needs a new schema version.
+2. **Q2 Binding point:** bind on DRAFT → SCHEDULED, so candidates see final rules before the exam opens.
+3. **Q3 Evidence mapping:** submitted responses become `ARTIFACT` evidence and the bound contract becomes `POLICY_CONTEXT` evidence. Examiner marks are **not** mapped.
+4. **Q4 Case mapping:** linking an examination question to a `ProgrammingCase` and its claims is a separate, explicit research step. There is no automatic mapping.
+5. **Q5 Default integrity mode:** `LAB_CONTROLLED`.
 
 ## 11. Non-claims
 This specification does not:
@@ -165,4 +166,4 @@ This specification does not:
 - implement enforcement;
 - make any integrity or competence claim.
 
-Approval freezes it as the ECC schema v1.0 named in the development corpus versioning list. It does not make it a validated instrument.
+Approval froze it as the ECC schema v1.0 named in the development-corpus versioning list. That does not make it a validated instrument.

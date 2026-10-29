@@ -161,7 +161,7 @@ Use this file for durable architectural, methodological, governance, and scope d
 
 ## DR-013 — Adopt the P001 Examination Capability Contract specification v0.1
 - Date: 2026-10-29
-- Status: **Proposed. Awaiting AJ approval.**
+- Status: **Approved** (Option A) by AJ on 2026-10-29. The spec is frozen as ECC v1.0.
 - Authority level: A3 (research methodology: interpretation rules for observations; freezes an artifact listed in the development-corpus versioning set)
 - Context: the formal research spec (§12) requires observations to be interpreted under the ECC. RTM FR-15 is PENDING, and the operational → EGPCV evidence bridge is blocked on it (FD-04 scope decision).
 - Proposal: `projects/project-007-coding-examination-platform/specification/EXAMINATION_CAPABILITY_CONTRACT_SPECIFICATION.md`.
@@ -181,3 +181,13 @@ DECISION REQUEST DR-013
 - **Project Lead recommendation:** Option A, answering Q1–Q5 with the proposed defaults unless AJ prefers otherwise.
 - **Reason:** the draft only operationalises approved research material and existing code fields. It keeps the ECC non-enforcing and verdict-free.
 - **Requires AJ approval:** YES
+- **AJ resolution (2026-10-29):** Option A, with Q1–Q5 answered as proposed:
+  - Q1: capability set as drafted;
+  - Q2: bind on SCHEDULED;
+  - Q3: responses become ARTIFACT and the contract POLICY_CONTEXT; marks are not mapped;
+  - Q4: question → case linking is an explicit research step;
+  - Q5: LAB_CONTROLLED by default.
+- **Consequences:**
+  - FR-15 is SPECIFIED / APPROVED;
+  - FD-05 (ECC management) is unblocked;
+  - FD-06 (evidence bridge) needs an explicit research-link step.

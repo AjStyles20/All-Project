@@ -306,3 +306,6 @@ At AJ's request, drafted `specification/EXAMINATION_CAPABILITY_CONTRACT_SPECIFIC
 - it produces observation labels only, never verdicts.
 
 **Status:** PROPOSED, awaiting AJ (DR-013, A3).
+
+### ECC approved as v1.0 (2026-10-29)
+AJ approved DR-013 (Option A) and answered Q1–Q5 with the proposed defaults. The spec is now **v1.0 APPROVED** and frozen, with no content change from v0.1 beyond recording the decisions. Next increment: FD-05 (ECC management).

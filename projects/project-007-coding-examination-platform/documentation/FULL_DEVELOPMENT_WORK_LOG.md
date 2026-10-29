@@ -336,3 +336,43 @@ AJ chose to apply exception extra time.
 - **Implementation:** `CandidateSessionService.effective_ends_at` returns `ends_at` plus the largest single grant for that candidate. It is used by the start and save window checks and exposed as `my_ends_at`.
 - **Test defect corrected during the work:** the first draft of the new unit test expected `ExaminationConflictError` for a late save. The service correctly raises `SessionConflictError`. Classification: test bug.
 - **Live evidence:** full suite at `c17ccb5`, fresh disposable MySQL 8.4.9 instance: **257 passed, 0 skipped** (TE-012).
+
+
+## 2026-10-29 — FD-06: operational → EGPCV evidence bridge (Claude Code, Engineering)
+**Branch:** `p001-fd06-evidence-bridge`, from main at `4065605`.
+
+**Pre-implementation stop:** before any code, the agent flagged that FD-06 is the "real student collection" step that `M8_PILOT_PROTOCOL.md` §8 gates on consent and ethics. AJ then decided consent, identifiers, link role and granularity, recorded as DR-015.
+
+**Implemented:**
+- Migration 006.
+- `app/domain/research_bridge.py`.
+- `MySQLResearchRepository`.
+- `ResearchCaseStore`, the SQLite adapter, which writes one transaction per case with `INSERT OR IGNORE`.
+- `ResearchBridgeService`.
+- Seven endpoints.
+- Design document `FD06_EVIDENCE_BRIDGE_DESIGN.md` with Figure 3.7.5 (ERD) and Figure 3.5.8 (run sequence).
+- Workbench guide (migration 006 and `P001_RESEARCH_DB_PATH`) and the schema check.
+
+**Defects found by tests and corrected:**
+1. **Privacy (application bug):** `POLICY_CONTEXT` copied the contract's `bound_by_user_id`, the examiner's identity, into the research store. It was caught by the test that dumps the research store. The field is now redacted, with the redaction declared and the full hash kept.
+2. **Test bug:** a fixed test clock made an exception look as if it had been approved at the exact save time. The service correctly includes such an exception. The test now advances the clock, and a second test covers the "approved before save" case.
+
+**Live evidence:** full suite at `818220b`, fresh disposable MySQL 8.4.9 instance (migrations 001–006) plus a temporary SQLite research store: **270 passed, 0 skipped** (TE-013).
+
+**Not done:** no real student has been bridged; that needs real ethics approval. Retention on withdrawal and research-store access control are open.
+
+### FD-06 — DR-016 applied: deletion on withdrawal, store location (2026-10-29)
+**Pre-implementation check:** the research schema showed that `evidence_state_history`, `verification_runs`, `audit_events` and `experiment_runs` reference cases. Deletion therefore keeps a content-free case shell when a case is referenced, rather than failing or half-deleting. It always removes the evidence.
+
+**Implementation:**
+- `ResearchCaseStore.purge_case`: a SQLite savepoint, falling back to keeping the shell.
+- `MySQLResearchRepository.complete_withdrawal`: one transaction (records, identity, anonymous log).
+- `ResearchBridgeService.purge_candidate` and `purge_withdrawn`.
+- An application-directory check on the store path.
+- The Workbench guide section on store location and NTFS permissions.
+
+**Test bug corrected:** a new test ran the bridge while the store was deliberately missing. The service correctly refused. The test now checks the recorded withdrawal instead.
+
+**Documentation fix:** the first README edit doubled the Windows backslashes, and the bad version was committed in `6005537`. It is corrected in the docs commit.
+
+**Live evidence:** full suite at `6005537`, fresh disposable MySQL 8.4.9 instance plus a temporary SQLite research store: **277 passed, 0 skipped** (TE-014).

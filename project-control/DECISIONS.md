@@ -202,3 +202,39 @@ DECISION REQUEST DR-013
 - Rationale: candidates must actually receive accommodations they were granted. Using the largest grant rather than the sum means re-recording an exception never silently stacks time; an examiner who wants more time grants a larger exception.
 - Consequences: `CandidateSessionService` takes an optional contract repository. Other capabilities in exceptions remain declarative (DECLARED, NOT ENFORCED).
 - Approved by: AJ, in the Claude Code session of 2026-10-29. The "largest single grant" rule is the implementing agent's choice and is flagged here for AJ review.
+
+
+## DR-015 — P001 research-data handling for the FD-06 evidence bridge
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A3 (research ethics, participant data, research identifiers)
+- Context: FD-06 copies real candidates' submissions into the EGPCV research store. `M8_PILOT_PROTOCOL.md` §8 requires consent, ethics, privacy and de-identification to be resolved before any real-student collection.
+- Decision:
+  1. **Two consent gates:** the research link must carry an institutional ethics approval reference, **and** the candidate must have explicitly opted in for that examination. If either is missing, nothing is copied. A withdrawal stops all further copying.
+  2. **Identifiers:** each candidate gets a random research code per examination. The code → person link lives only in the operational `research_identities` table, exposed through administrator-only endpoints. The research store never receives user IDs or names. Implementing this also redacts the examiner identity from copied contracts.
+  3. **Link role:** only administrators create research links. The marking examiner cannot route their own students into research.
+  4. **Granularity:** one research case per consenting candidate per linked question, built from the linked template case.
+- Consequences: FD-06 is implemented under these rules (TE-013). The software records the ethics reference but cannot verify it. Real institutional approval is required before any real student is bridged.
+- Open (not decided): retention or deletion of already-bridged data on withdrawal; access control for the research store file.
+- Approved by: AJ, in the Claude Code session of 2026-10-29. Each point was answered explicitly.
+
+
+## DR-016 — P001 research data: deletion on withdrawal and research-store location
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A3 (participant data retention and research-data access)
+- Context: two points DR-015 left open for FD-06 (PR #24).
+- Decision:
+  1. **Withdrawal deletes bridged data.**
+     - A withdrawal is recorded first, so copying stops immediately.
+     - The candidate's bridged evidence and claim links are then deleted from the research store.
+     - A case row is deleted unless an analysis record references it. In that case a content-free shell is kept, so the analysis record stays valid but the evidence is gone.
+     - Operationally, the candidate's bridge records and code → person link are deleted. An anonymous log keeps only the now-unlinkable code and counts.
+     - If the store is unavailable, deletion is pending and an administrator can retry it.
+  2. **Research store outside the application.**
+     - The SQLite file lives outside the application directory, and the bridge refuses a path inside it.
+     - Folder permissions are limited to the application's OS account and named research staff, as documented in the Workbench guide.
+- Rationale: participants' right to withdraw; keeping analysis records consistent; no research data travelling with the codebase or deployments.
+- Consequences: migration 006 gains `research_withdrawal_log`. New endpoints: `POST /admin/research/examinations/{id}/purge-withdrawn` and `GET .../withdrawals`.
+- Limitation: text that analyses derived from evidence before a withdrawal (for example rationales in evidence-state history) is not rewritten. Only the evidence itself is deleted.
+- Approved by: AJ, in the Claude Code session of 2026-10-29. Both points were answered explicitly.

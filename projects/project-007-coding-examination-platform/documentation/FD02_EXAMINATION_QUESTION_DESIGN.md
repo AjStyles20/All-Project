@@ -151,10 +151,10 @@ MySQL `DATETIME` has no zone. Timezone-aware API inputs are converted to UTC and
 ### Verification status
 - Unit, service and API tests run against an in-memory repository (`tests/examination_fakes.py`). That fake follows the MySQL repository's guarded semantics.
 - SQL-contract tests (`tests/unit/test_mysql_examination_repository.py`) pin the status predicates and the error translation on every CI run, without a server.
-- `tests/integration/test_mysql_fd02_live.py` now exercises every repository operation and guard against a real server. It is still opt-in (`P001_RUN_MYSQL_TESTS=1`) and **has not been executed**. FD-02 is therefore **IMPLEMENTED / UNIT + API TESTED** and **not LIVE VERIFIED**.
+- `tests/integration/test_mysql_fd02_live.py` now exercises every repository operation and guard against a real server. It is opt-in (`P001_RUN_MYSQL_TESTS=1`). It was **executed and passed on 2026-10-29** against MySQL 8.4.9 on a disposable local instance (see the work log). FD-02 is therefore **LIVE VERIFIED** on that instance.
 
 ### Still open
-- Live MySQL execution evidence (requires AJ's local MySQL Server).
+- Optional: repeat the live run on AJ's own configured MySQL Server.
 - Whether an examiner may attach a question created by a different examiner. This is currently allowed because questions are designed to be reusable. Flagged for AJ.
 - Whether SCHEDULED should require a start/end window. This is not enforced.
 - Final rendered diagram assets.

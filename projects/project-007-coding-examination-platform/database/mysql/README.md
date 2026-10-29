@@ -41,7 +41,7 @@ From `projects/project-007-coding-examination-platform`:
 
 ```powershell
 python -m pip install -r requirements.txt
-python scripts/check_mysql_connection.py
+python -m scripts.check_mysql_connection
 ```
 
 Expected final line:

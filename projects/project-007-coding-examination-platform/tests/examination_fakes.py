@@ -50,6 +50,9 @@ class InMemoryExaminationRepository:
     def get_question(self, question_id):
         return self.questions.get(question_id)
 
+    def question_created_by(self, question_id):
+        return self.question_creators.get(question_id)
+
     def list_questions_by_creator(self, created_by_user_id):
         return [q for qid, q in self.questions.items()
                 if self.question_creators[qid] == created_by_user_id]

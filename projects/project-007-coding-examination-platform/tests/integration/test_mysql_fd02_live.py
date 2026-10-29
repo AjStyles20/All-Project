@@ -11,7 +11,9 @@ from app.persistence.mysql_database import MySQLDatabase
 from app.persistence.mysql_examination_repository import MySQLExaminationRepository
 from app.persistence.mysql_user_repository import MySQLUserRepository
 from app.services.auth_service import AuthService
-from app.services.examination_service import ExaminationService, InvalidExaminationTransition
+from app.services.examination_service import (
+    ExaminationService, InvalidExaminationTransition, QuestionNotFoundError,
+)
 
 pytestmark = pytest.mark.skipif(
     os.getenv("P001_RUN_MYSQL_TESTS") != "1",
@@ -47,6 +49,16 @@ def test_mysql_fd02_exam_question_lifecycle():
 
     service.attach_question(exam.examination_id, question.question_id, owner_id, 1, 10)
     service.attach_question(exam.examination_id, spare.question_id, owner_id, 2, 5)
+
+    # DR-011: another examiner's question cannot be attached, even by a valid owner.
+    other_id = "fd02-other-" + suffix
+    auth.create_user(other_id, "fd02_other_" + suffix, "TemporaryTestPass123!",
+                     "FD02 Other Examiner", {Role.EXAMINER})
+    foreign = ProgrammingQuestion("fd02-qx-" + suffix, "Foreign", "Not yours.", "python", 3)
+    service.create_question(foreign, other_id)
+    assert repo.question_created_by(foreign.question_id) == other_id
+    with pytest.raises(QuestionNotFoundError):
+        service.attach_question(exam.examination_id, foreign.question_id, owner_id, 3, 3)
 
     # The unique (examination, question) key is translated into a domain conflict.
     with pytest.raises(ExaminationConflictError):

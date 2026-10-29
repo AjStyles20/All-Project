@@ -103,6 +103,15 @@ class MySQLExaminationRepository:
             cursor.close()
         return None if row is None else _question(row)
 
+    def question_created_by(self, question_id: str) -> str | None:
+        with self.database.connect() as connection:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("SELECT created_by_user_id FROM questions WHERE question_id=%s",
+                           (question_id,))
+            row = cursor.fetchone()
+            cursor.close()
+        return None if row is None else row["created_by_user_id"]
+
     def list_questions_by_creator(self, created_by_user_id: str) -> list[ProgrammingQuestion]:
         with self.database.connect() as connection:
             cursor = connection.cursor(dictionary=True)

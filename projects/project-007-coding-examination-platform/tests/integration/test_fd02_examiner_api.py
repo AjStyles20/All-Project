@@ -134,6 +134,16 @@ def test_attaching_unknown_question_returns_not_found():
     assert response.status_code == 404
 
 
+def test_foreign_question_attach_returns_not_found():
+    client, repo = client_and_repo()
+    headers = bearer("examiner-token")
+    eid, _ = create_exam_with_question(client, headers)
+    from app.domain.examination import ProgrammingQuestion
+    repo.create_question(ProgrammingQuestion("theirs","T","P","python",5), "other-lecturer")
+    response = client.post(f"/examiner/examinations/{eid}/questions", json={"question_id":"theirs","display_order":1,"score_weight":5}, headers=headers)
+    assert response.status_code == 404
+
+
 def test_examiner_reads_lists_updates_and_detaches():
     client, _ = client_and_repo()
     headers = bearer("examiner-token")

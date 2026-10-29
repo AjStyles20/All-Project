@@ -76,7 +76,9 @@ class ExaminationService:
     def attach_question(self, examination_id: str, question_id: str, actor_user_id: str,
                         display_order: int, score_weight: int) -> None:
         self._owned_draft_exam(examination_id, actor_user_id)
-        if self.repository.get_question(question_id) is None:
+        # DR-011: examiners attach only their own questions. Another examiner's question
+        # is reported as missing, so question ids cannot be probed.
+        if self.repository.question_created_by(question_id) != actor_user_id:
             raise QuestionNotFoundError(question_id)
         for entry in self.repository.list_examination_questions(examination_id):
             if entry.question.question_id == question_id:

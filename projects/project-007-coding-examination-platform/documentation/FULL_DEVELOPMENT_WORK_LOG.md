@@ -167,3 +167,6 @@ This exercised every FD-02 repository operation and SQL guard against a real ser
 **Defect found by the live run:** the documented `python scripts/check_mysql_connection.py` crashed with `ModuleNotFoundError: No module named 'app'`. Running a file puts `scripts/` on `sys.path`, not the project root. Classification: command/documentation issue; the script itself was correct. The guide now uses `python -m scripts.check_mysql_connection`.
 
 **Status:** FD-01 and FD-02 are LIVE VERIFIED against MySQL 8.4.9 on the disposable instance described above. A run on AJ's own configured server would be additional, user-environment evidence.
+
+### FD-02 — DR-011 applied (2026-10-29)
+AJ resolved the FD-02 policy points. The one change is that examiners may now attach only questions they created; another examiner's question returns 404. This is implemented with `question_created_by` in the repository and fake, and covered by service, API and live tests. The other points stay as built: scheduling requires a question, and the time window is optional.

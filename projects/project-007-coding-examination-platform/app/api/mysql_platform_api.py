@@ -13,7 +13,10 @@ from app.domain.candidate_session import (
     MAX_RESPONSE_CHARS, CandidateAssignment, ExaminationSession, SavedResponse, SessionConflictError,
 )
 from app.persistence.mysql_candidate_session_repository import MySQLCandidateSessionRepository
+from app.domain.review import MAX_COMMENT_CHARS, MarkingConflictError, ResponseMark
 from app.persistence.mysql_examination_repository import MySQLExaminationRepository
+from app.persistence.mysql_review_repository import MySQLReviewRepository
+from app.services.review_service import ReviewService
 from app.services.candidate_session_service import (
     AssignmentNotFoundError, CandidateNotFoundError, CandidateSessionService, SessionNotFoundError,
 )
@@ -54,6 +57,10 @@ class TransitionInput(BaseModel):
 
 class AssignCandidateInput(BaseModel):
     candidate_user_id: str = Field(min_length=1, max_length=64)
+
+class MarkInput(BaseModel):
+    score: int = Field(ge=0)
+    comment: str = Field(default="", max_length=MAX_COMMENT_CHARS)
 
 class ResponseInput(BaseModel):
     content: str = Field(max_length=MAX_RESPONSE_CHARS)
@@ -100,6 +107,12 @@ def _session_body(session: ExaminationSession) -> dict:
             "submission_mode": session.submission_mode.value if session.submission_mode else None}
 
 
+def _mark_body(mark: ResponseMark) -> dict:
+    return {"score": mark.score, "comment": mark.comment,
+            "response_revision": mark.response_revision,
+            "marked_by_user_id": mark.marked_by_user_id, "marked_at": _iso(mark.marked_at)}
+
+
 def _response_body(response: SavedResponse) -> dict:
     return {"question_id": response.question_id, "content": response.content,
             "revision": response.revision, "saved_at": _iso(response.saved_at)}
@@ -118,19 +131,24 @@ def _policy_errors():
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ExaminationOwnershipError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
-    except (InvalidExaminationTransition, ExaminationConflictError, SessionConflictError) as exc:
+    except (InvalidExaminationTransition, ExaminationConflictError, SessionConflictError,
+            MarkingConflictError) as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_service=None,
-                              examination_service=None, candidate_session_service=None) -> FastAPI:
+                              examination_service=None, candidate_session_service=None,
+                              review_service=None) -> FastAPI:
     database = MySQLDatabase(settings)
     auth = auth_service or AuthService(MySQLUserRepository(database))
     examinations = examination_service or ExaminationService(MySQLExaminationRepository(database))
     sessions = candidate_session_service or CandidateSessionService(
         MySQLCandidateSessionRepository(database), MySQLExaminationRepository(database))
+    reviews = review_service or ReviewService(
+        MySQLReviewRepository(database), MySQLCandidateSessionRepository(database),
+        MySQLExaminationRepository(database))
     app = FastAPI(title="P001 Intelligent Coding Examination Platform", version="0.3.0")
 
     def current_principal(authorization: str | None = Header(default=None)):
@@ -258,6 +276,35 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
         with _policy_errors():
             assignments = sessions.list_assignments(examination_id, principal.user_id)
         return [_assignment_body(assignment) for assignment in assignments]
+
+    @app.get("/examiner/examinations/{examination_id}/sessions")
+    def list_exam_sessions(examination_id: str, principal=Depends(examiner)):
+        with _policy_errors():
+            summaries = reviews.list_sessions(examination_id, principal.user_id)
+        return [{**_session_body(s.session), "candidate_user_id": s.assignment.candidate_user_id,
+                 "marked_questions": s.marked_questions, "total_questions": s.total_questions,
+                 "raw_score": s.raw_score, "raw_max": s.raw_max}
+                for s in summaries]
+
+    @app.get("/examiner/sessions/{session_id}")
+    def review_session(session_id: str, principal=Depends(examiner)):
+        with _policy_errors():
+            review = reviews.get_review(session_id, principal.user_id)
+        return {**_session_body(review.session),
+                "candidate_user_id": review.assignment.candidate_user_id,
+                "examination_id": review.examination.examination_id,
+                "questions": [{**_entry_body(e),
+                               "response": _response_body(review.responses[e.question.question_id])
+                               if e.question.question_id in review.responses else None,
+                               "mark": _mark_body(review.marks[e.question.question_id])
+                               if e.question.question_id in review.marks else None}
+                              for e in review.questions]}
+
+    @app.put("/examiner/sessions/{session_id}/marks/{question_id}")
+    def mark_response(session_id: str, question_id: str, payload: MarkInput, principal=Depends(examiner)):
+        with _policy_errors():
+            mark = reviews.mark(session_id, question_id, principal.user_id, payload.score, payload.comment)
+        return _mark_body(mark)
 
     candidate = require_roles(Role.CANDIDATE)
 

@@ -29,6 +29,12 @@ In Workbench, with `p001_coding_exam` selected, execute:
 
 It creates `candidate_assignments`, `examination_sessions` and `submission_responses`. Each candidate can be assigned to an examination only once, each assignment gets one session, and each saved response carries a revision number.
 
+## Step 3c — Apply migration 004
+In Workbench, with `p001_coding_exam` selected, execute:
+`database/mysql/migrations/004_response_marks.sql`.
+
+It creates `response_marks`: one examiner mark per session and question, recording which response revision was marked.
+
 ## Step 4 — Configure the application locally
 In PowerShell for the current terminal session:
 
@@ -51,14 +57,14 @@ python -m scripts.check_mysql_connection
 ```
 
 Expected final line:
-`P001 MySQL FD-03 schema check: PASS`.
+`P001 MySQL FD-04 schema check: PASS`.
 
 ## Step 6 — Run the live integration tests
 The live test is deliberately opt-in:
 
 ```powershell
 $env:P001_RUN_MYSQL_TESTS="1"
-python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py -q
+python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py tests/integration/test_mysql_fd04_live.py -q
 ```
 
 This creates a uniquely named temporary-style candidate account, logs in, verifies the principal/role, revokes the session and verifies the token is no longer accepted.

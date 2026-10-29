@@ -17,6 +17,9 @@ class InMemoryExaminationRepository:
         self.questions = {}
         self.question_creators = {}
         self.attachments = []
+        # Callbacks run after a successful CLOSE, standing in for the session
+        # finalisation the MySQL repository performs in the same transaction.
+        self.on_close = []
 
     def create_examination(self, exam):
         exam.validate()
@@ -40,6 +43,9 @@ class InMemoryExaminationRepository:
         if current is None or current.status is not expected:
             return False
         self.exams[examination_id] = replace(current, status=status)
+        if status is ExaminationStatus.CLOSED:
+            for callback in self.on_close:
+                callback(examination_id)
         return True
 
     def create_question(self, question, created_by_user_id):

@@ -88,3 +88,25 @@ def test_detach_and_detail_updates_are_draft_guarded():
 
     repo.update_details(Examination("e1", "Renamed", "", "lecturer-1", ExaminationStatus.DRAFT))
     assert database.statements[1][0].endswith("WHERE examination_id=%s AND status='DRAFT'")
+
+
+def test_close_finalises_open_sessions_in_same_transaction():
+    database = FakeDatabase()
+    MySQLExaminationRepository(database).update_status(
+        "e1", ExaminationStatus.CLOSED, expected=ExaminationStatus.ACTIVE)
+    assert len(database.statements) == 2
+    sql, params = database.statements[1]
+    assert "s.submission_mode='AUTO_ON_CLOSE'" in sql
+    assert sql.endswith("WHERE a.examination_id=%s AND s.status='IN_PROGRESS'")
+    assert params == ("e1",)
+
+
+def test_other_transitions_and_lost_close_race_leave_sessions_alone():
+    database = FakeDatabase()
+    MySQLExaminationRepository(database).update_status(
+        "e1", ExaminationStatus.ACTIVE, expected=ExaminationStatus.SCHEDULED)
+    assert len(database.statements) == 1
+    lost = FakeDatabase(rowcount=0)
+    MySQLExaminationRepository(lost).update_status(
+        "e1", ExaminationStatus.CLOSED, expected=ExaminationStatus.ACTIVE)
+    assert len(lost.statements) == 1

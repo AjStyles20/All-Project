@@ -149,6 +149,31 @@ GitHub Actions run #302 (`P001 EGPCV Tests`, head `5493e02`) completed with SUCC
 
 This is software verification only. The two skips are the opt-in live MySQL tests, so live-MySQL verification is still outstanding.
 
+
+## 2026-10-29 — FD-03 opened: Candidate Assignment, Session and Response Capture (Claude Code, Engineering)
+**Branch:** `p001-fd03-candidate-sessions`. It is stacked on `p001-fd02-exam-question-management` because FD-03 depends on FD-02's examination repository. Its draft PR targets the FD-02 branch so the diff shows only FD-03.
+
+**Designed and implemented:**
+- Migration 003 (`candidate_assignments`, `examination_sessions`, `submission_responses`).
+- Domain module `app/domain/candidate_session.py`.
+- `CandidateSessionService` with an injectable clock.
+- `MySQLCandidateSessionRepository`.
+- Examiner assignment endpoints and candidate list/start/view/save/submit endpoints.
+- Design document `FD03_CANDIDATE_SESSION_DESIGN.md` with Figure 3.7.2 (ERD increment), Figure 3.5.4 (session state) and Figure 3.5.5 (save sequence).
+- Workbench guide and schema-check script updated for migration 003.
+
+**Design reasoning:**
+- One session per assignment, with resume on repeated start, gives the NFR-06 no-duplicate guarantee.
+- Revision-number compare-and-set on saves stops a stale browser tab from silently overwriting newer work.
+- Save and submit statements carry `status='IN_PROGRESS'` predicates, so a save that races a submit cannot alter locked content.
+- Submit is idempotent so a retried request after a network drop succeeds.
+
+**Test defect found and corrected:** the first version of `test_racing_start_resumes_the_winner` patched the fake's session lookup globally. That also disabled the fake's unique-key check, so the test failed by creating a second session. Classification: test bug. The corrected test blinds only the service's first lookup and keeps the uniqueness check real.
+
+**Policy decisions logged for AJ (A2):** one session per assignment; submission allowed after `ends_at`; no auto-finalisation at close; only the latest response content is stored.
+
+**Verification status:** service, API and SQL-contract tests added. The opt-in live MySQL test was added but not executed. No FD-03 completion claim is made beyond IMPLEMENTED / UNIT + API TESTED.
+
 ### FD-01/FD-02 live MySQL evidence (2026-10-29)
 **Environment:** MySQL Community Server **8.4.9**: a disposable local instance started from the MySQL 8.4 binaries installed on AJ's Windows PC (`--initialize-insecure`, scratch data directory, 127.0.0.1:3399, X Protocol off). This is **not** AJ's own configured server on port 3307, and that server was not touched. Setup followed `database/mysql/README.md`: bootstrap 000 with a one-off generated test password, then migrations 001–003 as root. Tests connected as the least-privilege `p001_app@127.0.0.1` account (SELECT/INSERT/UPDATE/DELETE only). Python 3.14.0, mysql-connector-python 9.x.
 
@@ -168,8 +193,50 @@ This exercised every FD-02 repository operation and SQL guard against a real ser
 
 **Status:** FD-01 and FD-02 are LIVE VERIFIED against MySQL 8.4.9 on the disposable instance described above. A run on AJ's own configured server would be additional, user-environment evidence.
 
+### FD-03 live MySQL evidence (2026-10-29)
+**Environment:** same disposable instance as the FD-01/FD-02 entry. MySQL Community Server **8.4.9**: a disposable local instance started from the MySQL 8.4 binaries installed on AJ's Windows PC (`--initialize-insecure`, scratch data directory, 127.0.0.1:3399, X Protocol off). This is **not** AJ's own configured server on port 3307, and that server was not touched. Setup followed `database/mysql/README.md`: bootstrap 000 with a one-off generated test password, then migrations 001–003 as root. Tests connected as the least-privilege `p001_app@127.0.0.1` account (SELECT/INSERT/UPDATE/DELETE only). Python 3.14.0, mysql-connector-python 9.x.
+
+**Result on branch `p001-fd03-candidate-sessions` at `c5780a3` (FD-03 plus the merged FD-02 fixes):**
+- `python -m scripts.check_mysql_connection`: `P001 MySQL FD-03 schema check: PASS` (all nine tables).
+- Entire P001 suite with `P001_RUN_MYSQL_TESTS=1` (unit, API, SQL-contract and all three live MySQL tests): **206 passed, 0 skipped in 99.75s**.
+
+The FD-03 test covered:
+- only CANDIDATE-role users assignable;
+- duplicate assignment refused;
+- start then resume of the same session;
+- revisioned saves;
+- stale revision refused by the SQL compare-and-set;
+- idempotent submit;
+- saves refused after submit;
+- saved content read back.
+
+**Status:** FD-03 is LIVE VERIFIED against MySQL 8.4.9 on that instance.
+
 ### FD-02 — DR-011 applied (2026-10-29)
 AJ resolved the FD-02 policy points. The one change is that examiners may now attach only questions they created; another examiner's question returns 404. This is implemented with `question_created_by` in the repository and fake, and covered by service, API and live tests. The other points stay as built: scheduling requires a question, and the time window is optional.
 
 ### FD-02 live MySQL re-run after DR-011 (2026-10-29)
 Environment: fresh disposable MySQL 8.4.9 instance (re-initialised after migration 003 changed), same setup as TE-005: bootstrap 000, migrations 001–003, least-privilege `p001_app`. Head `c757a96`, entire P001 suite with `P001_RUN_MYSQL_TESTS=1` and deprecations treated as errors: **180 passed, 0 skipped**. This included the live check that another examiner's question cannot be attached (TE-007).
+
+### FD-03 — DR-011 applied: auto-submit on close (2026-10-29)
+AJ approved auto-finalising open sessions when an examination closes.
+
+**Implementation:**
+- `MySQLExaminationRepository.update_status` runs a second UPDATE on the same connection whenever a CLOSED compare-and-set succeeds, so both changes commit or roll back together.
+- That UPDATE (`examination_sessions JOIN candidate_assignments`) sets `status='SUBMITTED'`, `submitted_at=UTC_TIMESTAMP(6)` and `submission_mode='AUTO_ON_CLOSE'`.
+- Candidate submissions now record `submission_mode='CANDIDATE'`.
+- Migration 003 gained the nullable `submission_mode` column. It was amended in place because it had only been applied to the disposable test instance.
+- The in-memory examination fake runs `on_close` callbacks to stand in for the same-transaction update.
+
+**Rejected alternative:** finalising sessions from the service after the close commits. If the second step failed, sessions would be stuck IN_PROGRESS on a CLOSED examination, where they can no longer be saved or submitted.
+
+**Tests:** service, API, SQL-contract (second statement only after a successful CLOSE; none on other transitions or a lost race) and live.
+
+The other FD-03 points stay as built: one attempt, late submit allowed, latest content only (history parked as SP-001).
+
+### FD-03 live MySQL re-run after DR-011 (2026-10-29)
+Environment: fresh disposable MySQL 8.4.9 instance (re-initialised after migration 003 changed), same setup as TE-005: bootstrap 000, migrations 001–003, least-privilege `p001_app`. Head `dbbe8eb`.
+- `python -m scripts.check_mysql_connection`: PASS.
+- Entire P001 suite with `P001_RUN_MYSQL_TESTS=1`: **212 passed, 0 skipped**.
+
+The live FD-03 test confirmed on a real server that closing the examination set the open session to SUBMITTED / `AUTO_ON_CLOSE` with its saved work intact, and left the already-submitted session's `CANDIDATE` mode and timestamp unchanged (TE-008).

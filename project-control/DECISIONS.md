@@ -120,3 +120,25 @@ Use this file for durable architectural, methodological, governance, and scope d
 - Claims affected: future P001 implementation status and future P003 implementation order.
 - Approved by: AJ through the completed All-Project selection/implementation workflow and repeated authorization to proceed.
 - Supersedes: DR-009 only with respect to the unresolved Final Comparative Selection Gate and implementation prohibition; DR-009's comparison criteria remain historical methodology.
+
+
+## DR-011 — P001 FD-02/FD-03 operational policy decisions
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A2 (product-layer policy; no change to objectives, methodology, stack or EGPCV semantics)
+- Context: the FD-02 completion and FD-03 handoffs (`project-control/AGENT_HANDOFFS/2026-10-29_P001_FD02_COMPLETION.md`, `2026-10-29_P001_FD03_OPENED.md`) listed policy points that the implementing agent could not settle on its own. Each was put to AJ with options and a recommendation.
+- Decision:
+  1. **Scheduling requires content.** DRAFT → SCHEDULED needs at least one attached question. *(Kept as implemented.)*
+  2. **Own questions only.** An examiner may attach only questions they created. Another examiner's question is answered as not found (404), so ids cannot be probed. Deliberate sharing may be designed later. *(Changed from the implemented "any question".)*
+  3. **Time window optional.** SCHEDULED does not require `starts_at`/`ends_at`. When a window is set, FD-03 enforces it. *(Kept.)*
+  4. **One attempt.** One examination session per assignment; a repeated start resumes it. *(Kept.)*
+  5. **Late submit allowed.** Submitting after `ends_at` is permitted. It locks only content saved before the deadline, because saves are refused afterwards. *(Kept.)*
+  6. **Auto-submit on close.** ACTIVE → CLOSED also finalises every IN_PROGRESS session of that examination in the same transaction. These sessions are recorded as `AUTO_ON_CLOSE`, distinct from candidate submissions. *(New.)*
+  7. **Latest response only.** No response revision history for now. History is parked as SP-001 until EGPCV process-evidence requirements define it. *(Kept; parked.)*
+  8. **Historical PRs #1–#16 stay open.** No action. *(Kept.)*
+- Rationale: least privilege (2); no-loss finalisation of saved work (5, 6); no invented multi-attempt or process-evidence policy (4, 7); the examiner's ACTIVE/CLOSE transitions remain the primary access control (3).
+- Consequences: FD-02 adds a question-ownership check. FD-03 adds `submission_mode` to `examination_sessions` (migration 003 has not been applied to any shared database, so it is amended in place) and auto-finalisation in the close transition.
+- Files/components affected: `examination_service.py`, `mysql_examination_repository.py`, `candidate_session` domain/service/repository, migration 003, FD-02/FD-03 design documents and tests.
+- Claims affected: none (product layer only).
+- Approved by: AJ, in the Claude Code session of 2026-10-29. Each point was answered explicitly.
+- Supersedes: the "open points" lists in the two handoffs above.

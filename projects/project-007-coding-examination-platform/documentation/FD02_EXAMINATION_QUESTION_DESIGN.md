@@ -137,7 +137,9 @@ All endpoints require the EXAMINER or ADMINISTRATOR role. Every operation on an 
 Error mapping is centralised in the API layer: not found → 404, ownership → 403, lifecycle or content conflict → 409, domain validation → 422.
 
 ### Policy added
-- **Scheduling requires content.** DRAFT → SCHEDULED is refused while the examination has no questions. This was logged as an A2 implementation decision for AJ review (FD-02 handoff, 2026-10-29). It does not change the lifecycle states in Figure 3.5.2.
+- **Scheduling requires content.** DRAFT → SCHEDULED is refused while the examination has no questions. AJ approved this in DR-011 (1). It does not change the lifecycle states in Figure 3.5.2.
+- **Own questions only.** An examiner can attach only questions they created. Another examiner's question returns 404, so ids cannot be probed (DR-011 (2)).
+- **Time window optional** for scheduling. A window, when set, is enforced by FD-03 (DR-011 (3)).
 
 ### Concurrency and integrity
 - Status transitions are compare-and-set: `UPDATE … WHERE examination_id=? AND status=<status read by the service>`. If two requests race, only one can apply. The other gets 409 and must reload.
@@ -155,6 +157,5 @@ MySQL `DATETIME` has no zone. Timezone-aware API inputs are converted to UTC and
 
 ### Still open
 - Optional: repeat the live run on AJ's own configured MySQL Server.
-- Whether an examiner may attach a question created by a different examiner. This is currently allowed because questions are designed to be reusable. Flagged for AJ.
-- Whether SCHEDULED should require a start/end window. This is not enforced.
+- Policy questions resolved by DR-011. Deliberate question sharing between examiners is a possible later feature.
 - Final rendered diagram assets.

@@ -89,6 +89,14 @@ def test_unknown_question_and_examination_are_not_found():
         service.get_examination("missing","lecturer-1")
 
 
+def test_examiner_cannot_attach_another_examiners_question():
+    service, repo = service_with_exam()
+    service.create_question(ProgrammingQuestion("q-foreign","Theirs","Not mine","python",5),"lecturer-2")
+    with pytest.raises(QuestionNotFoundError):
+        service.attach_question("e1","q-foreign","lecturer-1",1,5)
+    assert repo.attachments == []
+
+
 def test_detach_only_while_draft():
     service, repo = service_with_question()
     service.attach_question("e1","q1","lecturer-1",1,10)

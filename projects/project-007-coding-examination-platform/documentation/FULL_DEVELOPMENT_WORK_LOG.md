@@ -211,3 +211,6 @@ The FD-03 test covered:
 - saved content read back.
 
 **Status:** FD-03 is LIVE VERIFIED against MySQL 8.4.9 on that instance.
+
+### FD-02 — DR-011 applied (2026-10-29)
+AJ resolved the FD-02 policy points. The one change is that examiners may now attach only questions they created; another examiner's question returns 404. This is implemented with `question_created_by` in the repository and fake, and covered by service, API and live tests. The other points stay as built: scheduling requires a question, and the time window is optional.

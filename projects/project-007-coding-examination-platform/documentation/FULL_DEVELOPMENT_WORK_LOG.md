@@ -266,3 +266,17 @@ The live FD-03 test confirmed on a real server that closing the examination set 
 - A weighted total: no aggregation rule for `score_weight` is defined, so only raw totals are reported.
 
 **Live evidence:** full suite with `P001_RUN_MYSQL_TESTS=1` at `f9f8331`, on a fresh disposable MySQL 8.4.9 instance with migrations 001–004: **227 passed, 0 skipped** (TE-009).
+
+### FD-04 — DR-012 applied: weighted total, mark history, results release (2026-10-29)
+AJ resolved FD-04's three open points; details are in DR-012.
+
+**Implementation:**
+- `weighted_percent` in `app/domain/review.py` uses `fractions.Fraction`, so the result is exact before a single rounding.
+- `response_mark_history` receives a row in the same transaction as each successful upsert. The SQL-contract test checks that no history row is written when the guard refuses.
+- `examination_result_releases` is checked by both the service and a `NOT EXISTS` predicate in the upsert, so a mark cannot slip in after a concurrent release.
+- Release requires CLOSED/ARCHIVED and complete marking, and is idempotent.
+- The candidate result endpoint hides the marker identity and history.
+
+**Design choice:** the release record is a separate table rather than a column on `examinations`. This keeps FD-02's schema and domain object unchanged.
+
+**Live evidence:** full suite at `cad0a95`, fresh disposable MySQL 8.4.9 instance, migrations 001–004: **235 passed, 0 skipped** (TE-010).

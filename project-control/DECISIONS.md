@@ -142,3 +142,18 @@ Use this file for durable architectural, methodological, governance, and scope d
 - Claims affected: none (product layer only).
 - Approved by: AJ, in the Claude Code session of 2026-10-29. Each point was answered explicitly.
 - Supersedes: the "open points" lists in the two handoffs above.
+
+
+## DR-012 — P001 FD-04 marking policy: weighted total, mark history, results release
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A2 (product-layer assessment policy; EGPCV semantics unchanged)
+- Context: FD-04 (draft PR #21) left three open points: how `score_weight` combines with scores, what happens to superseded marks, and whether candidates see marks.
+- Decision:
+  1. **Weighted percentage.** Total % = Σ(score ÷ max_score × weight) ÷ Σ(weight) × 100. It is computed exactly and rounded once to 2 dp, and reported alongside the raw total. It is undefined (null) until every question in the session is marked.
+  2. **Mark history.** Every saved mark is appended to `response_mark_history` in the same transaction as the current-mark upsert. The current mark is still the default view.
+  3. **Explicit release.** Candidates see marks only after the owning examiner releases results. Release requires the examination to be CLOSED (or ARCHIVED) and every session to be SUBMITTED and fully marked. Release is idempotent and locks further marking. Candidates see score, max, comment and totals, not the marker identity or the history.
+- Rationale: weight expresses relative importance independent of each question's point scale (1); integrity and auditability of assessment decisions (NFR-02, NFR-03) (2); students never see partial or provisional marks (3).
+- Consequences: migration 004 gains `response_mark_history` and `examination_result_releases` (amended in place; it was only ever applied to the disposable test instance). New endpoints: `POST /examiner/examinations/{id}/release` and `GET /candidate/sessions/{id}/result`.
+- Claims affected: none.
+- Approved by: AJ, in the Claude Code session of 2026-10-29. Each point was answered explicitly.

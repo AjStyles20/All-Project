@@ -19,9 +19,14 @@ examination_sessions 1 ----< response_marks >---- 1 questions
                                response_revision (NULL = unanswered)
                                FK marked_by_user_id ---- users
                                marked_at
+                |
+                '--- every save also appended to ---> response_mark_history (append-only)
+
+examinations 1 ---- 0..1 examination_result_releases
+                          PK/FK examination_id, FK released_by_user_id, released_at
 ```
 
-*Figure 3.7.3: ERD increment for examiner marks.*
+*Figure 3.7.3: ERD increment for examiner marks, mark history and results release.*
 
 As Figure 3.7.3 shows, a mark belongs to a session and a question, not to a saved response. An unanswered question can therefore still be marked, typically with 0. `response_revision` records which saved revision the examiner read, so a reviewer can always tell which answer a mark refers to.
 
@@ -30,7 +35,8 @@ As Figure 3.7.3 shows, a mark belongs to a session and a question, not to a save
 - **Submitted only.** Marking requires a SUBMITTED session, whether submitted by the candidate or auto-submitted on close. In-progress content can still change.
 - **Marking window.** Marking is open while the examination is ACTIVE (for sessions already submitted) or CLOSED. Once the examination is ARCHIVED, marks are frozen.
 - **Bounds.** Each score must lie between 0 and the question's `max_score`. Comments are capped at 5,000 characters.
-- **Re-marking** replaces the current mark and updates the marker and time.
+- **Re-marking** replaces the current mark. The earlier mark stays in `response_mark_history`, which receives every save in the same transaction as the upsert (DR-012 (2)).
+- **Release** (DR-012 (3)): the owner releases results once the examination is CLOSED (or ARCHIVED) and every session is SUBMITTED and fully marked. Release is idempotent and locks further marking. The SQL upsert also refuses once a release row exists.
 - **Concurrency.** The upsert's SELECT only matches a SUBMITTED session of an ACTIVE or CLOSED examination. A concurrent archive therefore cannot be followed by a stray mark. The upsert uses a derived table instead of the deprecated `VALUES()` function.
 
 ## Figure 3.5.6 — Marking sequence
@@ -61,18 +67,22 @@ Examiner     FastAPI/RBAC      ReviewService             MySQL Review Repo      
 | GET | `/examiner/examinations/{id}/sessions` | sessions with candidate, status, submission mode, timestamps, marked/total questions and raw totals |
 | GET | `/examiner/sessions/{session_id}` | full review: each question with prompt, max score, weight, saved response (content, revision, saved_at) and current mark |
 | PUT | `/examiner/sessions/{session_id}/marks/{question_id}` | record or replace a mark (`score`, `comment`) |
+| POST | `/examiner/examinations/{id}/release` | release results to candidates |
+| GET | `/candidate/sessions/{session_id}/result` | the candidate's own released result: per-question score, max and comment, plus raw and weighted totals |
 
-The totals are **raw**: the sum of marked scores out of the sum of `max_score`. A weighted total is not computed, because FD-02's `score_weight` has no defined aggregation rule. Defining one is an open point.
+Totals are reported two ways:
+- **Raw:** Σ score out of Σ `max_score`.
+- **Weighted percentage** (DR-012 (1)): Σ(score ÷ max_score × weight) ÷ Σ(weight) × 100, rounded to 2 dp. It is null until every question in the session is marked, so a half-marked session is never shown as a low percentage.
 
 ## Verification status
 - Service tests: `tests/unit/test_review_service.py`.
 - API tests: `tests/integration/test_fd04_review_api.py`.
 - SQL-contract tests: `tests/unit/test_mysql_review_repository.py`.
-- Live: `tests/integration/test_mysql_fd04_live.py` passed on 2026-10-29 against MySQL 8.4.9 on a disposable local instance (TE-009).
+- Live: `tests/integration/test_mysql_fd04_live.py` passed on 2026-10-29 against MySQL 8.4.9 on a disposable local instance: TE-009 for marking, and TE-010 after DR-012 for history, release and weighted totals.
 
 FD-04 is **IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED** on that instance.
 
-## Open points for AJ
-1. **Weighted total.** How should `score_weight` combine with per-question scores? One candidate formula is Σ (score / max_score × weight). It is not implemented.
-2. **Mark history.** Re-marking currently overwrites the previous mark. Should earlier marks be kept for audit?
-3. **Release to candidates.** Candidates cannot see marks. Is a release step wanted, and when?
+## Policy decisions (DR-012, approved by AJ 2026-10-29)
+1. Weighted percentage as defined above, reported with the raw total.
+2. Every mark is kept in an append-only history.
+3. Explicit release after close and complete marking. Release locks marking; candidates then see their own result.

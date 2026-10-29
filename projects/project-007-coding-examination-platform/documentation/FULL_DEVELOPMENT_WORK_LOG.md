@@ -143,3 +143,8 @@ This closes the implementation gap in the verification path but does not constit
 **Local evidence:** Windows, Python 3.14.0, `python -m pytest -q -W error::DeprecationWarning` → **176 passed, 2 skipped**. The two skips are the opt-in live MySQL tests. CI evidence is recorded separately once the run completes.
 
 **Not verified:** live MySQL execution. No MySQL Server was available in this environment.
+
+### FD-02 CI evidence — Run #302
+GitHub Actions run #302 (`P001 EGPCV Tests`, head `5493e02`) completed with SUCCESS. Pytest summary: **176 passed, 2 skipped in 5.03s**. The Starlette httpx and Node 20 deprecation warnings from run #294 no longer appear. One informational GitHub notice remains: `ubuntu-latest` is moving to Ubuntu 26. It does not affect results and needs no action now.
+
+This is software verification only. The two skips are the opt-in live MySQL tests, so live-MySQL verification is still outstanding.

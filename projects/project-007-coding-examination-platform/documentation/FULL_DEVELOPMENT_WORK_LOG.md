@@ -360,3 +360,19 @@ AJ chose to apply exception extra time.
 **Live evidence:** full suite at `818220b`, fresh disposable MySQL 8.4.9 instance (migrations 001–006) plus a temporary SQLite research store: **270 passed, 0 skipped** (TE-013).
 
 **Not done:** no real student has been bridged; that needs real ethics approval. Retention on withdrawal and research-store access control are open.
+
+### FD-06 — DR-016 applied: deletion on withdrawal, store location (2026-10-29)
+**Pre-implementation check:** the research schema showed that `evidence_state_history`, `verification_runs`, `audit_events` and `experiment_runs` reference cases. Deletion therefore keeps a content-free case shell when a case is referenced, rather than failing or half-deleting. It always removes the evidence.
+
+**Implementation:**
+- `ResearchCaseStore.purge_case`: a SQLite savepoint, falling back to keeping the shell.
+- `MySQLResearchRepository.complete_withdrawal`: one transaction (records, identity, anonymous log).
+- `ResearchBridgeService.purge_candidate` and `purge_withdrawn`.
+- An application-directory check on the store path.
+- The Workbench guide section on store location and NTFS permissions.
+
+**Test bug corrected:** a new test ran the bridge while the store was deliberately missing. The service correctly refused. The test now checks the recorded withdrawal instead.
+
+**Documentation fix:** the first README edit doubled the Windows backslashes, and the bad version was committed in `6005537`. It is corrected in the docs commit.
+
+**Live evidence:** full suite at `6005537`, fresh disposable MySQL 8.4.9 instance plus a temporary SQLite research store: **277 passed, 0 skipped** (TE-014).

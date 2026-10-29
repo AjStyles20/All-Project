@@ -59,11 +59,11 @@ It also creates `research_withdrawal_log`, an anonymous log of deletions made wh
 The bridge also needs the EGPCV research store: set `P001_RESEARCH_DB_PATH` to the research SQLite file. If it is unset, the bridge endpoints answer 503 and copy nothing.
 
 **Where the research store must live (DR-016):**
-- Put the file **outside** the project/application folder, for example `D:\\p001-research\\research.sqlite3`. The bridge refuses to use a file inside the application directory.
+- Put the file **outside** the project/application folder, for example `D:\p001-research\research.sqlite3`. The bridge refuses to use a file inside the application directory.
 - Restrict the folder's NTFS permissions so that only the Windows account running the application and named research staff can read or write it:
 
   ```powershell
-  icacls D:\\p001-research /inheritance:r /grant:r "<app-account>:(OI)(CI)M" "<researcher>:(OI)(CI)R"
+  icacls D:\p001-research /inheritance:r /grant:r "<app-account>:(OI)(CI)M" "<researcher>:(OI)(CI)R"
   ```
 
 - Never commit it, copy it into the repository, or put it in any folder a web server serves.

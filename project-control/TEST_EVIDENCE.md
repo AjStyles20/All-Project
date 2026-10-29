@@ -168,3 +168,18 @@ All verification evidence should be reproducible where practical. Do not record 
 - Observed result: schema check PASS; 270 passed, 0 skipped in 125.74s.
 - Status: PASS
 - Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification. No real participant data was involved.
+
+### TE-014 — P001 FD-06 withdrawal deletion (DR-016) live re-run
+- Date: 2026-10-29
+- Requirement(s): DR-016; RTM FR-19
+- Test type: Live + full regression
+- Environment: fresh disposable MySQL 8.4.9 instance (same setup as TE-005, migrations 001–006) plus a temporary SQLite research store.
+- Procedure: `P001_RUN_MYSQL_TESTS=1 python -m pytest -q -W error::DeprecationWarning` at `6005537` on `p001-fd06-evidence-bridge`.
+- Expected result: whole suite passes with no skips. The live FD-06 test should show a withdrawal after bridging that:
+  - deletes the case;
+  - leaves zero evidence rows;
+  - removes the code → person link and the bridge records;
+  - writes one anonymous log row with the code and `cases_deleted = 1`.
+- Observed result: schema check PASS; 277 passed, 0 skipped in 149.18s.
+- Status: PASS
+- Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification. No real participant data was involved.

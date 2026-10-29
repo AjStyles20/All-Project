@@ -101,3 +101,9 @@ Record meaningful project activity chronologically. Preserve failures and correc
 - Tests/evidence: TE-013. Full suite with live MySQL: 270 passed, 0 skipped.
 - Status: FD-06 IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED. No real participant data bridged.
 - Next action: AJ open points (retention on withdrawal, research-store access); PR merge.
+
+### 2026-10-29 — DR-016 applied to FD-06
+- Agent/role: Claude Code / Engineering
+- Work completed: deletion on withdrawal (keeping a shell when analysis records reference a case); anonymous withdrawal log; purge retry endpoint; refusal of a research store inside the app directory; store-location guidance.
+- Tests/evidence: TE-014. Full suite with live MySQL: 277 passed, 0 skipped.
+- Next action: AJ decides on merging PR #24; real ethics approval before real-student use.

@@ -32,7 +32,7 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 - **FD-04 Examiner Review & Marking**: PR #21 **merged into main on 2026-10-29** (`6e50711`). Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** (disposable instance, TE-009). EGPCV evidence registration is deferred until the ECC exists. Marking policy is set by DR-012 (weighted %, mark history, explicit release); live-verified again after DR-012 (TE-010). See `documentation/FD04_REVIEW_MARKING_DESIGN.md`.
 - **ECC specification v1.0**: **APPROVED by AJ on 2026-10-29 (DR-013)** with Q1–Q5 resolved, via PR #22. It is not yet implemented. It unblocks FD-05 (ECC management); FD-06 (evidence bridge) needs an explicit question → case research link.
 - **FD-05 ECC Management**: PR #23 **merged into main on 2026-10-29** (`4065605`). Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** (disposable instance, TE-011). Scheduling now requires a contract. Exception extra time extends that candidate's deadline (DR-014, TE-012). See `documentation/FD05_CAPABILITY_CONTRACT_DESIGN.md`.
-- **FD-06 Evidence Bridge**: branch `p001-fd06-evidence-bridge`, draft PR targeting main. Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** with a temporary SQLite research store (TE-013). Governed by DR-015 (ethics reference + opt-in, random codes, admin-only links). **No real student bridged**; that needs real ethics approval. See `documentation/FD06_EVIDENCE_BRIDGE_DESIGN.md`.
+- **FD-06 Evidence Bridge**: branch `p001-fd06-evidence-bridge`, draft PR targeting main. Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** with a temporary SQLite research store (TE-013). Governed by DR-015 (ethics reference + opt-in, random codes, admin-only links) and DR-016 (deletion on withdrawal; research store outside the app, TE-014). **No real student bridged**; that needs real ethics approval. See `documentation/FD06_EVIDENCE_BRIDGE_DESIGN.md`.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -68,7 +68,7 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 
 ## Current Work
 1. ~~Live-MySQL evidence for FD-01/FD-02 and merge of PR #19~~. Done 2026-10-29 (TE-005, TE-007; merged `aefc0a8`). Optional: repeat the live run on AJ's own configured server.
-2. ~~FD-03/FD-04/FD-05 merge; DR-013 ECC approval~~. Done 2026-10-29. FD-06 (evidence bridge) is open; AJ open points: retention on withdrawal, research-store access. Next: a lightweight web UI.
+2. ~~FD-03/FD-04/FD-05 merge; DR-013 ECC approval~~. Done 2026-10-29. FD-06 (evidence bridge) is open with DR-015/DR-016 applied. Real institutional ethics approval is required before any real student is bridged. Next: a lightweight web UI.
 3. Prepare pilot and method-freeze materials without treating development fixtures as independent ground truth.
 4. Do not begin P003 implementation until the P001 checkpoint is reached unless AJ changes the order.
 

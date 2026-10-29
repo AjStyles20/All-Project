@@ -19,6 +19,14 @@ from app.domain.capability_contract import (
 )
 from app.persistence.mysql_contract_repository import MySQLContractRepository
 from app.services.contract_service import ContractDeclaration, ContractService
+import os
+from app.domain.research_bridge import (
+    BridgeRecord, ResearchBridgeError, ResearchLink, ResearchStoreNotConfigured,
+)
+from app.persistence.database import Database
+from app.persistence.mysql_research_repository import MySQLResearchRepository
+from app.persistence.research_case_store import ResearchCaseStore
+from app.services.research_bridge_service import ResearchBridgeService
 from app.domain.review import MAX_COMMENT_CHARS, MarkingConflictError, ResponseMark, ResultRelease
 from app.persistence.mysql_examination_repository import MySQLExaminationRepository
 from app.persistence.mysql_review_repository import MySQLReviewRepository
@@ -81,6 +89,16 @@ class ExceptionInput(BaseModel):
     reason_category: ExceptionReason
     capability_overrides: dict = Field(default_factory=dict)
     extra_time_minutes: int = Field(default=0, ge=0, le=1440)
+
+class ResearchLinkInput(BaseModel):
+    examination_id: str = Field(min_length=1, max_length=64)
+    question_id: str = Field(min_length=1, max_length=64)
+    template_case_id: str = Field(min_length=1, max_length=128)
+    claim_ids: list[str] = Field(min_length=1)
+    ethics_reference: str = Field(min_length=1, max_length=200)
+
+class ConsentInput(BaseModel):
+    opt_in: bool
 
 class MarkInput(BaseModel):
     score: int = Field(ge=0)
@@ -149,6 +167,19 @@ def _exception_body(exception: ContractException) -> dict:
             "approved_at": _iso(exception.approved_at)}
 
 
+def _link_body(link: ResearchLink) -> dict:
+    return {"link_id": link.link_id, "examination_id": link.examination_id, "question_id": link.question_id,
+            "template_case_id": link.template_case_id, "claim_ids": list(link.claim_ids),
+            "ethics_reference": link.ethics_reference, "created_at": _iso(link.created_at)}
+
+
+def _record_body(record: BridgeRecord) -> dict:
+    return {"session_id": record.session_id, "question_id": record.question_id,
+            "outcome": record.outcome.value, "research_case_id": record.research_case_id,
+            "response_revision": record.response_revision, "policy_version": record.policy_version,
+            "bridged_at": _iso(record.bridged_at)}
+
+
 def _mark_body(mark: ResponseMark) -> dict:
     return {"score": mark.score, "comment": mark.comment,
             "response_revision": mark.response_revision,
@@ -172,6 +203,8 @@ def _policy_errors():
         yield
     except ExaminationNotFoundError as exc:
         raise HTTPException(status_code=404, detail="Examination not found.") from exc
+    except ResearchStoreNotConfigured as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     except QuestionNotFoundError as exc:
         raise HTTPException(status_code=404, detail="Question not found.") from exc
     except (AssignmentNotFoundError, CandidateNotFoundError, SessionNotFoundError) as exc:
@@ -179,7 +212,7 @@ def _policy_errors():
     except ExaminationOwnershipError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
     except (InvalidExaminationTransition, ExaminationConflictError, SessionConflictError,
-            MarkingConflictError) as exc:
+            MarkingConflictError, ResearchBridgeError) as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -187,7 +220,8 @@ def _policy_errors():
 
 def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_service=None,
                               examination_service=None, candidate_session_service=None,
-                              review_service=None, contract_service=None) -> FastAPI:
+                              review_service=None, contract_service=None,
+                              research_bridge_service=None) -> FastAPI:
     database = MySQLDatabase(settings)
     auth = auth_service or AuthService(MySQLUserRepository(database))
     examinations = examination_service or ExaminationService(MySQLExaminationRepository(database))
@@ -197,6 +231,13 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
     contracts = contract_service or ContractService(
         MySQLContractRepository(database), MySQLExaminationRepository(database),
         MySQLCandidateSessionRepository(database))
+    research_db_path = os.getenv("P001_RESEARCH_DB_PATH")
+    research = research_bridge_service or ResearchBridgeService(
+        MySQLResearchRepository(database),
+        # Not configured -> None: bridge endpoints answer 503 instead of pretending.
+        ResearchCaseStore(Database(research_db_path)) if research_db_path else None,
+        MySQLExaminationRepository(database), MySQLCandidateSessionRepository(database),
+        MySQLReviewRepository(database), MySQLContractRepository(database))
     reviews = review_service or ReviewService(
         MySQLReviewRepository(database), MySQLCandidateSessionRepository(database),
         MySQLExaminationRepository(database))
@@ -401,7 +442,58 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
             exceptions = contracts.list_exceptions(examination_id, principal.user_id)
         return [_exception_body(exception) for exception in exceptions]
 
+    administrator = require_roles(Role.ADMINISTRATOR)
+
+    # Research links are administrator-only so the marking examiner cannot route
+    # their own students into research (DR-015 (3)).
+    @app.post("/admin/research/links", status_code=201)
+    def create_research_link(payload: ResearchLinkInput, principal=Depends(administrator)):
+        with _policy_errors():
+            link = research.create_link(principal.user_id, payload.examination_id, payload.question_id,
+                                        payload.template_case_id, payload.claim_ids, payload.ethics_reference)
+        return _link_body(link)
+
+    @app.get("/admin/research/examinations/{examination_id}/links")
+    def list_research_links(examination_id: str, principal=Depends(administrator)):
+        return [_link_body(link) for link in research.list_links(examination_id)]
+
+    @app.post("/admin/research/examinations/{examination_id}/bridge")
+    def run_bridge(examination_id: str, principal=Depends(administrator)):
+        with _policy_errors():
+            summary = research.run(examination_id)
+        return {"bridged": summary.bridged, "no_response": summary.no_response,
+                "no_contract": summary.no_contract, "already_recorded": summary.already_recorded,
+                "skipped_no_consent": summary.skipped_no_consent,
+                "research_case_ids": summary.research_case_ids}
+
+    @app.get("/admin/research/examinations/{examination_id}/records")
+    def list_bridge_records(examination_id: str, principal=Depends(administrator)):
+        return [_record_body(record) for record in research.list_records(examination_id)]
+
+    @app.get("/admin/research/examinations/{examination_id}/identities")
+    def list_research_identities(examination_id: str, principal=Depends(administrator)):
+        # The locked code -> person link (DR-015 (2)); never sent to the research store.
+        return [{"candidate_user_id": user_id, "research_code": code}
+                for user_id, code in research.list_identities(examination_id)]
+
     candidate = require_roles(Role.CANDIDATE)
+
+    @app.get("/candidate/examinations/{examination_id}/research")
+    def research_consent_info(examination_id: str, principal=Depends(candidate)):
+        with _policy_errors():
+            info = research.consent_info(examination_id, principal.user_id)
+        return {"study_linked": bool(info.links),
+                "ethics_references": sorted({link.ethics_reference for link in info.links}),
+                "consent": info.status.value if info.status else None,
+                # What is copied if the candidate opts in (DR-013 Q3, DR-015 (2)).
+                "collected": "Your submitted answers to linked questions and the examination rules in force, "
+                             "under a random research code. Marks and your identity are not copied."}
+
+    @app.put("/candidate/examinations/{examination_id}/research")
+    def research_consent(examination_id: str, payload: ConsentInput, principal=Depends(candidate)):
+        with _policy_errors():
+            status = research.set_consent(examination_id, principal.user_id, payload.opt_in)
+        return {"consent": status.value}
 
     @app.get("/candidate/examinations/{examination_id}/contract")
     def candidate_contract(examination_id: str, principal=Depends(candidate)):

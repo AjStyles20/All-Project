@@ -44,6 +44,18 @@ In Workbench, with `p001_coding_exam` selected, execute:
 
 It creates `capability_contracts` (every version of each examination's Examination Capability Contract, stored as its canonical JSON document with a SHA-256 hash) and `contract_exceptions` (per-candidate authorized exceptions). From FD-05 onward, an examination cannot be scheduled without a contract.
 
+## Step 3e — Apply migration 006
+In Workbench, with `p001_coding_exam` selected, execute:
+`database/mysql/migrations/006_research_bridge.sql`.
+
+It creates four tables for the FD-06 evidence bridge:
+- `research_links`: administrator-created links from exam questions to research cases, each with an ethics approval reference;
+- `research_consent_events`: the append-only opt-in/withdrawal log;
+- `research_identities`: the locked link from random research codes to students;
+- `research_bridge_records`: provenance and idempotency of each bridged answer.
+
+The bridge also needs the EGPCV research store: set `P001_RESEARCH_DB_PATH` to the research SQLite file. If it is unset, the bridge endpoints answer 503 and copy nothing.
+
 ## Step 4 — Configure the application locally
 In PowerShell for the current terminal session:
 
@@ -66,14 +78,14 @@ python -m scripts.check_mysql_connection
 ```
 
 Expected final line:
-`P001 MySQL FD-05 schema check: PASS`.
+`P001 MySQL FD-06 schema check: PASS`.
 
 ## Step 6 — Run the live integration tests
 The live test is deliberately opt-in:
 
 ```powershell
 $env:P001_RUN_MYSQL_TESTS="1"
-python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py tests/integration/test_mysql_fd04_live.py tests/integration/test_mysql_fd05_live.py -q
+python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py tests/integration/test_mysql_fd04_live.py tests/integration/test_mysql_fd05_live.py tests/integration/test_mysql_fd06_live.py -q
 ```
 
 This creates a uniquely named temporary-style candidate account, logs in, verifies the principal/role, revokes the session and verifies the token is no longer accepted.

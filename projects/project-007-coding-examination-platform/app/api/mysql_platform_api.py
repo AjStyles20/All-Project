@@ -9,7 +9,14 @@ from app.domain.examination import (
     Examination, ExaminationConflictError, ExaminationQuestionEntry, ExaminationStatus,
     ProgrammingQuestion,
 )
+from app.domain.candidate_session import (
+    MAX_RESPONSE_CHARS, CandidateAssignment, ExaminationSession, SavedResponse, SessionConflictError,
+)
+from app.persistence.mysql_candidate_session_repository import MySQLCandidateSessionRepository
 from app.persistence.mysql_examination_repository import MySQLExaminationRepository
+from app.services.candidate_session_service import (
+    AssignmentNotFoundError, CandidateNotFoundError, CandidateSessionService, SessionNotFoundError,
+)
 from app.services.examination_service import (
     ExaminationNotFoundError, ExaminationOwnershipError, ExaminationService,
     InvalidExaminationTransition, QuestionNotFoundError,
@@ -45,6 +52,13 @@ class AttachQuestionInput(BaseModel):
 class TransitionInput(BaseModel):
     target_status: ExaminationStatus
 
+class AssignCandidateInput(BaseModel):
+    candidate_user_id: str = Field(min_length=1, max_length=64)
+
+class ResponseInput(BaseModel):
+    content: str = Field(max_length=MAX_RESPONSE_CHARS)
+    base_revision: int | None = Field(default=None, ge=0)
+
 
 def _naive_utc(value: datetime | None) -> datetime | None:
     # MySQL DATETIME has no zone; store UTC so aware and naive inputs compare safely.
@@ -71,6 +85,25 @@ def _entry_body(entry: ExaminationQuestionEntry) -> dict:
             "score_weight": entry.score_weight}
 
 
+def _iso(value: datetime | None) -> str | None:
+    return value.isoformat() if value else None
+
+
+def _assignment_body(assignment: CandidateAssignment) -> dict:
+    return {"assignment_id": assignment.assignment_id, "examination_id": assignment.examination_id,
+            "candidate_user_id": assignment.candidate_user_id}
+
+
+def _session_body(session: ExaminationSession) -> dict:
+    return {"session_id": session.session_id, "status": session.status.value,
+            "started_at": _iso(session.started_at), "submitted_at": _iso(session.submitted_at)}
+
+
+def _response_body(response: SavedResponse) -> dict:
+    return {"question_id": response.question_id, "content": response.content,
+            "revision": response.revision, "saved_at": _iso(response.saved_at)}
+
+
 @contextmanager
 def _policy_errors():
     """Map service-layer policy failures to HTTP status codes in one place."""
@@ -80,18 +113,23 @@ def _policy_errors():
         raise HTTPException(status_code=404, detail="Examination not found.") from exc
     except QuestionNotFoundError as exc:
         raise HTTPException(status_code=404, detail="Question not found.") from exc
+    except (AssignmentNotFoundError, CandidateNotFoundError, SessionNotFoundError) as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ExaminationOwnershipError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
-    except (InvalidExaminationTransition, ExaminationConflictError) as exc:
+    except (InvalidExaminationTransition, ExaminationConflictError, SessionConflictError) as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
-def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_service=None, examination_service=None) -> FastAPI:
+def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_service=None,
+                              examination_service=None, candidate_session_service=None) -> FastAPI:
     database = MySQLDatabase(settings)
     auth = auth_service or AuthService(MySQLUserRepository(database))
     examinations = examination_service or ExaminationService(MySQLExaminationRepository(database))
+    sessions = candidate_session_service or CandidateSessionService(
+        MySQLCandidateSessionRepository(database), MySQLExaminationRepository(database))
     app = FastAPI(title="P001 Intelligent Coding Examination Platform", version="0.3.0")
 
     def current_principal(authorization: str | None = Header(default=None)):
@@ -208,8 +246,66 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
             exam = examinations.transition(examination_id, principal.user_id, payload.target_status)
         return {"examination_id": exam.examination_id, "status": exam.status.value}
 
+    @app.post("/examiner/examinations/{examination_id}/assignments", status_code=201)
+    def assign_candidate(examination_id: str, payload: AssignCandidateInput, principal=Depends(examiner)):
+        with _policy_errors():
+            assignment = sessions.assign_candidate(examination_id, payload.candidate_user_id, principal.user_id)
+        return _assignment_body(assignment)
+
+    @app.get("/examiner/examinations/{examination_id}/assignments")
+    def list_assignments(examination_id: str, principal=Depends(examiner)):
+        with _policy_errors():
+            assignments = sessions.list_assignments(examination_id, principal.user_id)
+        return [_assignment_body(assignment) for assignment in assignments]
+
+    candidate = require_roles(Role.CANDIDATE)
+
     @app.get("/candidate/ping")
-    def candidate_ping(principal=Depends(require_roles(Role.CANDIDATE))):
+    def candidate_ping(principal=Depends(candidate)):
         return {"status": "ok", "user_id": principal.user_id}
+
+    @app.get("/candidate/examinations")
+    def candidate_examinations(principal=Depends(candidate)):
+        # Candidates see schedule metadata only; questions appear once a session starts.
+        return [{"examination_id": exam.examination_id, "title": exam.title,
+                 "status": exam.status.value, "starts_at": _iso(exam.starts_at),
+                 "ends_at": _iso(exam.ends_at)}
+                for _, exam in sessions.list_candidate_examinations(principal.user_id)]
+
+    @app.post("/candidate/examinations/{examination_id}/session")
+    def start_session(examination_id: str, principal=Depends(candidate)):
+        with _policy_errors():
+            session = sessions.start_session(examination_id, principal.user_id)
+        return _session_body(session)
+
+    @app.get("/candidate/sessions/{session_id}")
+    def get_session(session_id: str, principal=Depends(candidate)):
+        with _policy_errors():
+            view = sessions.get_session_view(session_id, principal.user_id)
+        return {**_session_body(view.session),
+                "examination": {"examination_id": view.examination.examination_id,
+                                "title": view.examination.title,
+                                "status": view.examination.status.value,
+                                "ends_at": _iso(view.examination.ends_at)},
+                "questions": [{"question_id": e.question.question_id, "title": e.question.title,
+                               "prompt": e.question.prompt, "language": e.question.language,
+                               "display_order": e.display_order,
+                               "response": _response_body(view.responses[e.question.question_id])
+                               if e.question.question_id in view.responses else None}
+                              for e in view.questions]}
+
+    @app.put("/candidate/sessions/{session_id}/responses/{question_id}")
+    def save_response(session_id: str, question_id: str, payload: ResponseInput,
+                      principal=Depends(candidate)):
+        with _policy_errors():
+            response = sessions.save_response(session_id, question_id, principal.user_id,
+                                              payload.content, payload.base_revision)
+        return _response_body(response)
+
+    @app.post("/candidate/sessions/{session_id}/submit")
+    def submit_session(session_id: str, principal=Depends(candidate)):
+        with _policy_errors():
+            session = sessions.submit(session_id, principal.user_id)
+        return _session_body(session)
 
     return app

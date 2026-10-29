@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P001 Coding Examination</title>
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <h1 class="brand">P001 Coding Examination</h1>
+    <nav aria-label="Account" id="account" hidden>
+      <span id="who"></span>
+      <button type="button" id="logout" class="link-button">Sign out</button>
+    </nav>
+  </header>
+
+  <!-- Live region: status messages are announced to screen-reader users. -->
+  <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+  <main id="main" tabindex="-1">
+    <!-- Views are rendered here by app.js; every API value is written with textContent. -->
+    <noscript><p>This page needs JavaScript to talk to the examination service.</p></noscript>
+  </main>
+</body>
+</html>

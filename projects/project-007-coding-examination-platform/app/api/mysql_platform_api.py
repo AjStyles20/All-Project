@@ -1,5 +1,8 @@
 """MySQL-backed construction entry point for the full P001 platform."""
 from contextlib import contextmanager
+from pathlib import Path
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from datetime import datetime, timezone
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 from pydantic import BaseModel, Field
@@ -532,6 +535,14 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
                  "ends_at": _iso(exam.ends_at)}
                 for _, exam in sessions.list_candidate_examinations(principal.user_id)]
 
+    @app.get("/candidate/examinations/{examination_id}/session")
+    def find_session(examination_id: str, principal=Depends(candidate)):
+        with _policy_errors():
+            session = sessions.find_session(examination_id, principal.user_id)
+        if session is None:
+            raise HTTPException(status_code=404, detail="No session for this examination yet.")
+        return _session_body(session)
+
     @app.post("/candidate/examinations/{examination_id}/session")
     def start_session(examination_id: str, principal=Depends(candidate)):
         with _policy_errors():
@@ -585,4 +596,32 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
             session = sessions.submit(session_id, principal.user_id)
         return _session_body(session)
 
+    _mount_web_ui(app)
     return app
+
+
+WEB_DIR = Path(__file__).resolve().parent.parent / "web" / "static"
+# Strict policy: only same-origin scripts/styles/fetches, no inline code, no framing.
+# The UI writes all API data with textContent, so injected markup cannot execute either.
+CONTENT_SECURITY_POLICY = ("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; "
+                           "connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; "
+                           "frame-ancestors 'none'")
+
+
+def _mount_web_ui(app: FastAPI) -> None:
+    """Serve the lightweight candidate UI (HTML/CSS/JS, no framework) under /ui."""
+    app.mount("/ui", StaticFiles(directory=WEB_DIR, html=True), name="ui")
+
+    @app.get("/", include_in_schema=False)
+    def root():
+        return RedirectResponse("/ui/")
+
+    @app.middleware("http")
+    async def security_headers(request, call_next):
+        response = await call_next(request)
+        if request.url.path.startswith("/ui"):
+            response.headers["Content-Security-Policy"] = CONTENT_SECURITY_POLICY
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["Referrer-Policy"] = "no-referrer"
+            response.headers["Cache-Control"] = "no-store"
+        return response

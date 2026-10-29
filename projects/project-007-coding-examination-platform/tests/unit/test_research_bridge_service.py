@@ -51,7 +51,7 @@ class World:
         self.contract_repo = InMemoryContractRepository(self.exam_repo)
         self.session_repo = InMemoryCandidateSessionRepository({"student-1", "student-2"})
         self.exam_repo.on_close.append(self.session_repo.finalize_open_sessions)
-        self.research_repo = InMemoryResearchRepository()
+        self.research_repo = InMemoryResearchRepository(self.session_repo)
         self.db, store = research_store(tmp_path)
         self.exams = ExaminationService(self.exam_repo)
         self.contracts = ContractService(self.contract_repo, self.exam_repo, self.session_repo, clock)
@@ -122,7 +122,7 @@ def test_consent_requires_assignment_and_a_linked_study(tmp_path):
     world.link()
     with pytest.raises(AssignmentNotFoundError):
         world.bridge.set_consent("e1", "stranger", True)
-    assert world.bridge.set_consent("e1", "student-1", True) is ConsentStatus.OPTED_IN
+    assert world.bridge.set_consent("e1", "student-1", True).status is ConsentStatus.OPTED_IN
     assert world.bridge.consent_info("e1", "student-1").status is ConsentStatus.OPTED_IN
     assert world.bridge.consent_info("e1", "student-2").status is None
 

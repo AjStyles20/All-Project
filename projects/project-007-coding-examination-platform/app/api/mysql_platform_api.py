@@ -470,6 +470,19 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
     def list_bridge_records(examination_id: str, principal=Depends(administrator)):
         return [_record_body(record) for record in research.list_records(examination_id)]
 
+    @app.post("/admin/research/examinations/{examination_id}/purge-withdrawn")
+    def purge_withdrawn(examination_id: str, principal=Depends(administrator)):
+        with _policy_errors():
+            result = research.purge_withdrawn(examination_id)
+        return {"cases_deleted": result.cases_deleted,
+                "cases_retained_as_shell": result.cases_retained_as_shell,
+                "deletion_pending": result.purge_pending}
+
+    @app.get("/admin/research/examinations/{examination_id}/withdrawals")
+    def withdrawal_log(examination_id: str, principal=Depends(administrator)):
+        return [{**row, "completed_at": _iso(row["completed_at"])}
+                for row in research.list_withdrawal_log(examination_id)]
+
     @app.get("/admin/research/examinations/{examination_id}/identities")
     def list_research_identities(examination_id: str, principal=Depends(administrator)):
         # The locked code -> person link (DR-015 (2)); never sent to the research store.
@@ -492,8 +505,12 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
     @app.put("/candidate/examinations/{examination_id}/research")
     def research_consent(examination_id: str, payload: ConsentInput, principal=Depends(candidate)):
         with _policy_errors():
-            status = research.set_consent(examination_id, principal.user_id, payload.opt_in)
-        return {"consent": status.value}
+            result = research.set_consent(examination_id, principal.user_id, payload.opt_in)
+        body = {"consent": result.status.value}
+        if result.withdrawal is not None:
+            body.update({"research_cases_deleted": result.withdrawal.cases_deleted,
+                         "deletion_pending": result.withdrawal.purge_pending})
+        return body
 
     @app.get("/candidate/examinations/{examination_id}/contract")
     def candidate_contract(examination_id: str, principal=Depends(candidate)):

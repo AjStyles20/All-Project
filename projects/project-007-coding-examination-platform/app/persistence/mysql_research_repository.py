@@ -114,6 +114,41 @@ class MySQLResearchRepository:
             return False
         return True
 
+    def bridged_case_ids(self, examination_id: str, candidate_user_id: str) -> list[str]:
+        rows = self._fetch(
+            "SELECT b.research_case_id FROM research_bridge_records b "
+            "JOIN examination_sessions s ON s.session_id = b.session_id "
+            "JOIN candidate_assignments a ON a.assignment_id = s.assignment_id "
+            "WHERE a.examination_id=%s AND a.candidate_user_id=%s AND b.outcome='BRIDGED' "
+            "ORDER BY b.research_case_id", (examination_id, candidate_user_id), many=True)
+        return [row["research_case_id"] for row in rows]
+
+    def complete_withdrawal(self, examination_id: str, candidate_user_id: str, research_code: str | None,
+                            cases_deleted: int, cases_retained: int, at) -> None:
+        """DR-016 (1), one transaction: forget the candidate's bridge records and code link,
+        and log the deletion under the (now unlinkable) code only."""
+        with self.database.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                "DELETE b FROM research_bridge_records b "
+                "JOIN examination_sessions s ON s.session_id = b.session_id "
+                "JOIN candidate_assignments a ON a.assignment_id = s.assignment_id "
+                "WHERE a.examination_id=%s AND a.candidate_user_id=%s",
+                (examination_id, candidate_user_id))
+            cursor.execute("DELETE FROM research_identities WHERE examination_id=%s AND candidate_user_id=%s",
+                           (examination_id, candidate_user_id))
+            if research_code is not None:
+                cursor.execute(
+                    "INSERT INTO research_withdrawal_log (examination_id,research_code,cases_deleted,"
+                    "cases_retained_as_shell,completed_at) VALUES (%s,%s,%s,%s,%s)",
+                    (examination_id, research_code, cases_deleted, cases_retained, at))
+            cursor.close()
+
+    def list_withdrawal_log(self, examination_id: str) -> list[dict]:
+        return self._fetch("SELECT research_code, cases_deleted, cases_retained_as_shell, completed_at "
+                           "FROM research_withdrawal_log WHERE examination_id=%s ORDER BY event_id",
+                           (examination_id,), many=True)
+
     def list_bridge_records(self, examination_id: str) -> list[BridgeRecord]:
         rows = self._fetch("SELECT b.* FROM research_bridge_records b JOIN research_links l "
                            "ON l.link_id = b.link_id WHERE l.examination_id=%s "

@@ -62,3 +62,19 @@ def test_unconfigured_research_store_answers_503(tmp_path):
     client = client_for(world)
     response = client.post("/admin/research/links", json=LINK, headers=bearer("admin-token"))
     assert response.status_code == 503 and "not configured" in response.json()["detail"]
+
+
+def test_withdrawal_through_api_reports_deletion(tmp_path):
+    world = World(tmp_path)
+    client = client_for(world)
+    admin, student = bearer("admin-token"), bearer("student-token")
+    client.post("/admin/research/links", json=LINK, headers=admin)
+    client.put("/candidate/examinations/e1/research", json={"opt_in": True}, headers=student)
+    world.close()
+    client.post("/admin/research/examinations/e1/bridge", headers=admin)
+    withdrawn = client.put("/candidate/examinations/e1/research", json={"opt_in": False}, headers=student).json()
+    assert withdrawn == {"consent": "WITHDRAWN", "research_cases_deleted": 1, "deletion_pending": False}
+    log = client.get("/admin/research/examinations/e1/withdrawals", headers=admin).json()
+    assert [(row["cases_deleted"], row["cases_retained_as_shell"]) for row in log] == [(1, 0)]
+    assert "candidate_user_id" not in log[0]
+    assert client.get("/admin/research/examinations/e1/identities", headers=admin).json() == []

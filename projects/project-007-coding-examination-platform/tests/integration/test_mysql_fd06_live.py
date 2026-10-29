@@ -101,3 +101,16 @@ def test_mysql_fd06_bridge_with_consent_and_pseudonyms(tmp_path):
     connection.close()
     for personal in (yes, no, lecturer, admin, "secret answer of the no student"):
         assert personal not in dump
+
+    # DR-016 (1): withdrawing after bridging deletes the case and forgets the code link.
+    result = bridge.set_consent(exam.examination_id, yes, False)
+    assert (result.withdrawal.cases_deleted, result.withdrawal.purge_pending) == (1, False)
+    assert ResearchCaseStore(research_db).get_case(record.research_case_id) is None
+    assert research_repo.list_identities(exam.examination_id) == []
+    assert research_repo.list_bridge_records(exam.examination_id) == []
+    [log] = research_repo.list_withdrawal_log(exam.examination_id)
+    assert (log["research_code"], log["cases_deleted"]) == (code, 1)
+    connection = sqlite3.connect(research_db.path)
+    remaining = connection.execute("SELECT COUNT(*) FROM evidence_items").fetchone()[0]
+    connection.close()
+    assert remaining == 0

@@ -5,6 +5,8 @@ share a transaction. Each bridged case is therefore written here in ONE SQLite
 transaction with INSERT OR IGNORE and deterministic ids, so a re-run after a
 partial failure converges instead of duplicating or erroring.
 """
+import sqlite3
+
 from app.domain.enums import ClaimApplicability
 from app.domain.models import CaseClaim, ClaimEvidenceLink, EvidenceItem, ProgrammingCase
 from app.persistence.database import Database
@@ -25,6 +27,29 @@ class ResearchCaseStore:
             rows = connection.execute("SELECT * FROM case_claims WHERE case_id = ? ORDER BY claim_id",
                                       (case_id,)).fetchall()
         return [CaseClaim(r["case_id"], r["claim_id"], ClaimApplicability(r["applicability"])) for r in rows]
+
+    def purge_case(self, case_id: str) -> bool:
+        """Delete a withdrawn candidate's case (DR-016 (1)). Returns False if a shell was kept.
+
+        Evidence and claim links are always deleted. The case row and its claims are
+        deleted only if no analysis record (evidence-state history, verification or
+        experiment runs, audit events) references the case; otherwise the content-free
+        case row is kept so those records stay valid. Safe to repeat.
+        """
+        with self.database.connect() as connection:
+            connection.execute("DELETE FROM claim_evidence_links WHERE case_id = ?", (case_id,))
+            connection.execute("DELETE FROM evidence_items WHERE case_id = ?", (case_id,))
+            connection.execute("SAVEPOINT drop_case")
+            try:
+                connection.execute("DELETE FROM case_claims WHERE case_id = ?", (case_id,))
+                connection.execute("DELETE FROM programming_cases WHERE case_id = ?", (case_id,))
+            except sqlite3.IntegrityError:
+                # Referenced by analysis records: keep the shell, the evidence is already gone.
+                connection.execute("ROLLBACK TO SAVEPOINT drop_case")
+                connection.execute("RELEASE SAVEPOINT drop_case")
+                return False
+            connection.execute("RELEASE SAVEPOINT drop_case")
+        return True
 
     def materialise(self, case: ProgrammingCase, case_claims: list[CaseClaim],
                     evidence: list[EvidenceItem], links: list[ClaimEvidenceLink]) -> None:

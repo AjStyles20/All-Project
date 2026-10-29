@@ -9,7 +9,10 @@ from app.domain.examination import ExaminationConflictError
 
 
 class InMemoryResearchRepository:
-    def __init__(self):
+    def __init__(self, session_repository=None):
+        # Needed to resolve which bridge records belong to a candidate (the SQL joins).
+        self.sessions = session_repository
+        self.withdrawal_log = []
         self.links = []
         self.consent_events = []
         self.identities = {}
@@ -57,3 +60,25 @@ class InMemoryResearchRepository:
     def list_bridge_records(self, examination_id):
         link_ids = {l.link_id for l in self.list_links(examination_id)}
         return [r for r in self.records.values() if r.link_id in link_ids]
+
+    def _candidate_of(self, session_id):
+        session = self.sessions.sessions[session_id]
+        return self.sessions.assignments[session.assignment_id]
+
+    def bridged_case_ids(self, examination_id, candidate_user_id):
+        return sorted(r.research_case_id for r in self.records.values()
+                      if r.outcome.value == "BRIDGED"
+                      and self._candidate_of(r.session_id).examination_id == examination_id
+                      and self._candidate_of(r.session_id).candidate_user_id == candidate_user_id)
+
+    def complete_withdrawal(self, examination_id, candidate_user_id, research_code, deleted, retained, at):
+        self.records = {k: r for k, r in self.records.items()
+                        if not (self._candidate_of(r.session_id).examination_id == examination_id
+                                and self._candidate_of(r.session_id).candidate_user_id == candidate_user_id)}
+        self.identities.pop((examination_id, candidate_user_id), None)
+        if research_code is not None:
+            self.withdrawal_log.append({"research_code": research_code, "cases_deleted": deleted,
+                                        "cases_retained_as_shell": retained, "completed_at": at})
+
+    def list_withdrawal_log(self, examination_id):
+        return list(self.withdrawal_log)

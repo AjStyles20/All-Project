@@ -7,7 +7,7 @@ REQUIRED_TABLES = {"users", "user_roles", "auth_sessions", "examinations", "ques
                    "response_marks", "response_mark_history",
                    "examination_result_releases", "capability_contracts", "contract_exceptions",
                    "research_links", "research_consent_events", "research_identities",
-                   "research_bridge_records"}
+                   "research_bridge_records", "research_withdrawal_log"}
 
 
 def main() -> int:

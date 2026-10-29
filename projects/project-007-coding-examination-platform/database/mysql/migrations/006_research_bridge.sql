@@ -58,3 +58,16 @@ CREATE TABLE IF NOT EXISTS research_bridge_records (
     CONSTRAINT fk_bridge_session FOREIGN KEY (session_id) REFERENCES examination_sessions(session_id),
     CONSTRAINT fk_bridge_link FOREIGN KEY (link_id) REFERENCES research_links(link_id)
 ) ENGINE=InnoDB;
+
+-- Withdrawal deletions (DR-016 (1)). Holds only the pseudonymous code and counts:
+-- the code -> person link is deleted at the same time, so this log cannot re-identify.
+CREATE TABLE IF NOT EXISTS research_withdrawal_log (
+    event_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    examination_id VARCHAR(64) NOT NULL,
+    research_code VARCHAR(32) NULL,
+    cases_deleted INT NOT NULL,
+    cases_retained_as_shell INT NOT NULL,
+    completed_at DATETIME(6) NOT NULL,
+    INDEX idx_withdrawal_exam (examination_id),
+    CONSTRAINT fk_withdrawal_exam FOREIGN KEY (examination_id) REFERENCES examinations(examination_id)
+) ENGINE=InnoDB;

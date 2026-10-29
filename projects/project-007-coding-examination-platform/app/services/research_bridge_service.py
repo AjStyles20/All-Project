@@ -1,7 +1,10 @@
 """FD-06 operational -> EGPCV evidence bridge (ECC v1.0 §6, DR-013, DR-015)."""
 import json
 from dataclasses import dataclass, field
+from pathlib import Path
 from uuid import uuid4
+
+import app
 
 from app.domain.candidate_session import SessionStatus
 from app.domain.enums import ClaimApplicability, EvidenceType
@@ -16,6 +19,9 @@ from app.services.candidate_session_service import AssignmentNotFoundError, utc_
 from app.services.examination_service import ExaminationNotFoundError, QuestionNotFoundError
 
 BRIDGEABLE_STATUSES = {ExaminationStatus.CLOSED, ExaminationStatus.ARCHIVED}
+# DR-016 (2): the research store must not live inside the application directory,
+# where it would travel with deployments and be readable by anything serving the app.
+APPLICATION_DIR = Path(app.__file__).resolve().parent.parent
 
 
 @dataclass
@@ -26,6 +32,21 @@ class BridgeSummary:
     already_recorded: int = 0
     skipped_no_consent: int = 0
     research_case_ids: list[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class WithdrawalResult:
+    cases_deleted: int = 0
+    cases_retained_as_shell: int = 0
+    # True if bridged data exists but the research store was unavailable: the
+    # withdrawal still counts (no further copying) and an administrator must re-run the purge.
+    purge_pending: bool = False
+
+
+@dataclass(frozen=True)
+class ConsentResult:
+    status: ConsentStatus
+    withdrawal: WithdrawalResult | None = None
 
 
 @dataclass(frozen=True)
@@ -85,13 +106,52 @@ class ResearchBridgeService:
         return ConsentInfo(self.research.list_links(examination_id),
                            self.research.current_consent(examination_id, candidate_user_id))
 
-    def set_consent(self, examination_id: str, candidate_user_id: str, opt_in: bool) -> ConsentStatus:
+    def set_consent(self, examination_id: str, candidate_user_id: str, opt_in: bool) -> ConsentResult:
         self._require_assignment(examination_id, candidate_user_id)
         if not self.research.list_links(examination_id):
             raise ExaminationConflictError("No research study is linked to this examination.")
         status = ConsentStatus.OPTED_IN if opt_in else ConsentStatus.WITHDRAWN
+        # Recorded first: even if deletion cannot run now, no further copying happens.
         self.research.record_consent(examination_id, candidate_user_id, status, self.clock())
-        return status
+        if opt_in:
+            return ConsentResult(status)
+        return ConsentResult(status, self.purge_candidate(examination_id, candidate_user_id))
+
+    def purge_candidate(self, examination_id: str, candidate_user_id: str) -> WithdrawalResult:
+        """DR-016 (1): delete a withdrawn candidate's bridged cases. Safe to repeat."""
+        case_ids = self.research.bridged_case_ids(examination_id, candidate_user_id)
+        code = self.research.get_research_code(examination_id, candidate_user_id)
+        if case_ids:
+            try:
+                store = self._store()
+            except ResearchStoreNotConfigured:
+                return WithdrawalResult(purge_pending=True)
+        # Research store first: if MySQL then fails, the case ids are still known and a
+        # retry re-deletes (idempotently) before forgetting them.
+        deleted = retained = 0
+        for case_id in case_ids:
+            if store.purge_case(case_id):
+                deleted += 1
+            else:
+                retained += 1
+        self.research.complete_withdrawal(examination_id, candidate_user_id, code, deleted, retained, self.clock())
+        return WithdrawalResult(deleted, retained)
+
+    def purge_withdrawn(self, examination_id: str) -> WithdrawalResult:
+        """Administrator retry for pending deletions (e.g. store was unavailable)."""
+        deleted = retained = 0
+        for candidate_user_id, _ in self.research.list_identities(examination_id):
+            if self.research.current_consent(examination_id, candidate_user_id) is not ConsentStatus.WITHDRAWN:
+                continue
+            result = self.purge_candidate(examination_id, candidate_user_id)
+            if result.purge_pending:
+                return WithdrawalResult(deleted, retained, purge_pending=True)
+            deleted += result.cases_deleted
+            retained += result.cases_retained_as_shell
+        return WithdrawalResult(deleted, retained)
+
+    def list_withdrawal_log(self, examination_id: str) -> list[dict]:
+        return self.research.list_withdrawal_log(examination_id)
 
     # Administrator: run
 
@@ -181,4 +241,8 @@ class ResearchBridgeService:
     def _store(self):
         if self.store is None:
             raise ResearchStoreNotConfigured("Research store is not configured (set P001_RESEARCH_DB_PATH).")
+        if Path(self.store.database.path).resolve().is_relative_to(APPLICATION_DIR):
+            raise ResearchStoreNotConfigured(
+                "Research store must live outside the application directory (DR-016); "
+                "move the file and update P001_RESEARCH_DB_PATH.")
         return self.store

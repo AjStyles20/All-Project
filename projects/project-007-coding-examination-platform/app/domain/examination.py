@@ -45,3 +45,15 @@ class ProgrammingQuestion:
             raise ValueError("Question max_score must be positive.")
         if self.version <= 0:
             raise ValueError("Question version must be positive.")
+
+
+@dataclass(frozen=True)
+class ExaminationQuestionEntry:
+    """A question's membership in one examination, with its position and weight."""
+    question: ProgrammingQuestion
+    display_order: int
+    score_weight: int
+
+
+class ExaminationConflictError(ValueError):
+    """The requested change collides with existing examination content."""

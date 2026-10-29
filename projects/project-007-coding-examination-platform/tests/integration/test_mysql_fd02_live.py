@@ -3,13 +3,15 @@ import os
 from uuid import uuid4
 import pytest
 
-from app.domain.examination import Examination, ExaminationStatus, ProgrammingQuestion
+from app.domain.examination import (
+    Examination, ExaminationConflictError, ExaminationStatus, ProgrammingQuestion,
+)
 from app.domain.identity import Role
 from app.persistence.mysql_database import MySQLDatabase
 from app.persistence.mysql_examination_repository import MySQLExaminationRepository
 from app.persistence.mysql_user_repository import MySQLUserRepository
 from app.services.auth_service import AuthService
-from app.services.examination_service import ExaminationService
+from app.services.examination_service import ExaminationService, InvalidExaminationTransition
 
 pytestmark = pytest.mark.skipif(
     os.getenv("P001_RUN_MYSQL_TESTS") != "1",
@@ -32,16 +34,49 @@ def test_mysql_fd02_exam_question_lifecycle():
                        owner_id, ExaminationStatus.DRAFT)
     question = ProgrammingQuestion("fd02-q-" + suffix, "Loop Task",
                                    "Write a loop that prints 1 to 5.", "python", 10)
+    spare = ProgrammingQuestion("fd02-q2-" + suffix, "List Task",
+                                "Build a list of squares.", "python", 5)
 
     service.create_examination(exam)
     service.create_question(question, owner_id)
+    service.create_question(spare, owner_id)
+
+    # Scheduling an empty examination is refused before any membership exists.
+    with pytest.raises(InvalidExaminationTransition):
+        service.transition(exam.examination_id, owner_id, ExaminationStatus.SCHEDULED)
+
     service.attach_question(exam.examination_id, question.question_id, owner_id, 1, 10)
+    service.attach_question(exam.examination_id, spare.question_id, owner_id, 2, 5)
+
+    # The unique (examination, question) key is translated into a domain conflict.
+    with pytest.raises(ExaminationConflictError):
+        repo.attach_question(exam.examination_id, question.question_id, 3, 10)
+
+    service.detach_question(exam.examination_id, spare.question_id, owner_id)
+    entries = service.list_examination_questions(exam.examination_id, owner_id)
+    assert [(e.question.question_id, e.display_order) for e in entries] == [(question.question_id, 1)]
+
+    service.update_details(exam.examination_id, owner_id, title="FD02 Live Exam (renamed)",
+                           description="Updated in DRAFT", starts_at=None, ends_at=None)
 
     stored = repo.get_examination(exam.examination_id)
     assert stored is not None
     assert stored.owner_user_id == owner_id
     assert stored.status is ExaminationStatus.DRAFT
+    assert stored.title == "FD02 Live Exam (renamed)"
+    assert exam.examination_id in [e.examination_id for e in service.list_examinations(owner_id)]
+    assert {q.question_id for q in service.list_questions(owner_id)} == {question.question_id, spare.question_id}
+    # Re-saving identical values still counts as found (FOUND_ROWS client flag).
+    assert repo.update_details(stored)
 
     scheduled = service.transition(exam.examination_id, owner_id, ExaminationStatus.SCHEDULED)
     assert scheduled.status is ExaminationStatus.SCHEDULED
     assert repo.get_examination(exam.examination_id).status is ExaminationStatus.SCHEDULED
+
+    # Status predicates in SQL: a stale expected status and post-DRAFT edits change nothing.
+    assert not repo.update_status(exam.examination_id, ExaminationStatus.SCHEDULED,
+                                  expected=ExaminationStatus.DRAFT)
+    assert not repo.update_details(stored)
+    with pytest.raises(ExaminationConflictError):
+        repo.attach_question(exam.examination_id, spare.question_id, 2, 5)
+    assert not repo.detach_question(exam.examination_id, question.question_id)

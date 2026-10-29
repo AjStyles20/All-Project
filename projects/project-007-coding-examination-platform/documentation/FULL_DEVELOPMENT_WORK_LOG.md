@@ -280,3 +280,29 @@ AJ resolved FD-04's three open points; details are in DR-012.
 **Design choice:** the release record is a separate table rather than a column on `examinations`. This keeps FD-02's schema and domain object unchanged.
 
 **Live evidence:** full suite at `cad0a95`, fresh disposable MySQL 8.4.9 instance, migrations 001–004: **235 passed, 0 skipped** (TE-010).
+
+
+## 2026-10-29 — Examination Capability Contract v0.1 drafted (Claude Code, Engineering)
+**Branch:** `p001-ecc-specification`. This branch is a specification only; no code.
+
+At AJ's request, drafted `specification/EXAMINATION_CAPABILITY_CONTRACT_SPECIFICATION.md`. It formalises PASS_003 candidate C1, the PASS_004 C1 verdict and invariant, and PASS_005 supporting mechanism #1 with its invariants. It also fits the existing `EvidenceItem.policy_version`, `assistance_context` and `POLICY_CONTEXT` fields.
+
+**Content:**
+- capability schema;
+- integrity modes;
+- assistance construct;
+- authorized exceptions;
+- binding at DRAFT → SCHEDULED (proposed);
+- non-retroactive versioning;
+- evidence labelling;
+- interpretation rules R1–R7;
+- a JSON shape;
+- increments FD-05/FD-06;
+- open questions Q1–Q5.
+
+**Deliberate limits:**
+- no novelty claim;
+- the ECC is declarative and labelled DECLARED, NOT ENFORCED until enforcement exists;
+- it produces observation labels only, never verdicts.
+
+**Status:** PROPOSED, awaiting AJ (DR-013, A3).

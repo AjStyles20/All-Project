@@ -50,3 +50,18 @@ All verification evidence should be reproducible where practical. Do not record 
 
 ### TE-004 — Codex shared-state handoff
 - Status: NOT RUN
+
+### TE-005 — P001 FD-01/FD-02 live MySQL integration
+- Date: 2026-10-29
+- Requirement(s): P001 FR-30 (examiner side), FD-01 identity/RBAC
+- Feature/subsystem: P001 MySQL product layer
+- Test type: Live
+- Environment: MySQL Community Server **8.4.9**: a disposable local instance started from the MySQL 8.4 binaries installed on AJ's Windows PC (`--initialize-insecure`, scratch data directory, 127.0.0.1:3399, X Protocol off). This is **not** AJ's own configured server on port 3307, and that server was not touched. Setup followed `database/mysql/README.md`: bootstrap 000 with a one-off generated test password, then migrations 001–003 as root. Tests connected as the least-privilege `p001_app@127.0.0.1` account (SELECT/INSERT/UPDATE/DELETE only). Python 3.14.0, mysql-connector-python 9.x.
+- Preconditions: bootstrap 000 and migrations 001–003 applied; `P001_DB_*` set for `p001_app`; branch `p001-fd02-exam-question-management` at `409d6c5`.
+- Procedure: `python -m scripts.check_mysql_connection`; `P001_RUN_MYSQL_TESTS=1 python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py`.
+- Expected result: schema check PASS; both live tests pass.
+- Observed result: schema check PASS; 2 passed in 8.86s.
+- Status: PASS
+- Evidence: `FULL_DEVELOPMENT_WORK_LOG.md`, entry "FD-01/FD-02 live MySQL evidence (2026-10-29)".
+- Performed by: Claude Code (Engineering)
+- Notes: this is the implementing agent's own run, not independent Verification (PROJECT_RULES §6). It was not run on AJ's configured server.

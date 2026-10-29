@@ -173,3 +173,22 @@ This is software verification only. The two skips are the opt-in live MySQL test
 **Policy decisions logged for AJ (A2):** one session per assignment; submission allowed after `ends_at`; no auto-finalisation at close; only the latest response content is stored.
 
 **Verification status:** service, API and SQL-contract tests added. The opt-in live MySQL test was added but not executed. No FD-03 completion claim is made beyond IMPLEMENTED / UNIT + API TESTED.
+
+### FD-01/FD-02 live MySQL evidence (2026-10-29)
+**Environment:** MySQL Community Server **8.4.9**: a disposable local instance started from the MySQL 8.4 binaries installed on AJ's Windows PC (`--initialize-insecure`, scratch data directory, 127.0.0.1:3399, X Protocol off). This is **not** AJ's own configured server on port 3307, and that server was not touched. Setup followed `database/mysql/README.md`: bootstrap 000 with a one-off generated test password, then migrations 001–003 as root. Tests connected as the least-privilege `p001_app@127.0.0.1` account (SELECT/INSERT/UPDATE/DELETE only). Python 3.14.0, mysql-connector-python 9.x.
+
+**Result at head `409d6c5`:**
+- `python -m scripts.check_mysql_connection`: `P001 MySQL FD-02 schema check: PASS`.
+- `P001_RUN_MYSQL_TESTS=1 python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py`: **2 passed in 8.86s**.
+
+This exercised every FD-02 repository operation and SQL guard against a real server:
+- empty-exam scheduling refused;
+- duplicate attachment translated into a domain conflict;
+- detach;
+- identical-value re-save found (CLIENT_FOUND_ROWS);
+- stale compare-and-set refused;
+- post-DRAFT attach, detach and edit refused.
+
+**Defect found by the live run:** the documented `python scripts/check_mysql_connection.py` crashed with `ModuleNotFoundError: No module named 'app'`. Running a file puts `scripts/` on `sys.path`, not the project root. Classification: command/documentation issue; the script itself was correct. The guide now uses `python -m scripts.check_mysql_connection`.
+
+**Status:** FD-01 and FD-02 are LIVE VERIFIED against MySQL 8.4.9 on the disposable instance described above. A run on AJ's own configured server would be additional, user-environment evidence.

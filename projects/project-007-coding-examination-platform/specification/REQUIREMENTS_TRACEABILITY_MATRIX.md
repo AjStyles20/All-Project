@@ -24,7 +24,7 @@ A **Requirements Traceability Matrix (RTM)** connects the research problem to so
 | FR-16 | Programming-Process Capture | baseline accepts process evidence but capture subsystem absent | PENDING; needed before real B1 process collection |
 | FR-17 | Integrity Observation Management | competence/integrity separation specified, no module | PENDING |
 | FR-18 | Authorized Exception Handling | FD-05 per-candidate exceptions (capability overrides, extra time, reason category only) recorded against the bound contract version | PARTIAL: recorded and live verified (TE-011); extra time applied to the candidate's deadline (DR-014, TE-012); capability overrides declarative only |
-| FR-19 | Evidence Provenance | EvidenceItem source metadata + fixed-viva/targeted-verification separation | SUBSTANTIALLY IMPLEMENTED for research slice; broader ECC/assistance provenance pending |
+| FR-19 | Evidence Provenance | EvidenceItem source metadata + fixed-viva/targeted-verification separation; FD-06 operational bridge labels evidence with the contract in force at save time (policy_version, assistance_context, POLICY_CONTEXT) and keeps operational provenance records | IMPLEMENTED for the research slice and the FD-06 bridge; LIVE VERIFIED (TE-013); no real participant data bridged |
 | FR-20 | B0 Engine | Baseline0Engine / common runner | IMPLEMENTED / TESTED |
 | FR-21 | B1 Engine | Baseline1Engine / common runner | IMPLEMENTED / TESTED |
 | FR-22 | B2 Engine | non-adaptive fixed-viva boundary + development contract | IMPLEMENTED / TESTED for development comparator; assessor validation pending |

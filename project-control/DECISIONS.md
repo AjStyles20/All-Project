@@ -202,3 +202,18 @@ DECISION REQUEST DR-013
 - Rationale: candidates must actually receive accommodations they were granted. Using the largest grant rather than the sum means re-recording an exception never silently stacks time; an examiner who wants more time grants a larger exception.
 - Consequences: `CandidateSessionService` takes an optional contract repository. Other capabilities in exceptions remain declarative (DECLARED, NOT ENFORCED).
 - Approved by: AJ, in the Claude Code session of 2026-10-29. The "largest single grant" rule is the implementing agent's choice and is flagged here for AJ review.
+
+
+## DR-015 — P001 research-data handling for the FD-06 evidence bridge
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A3 (research ethics, participant data, research identifiers)
+- Context: FD-06 copies real candidates' submissions into the EGPCV research store. `M8_PILOT_PROTOCOL.md` §8 requires consent, ethics, privacy and de-identification to be resolved before any real-student collection.
+- Decision:
+  1. **Two consent gates:** the research link must carry an institutional ethics approval reference, **and** the candidate must have explicitly opted in for that examination. If either is missing, nothing is copied. A withdrawal stops all further copying.
+  2. **Identifiers:** each candidate gets a random research code per examination. The code → person link lives only in the operational `research_identities` table, exposed through administrator-only endpoints. The research store never receives user IDs or names. Implementing this also redacts the examiner identity from copied contracts.
+  3. **Link role:** only administrators create research links. The marking examiner cannot route their own students into research.
+  4. **Granularity:** one research case per consenting candidate per linked question, built from the linked template case.
+- Consequences: FD-06 is implemented under these rules (TE-013). The software records the ethics reference but cannot verify it. Real institutional approval is required before any real student is bridged.
+- Open (not decided): retention or deletion of already-bridged data on withdrawal; access control for the research store file.
+- Approved by: AJ, in the Claude Code session of 2026-10-29. Each point was answered explicitly.

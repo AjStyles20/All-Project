@@ -92,3 +92,12 @@ Record meaningful project activity chronologically. Preserve failures and correc
 - Tests/evidence: TE-011. Full suite with live MySQL: 256 passed, 0 skipped.
 - Status: FD-05 IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED (disposable MySQL 8.4.9).
 - Next action: AJ's open point (apply extra time to deadlines?); then PR merge; then FD-06.
+
+### 2026-10-29 — P001 FD-06 evidence bridge
+- Agent/role: Claude Code / Engineering
+- Objective: bridge consenting candidates' submissions into the EGPCV research store (ECC v1.0 §6).
+- Work completed: stopped before coding to raise the M8 §8 consent/ethics gate; AJ decided DR-015. Then migration 006, the bridge domain/service/repositories, the SQLite adapter, admin and candidate API, and the design doc with Figures 3.7.5 and 3.5.8.
+- Problems: privacy defect (examiner ID in POLICY_CONTEXT) caught by test and fixed; one test bug fixed.
+- Tests/evidence: TE-013. Full suite with live MySQL: 270 passed, 0 skipped.
+- Status: FD-06 IMPLEMENTED / UNIT + API TESTED / LIVE VERIFIED. No real participant data bridged.
+- Next action: AJ open points (retention on withdrawal, research-store access); PR merge.

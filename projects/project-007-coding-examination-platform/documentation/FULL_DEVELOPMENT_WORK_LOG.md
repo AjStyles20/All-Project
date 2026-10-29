@@ -240,3 +240,43 @@ Environment: fresh disposable MySQL 8.4.9 instance (re-initialised after migrati
 - Entire P001 suite with `P001_RUN_MYSQL_TESTS=1`: **212 passed, 0 skipped**.
 
 The live FD-03 test confirmed on a real server that closing the examination set the open session to SUBMITTED / `AUTO_ON_CLOSE` with its saved work intact, and left the already-submitted session's `CANDIDATE` mode and timestamp unchanged (TE-008).
+
+
+## 2026-10-29 — FD-04 opened: Examiner Review and Per-Question Marking (Claude Code, Engineering)
+**Branch:** `p001-fd04-review-marking`, from main at `2be8416`.
+
+**Scope decision (AJ, 2026-10-29):** build review and marking, and defer EGPCV evidence registration (FR-08) until the Examination Capability Contract exists. Section 72 of the formal research specification requires observations to be interpreted under the ECC before they carry evidential meaning.
+
+**Implemented:**
+- Migration 004 (`response_marks`).
+- `app/domain/review.py`, `ReviewService`, `MySQLReviewRepository`.
+- Three examiner endpoints.
+- Design document `FD04_REVIEW_MARKING_DESIGN.md` with Figure 3.7.3 (ERD increment) and Figure 3.5.6 (marking sequence).
+- Schema check and Workbench guide updated for migration 004.
+
+**Design reasoning:**
+- A mark keys on (session, question) rather than on a saved response, so unanswered questions can be marked.
+- `response_revision` preserves which answer was read.
+- Marking is limited to SUBMITTED sessions so the marked answer cannot change afterwards.
+- ARCHIVED freezes marks.
+- The SQL upsert repeats the status guards so a concurrent archive cannot be followed by a stray mark.
+
+**Rejected alternatives:**
+- `INSERT ... ON DUPLICATE KEY UPDATE col=VALUES(col)`: `VALUES()` is deprecated in MySQL 8.x. A derived-table alias is used instead.
+- A weighted total: no aggregation rule for `score_weight` is defined, so only raw totals are reported.
+
+**Live evidence:** full suite with `P001_RUN_MYSQL_TESTS=1` at `f9f8331`, on a fresh disposable MySQL 8.4.9 instance with migrations 001–004: **227 passed, 0 skipped** (TE-009).
+
+### FD-04 — DR-012 applied: weighted total, mark history, results release (2026-10-29)
+AJ resolved FD-04's three open points; details are in DR-012.
+
+**Implementation:**
+- `weighted_percent` in `app/domain/review.py` uses `fractions.Fraction`, so the result is exact before a single rounding.
+- `response_mark_history` receives a row in the same transaction as each successful upsert. The SQL-contract test checks that no history row is written when the guard refuses.
+- `examination_result_releases` is checked by both the service and a `NOT EXISTS` predicate in the upsert, so a mark cannot slip in after a concurrent release.
+- Release requires CLOSED/ARCHIVED and complete marking, and is idempotent.
+- The candidate result endpoint hides the marker identity and history.
+
+**Design choice:** the release record is a separate table rather than a column on `examinations`. This keeps FD-02's schema and domain object unchanged.
+
+**Live evidence:** full suite at `cad0a95`, fresh disposable MySQL 8.4.9 instance, migrations 001–004: **235 passed, 0 skipped** (TE-010).

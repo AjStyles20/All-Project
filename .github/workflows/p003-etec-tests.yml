@@ -2,7 +2,7 @@ name: P003 ETEC Tests
 
 on:
   push:
-    branches: [p003-etec-implementation]
+    branches: [main, p003-etec-implementation]
     paths:
       - 'projects/project-011-geopolitical-economic-risk/**'
       - '.github/workflows/p003-etec-tests.yml'

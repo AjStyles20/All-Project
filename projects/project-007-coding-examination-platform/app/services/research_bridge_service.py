@@ -90,6 +90,12 @@ class ResearchBridgeService:
         self.research.create_link(link)
         return link
 
+    def list_questions(self, examination_id: str):
+        """Question ids and titles for the administrator's link form (no answers or scores)."""
+        if self.examinations.get_examination(examination_id) is None:
+            raise ExaminationNotFoundError(examination_id)
+        return self.examinations.list_examination_questions(examination_id)
+
     def list_links(self, examination_id: str) -> list[ResearchLink]:
         return self.research.list_links(examination_id)
 

@@ -36,9 +36,12 @@ def test_ui_has_no_inline_script_or_style_and_no_html_sinks():
     html = (WEB_DIR / "index.html").read_text(encoding="utf-8")
     assert not re.search(r"<script(?![^>]*\bsrc=)", html)
     assert "style=" not in html and "<style" not in html and "onclick=" not in html
-    script = (WEB_DIR / "app.js").read_text(encoding="utf-8")
-    for sink in ("innerHTML", "outerHTML", "insertAdjacentHTML", "eval(", "new Function", "document.write"):
-        assert sink not in script
+    scripts = list(WEB_DIR.glob("*.js"))
+    assert {p.name for p in scripts} == {"app.js", "core.js", "candidate.js", "examiner.js", "admin.js"}
+    for path in scripts:
+        script = path.read_text(encoding="utf-8")
+        for sink in ("innerHTML", "outerHTML", "insertAdjacentHTML", "eval(", "new Function", "document.write"):
+            assert sink not in script, (path.name, sink)
 
 
 def test_find_session_does_not_start_one():
@@ -49,6 +52,16 @@ def test_find_session_does_not_start_one():
     found = client.get(f"/candidate/examinations/{eid}/session", headers=student).json()
     assert found["session_id"] == started["session_id"]
     assert client.get(f"/candidate/examinations/{eid}/session", headers=bearer("student2-token")).status_code == 404
+
+
+def test_contract_schema_matches_the_domain_and_is_examiner_only():
+    from app.domain.capability_contract import CAPABILITY_VALUES
+
+    client, _, _ = active_exam_client()
+    schema = client.get("/examiner/contract-schema", headers=bearer("examiner-token")).json()
+    assert set(schema["capabilities"]) == set(CAPABILITY_VALUES)
+    assert schema["default_integrity_mode"] == "LAB_CONTROLLED"
+    assert client.get("/examiner/contract-schema", headers=bearer("student-token")).status_code == 403
 
 
 def test_api_responses_are_not_affected_by_ui_headers():

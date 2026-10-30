@@ -254,3 +254,17 @@ DECISION REQUEST DR-013
 - Rationale: the candidate flow is form-driven; the policy reserves frameworks for when complexity justifies them. Keeping rules server-side keeps FD-02 to FD-06 the single source of truth.
 - Consequences: a migration to a framework later would be a new decision. The bearer token sits in `sessionStorage`, mitigated by CSP and no-HTML rendering; HttpOnly-cookie sessions are deferred.
 - Approved by: AJ asked for the web UI (2026-10-29). The approach follows the recorded platform policy.
+
+## DR-018 — P003 internal implementation completion boundary
+- Date: 2026-09-20
+- Status: Approved
+- Authority level: A2
+- Context: P003 has reached the research-critical implementation boundary defined by its frozen experiment. Core ETEC progression, falsification fixtures, replay integrity, comparative infrastructure, historical evidence packets, B2 execution safeguards, reviewer blinding/locking and analysis authorization are implemented. A controlled external-provider route and a non-experimental qualification route are also present.
+- Decision: **Freeze P003 internal implementation as complete at the current research-critical boundary.** Further engineering is not justified merely to make the project appear larger.
+- Verification: GitHub Actions run #228 completed successfully with **95 passed, 0 failed in 0.25 seconds** at the implementation-completion checkpoint.
+- Remaining external evidence: controlled qualification and execution of the frozen B2 baseline; genuine independent human review; locked judgments; authorized comparative analysis; M9/M10 empirical closure; final empirical Chapter Four/Five conclusions.
+- Claims boundary: Internal software completion is not M9/M10 completion and does not establish B3 superiority, calibrated forecasting accuracy, causal forecasting, acceptable inter-rater agreement, or universal validity.
+- Change control: New P003 code after this boundary requires a correctness/security defect, a requirement of the frozen external experiment, faithful ingestion/preservation of real external evidence, or an explicitly versioned prospective extension that cannot affect the frozen first-wave evaluation.
+- Files/components affected: `projects/project-011-geopolitical-economic-risk/`, P003 status summaries, future portfolio handoffs.
+- Approved by: AJ through continuation of the authorized implementation workflow.
+- Record history: originally recorded as **DR-011** on branch `p003-etec-implementation` on 2026-09-20. It was renumbered to DR-018 when `main` was merged into that branch on 2026-10-30, because DR-011 to DR-017 had meanwhile been assigned on `main` and on P001 PR #25. The decision content is unchanged. The branch also carried an earlier 2026-09-17 wording of DR-010; `main`'s DR-010 (2026-09-20) is the canonical record and the branch wording is superseded as a draft.

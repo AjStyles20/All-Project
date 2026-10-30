@@ -1,5 +1,15 @@
 # P003 (canonical; legacy directory P011) — Formal Research & Experiment Specification
 
+> **STATUS / SUPERSESSION NOTICE — 20 September 2026**  
+> This document is a frozen historical research-gate specification. Its original control statements such as **“READY TO PARK,” “Implementation authorization: NO,”** and the Section 19 instruction to park P003 were correct at the time this specification closed its research gate. They are preserved below as decision-history evidence and must not be read as the current portfolio status.  
+>  
+> **DR-010 subsequently superseded the implementation prohibition prospectively and authorized staged implementation of canonical P003 after the agreed P001 checkpoint.** P003 implementation is now active on branch `p003-etec-implementation`. The surviving contribution boundary remains **typed transmission-edge evidence sufficiency + weakest-link downstream claim progression**; generic ETEC/evidence-contract machinery is implementation architecture rather than the novelty claim.  
+>  
+> Current evaluation status: deterministic implementation and M8 historical-case preparation are complete to the frozen boundary; M9 software/evaluation infrastructure is ready but **blocked on real controlled B2 model execution and independent human review**. No B2-vs-B3 empirical superiority, completed M9/M10, validated forecasting accuracy, or causal forecasting claim is authorized.  
+>  
+> For current status, read `../README.md`, `IMPLEMENTATION_ENTRY_CONTRACT.md`, `M9_EXTERNAL_EVIDENCE_READINESS_AUDIT_V1.md`, and `EXTERNAL_MODEL_EXECUTION_ROUTE_AUDIT_V1.md`.
+
+
 ## Control
 - Canonical portfolio ID: **P003**
 - Project: **Geopolitical Risk → Economic Impact Forecasting & Warning System**

@@ -239,6 +239,22 @@ DECISION REQUEST DR-013
 - Limitation: text that analyses derived from evidence before a withdrawal (for example rationales in evidence-state history) is not rewritten. Only the evidence itself is deleted.
 - Approved by: AJ, in the Claude Code session of 2026-10-29. Both points were answered explicitly.
 
+
+## DR-017 — P001 frontend approach: semantic HTML + CSS + plain JavaScript over the JSON API
+- Date: 2026-10-30
+- Status: Approved (applies the default in `docs/TECHNOLOGY_PLATFORM_SELECTION.md` §5–6)
+- Authority level: A2
+- Context: PROJECT_RULES §21 requires the frontend approach to be recorded explicitly. P001 had no UI and no runnable server.
+- Decision:
+  - the UI is static HTML, one CSS file and one plain JavaScript module, served by FastAPI at `/ui`;
+  - it calls the existing JSON API, with no business rules in the browser;
+  - it runs with a strict CSP;
+  - React is not used;
+  - `uvicorn` is added as the ASGI server, with `app/main.py` as the entry point.
+- Rationale: the candidate flow is form-driven; the policy reserves frameworks for when complexity justifies them. Keeping rules server-side keeps FD-02 to FD-06 the single source of truth.
+- Consequences: a migration to a framework later would be a new decision. The bearer token sits in `sessionStorage`, mitigated by CSP and no-HTML rendering; HttpOnly-cookie sessions are deferred.
+- Approved by: AJ asked for the web UI (2026-10-29). The approach follows the recorded platform policy.
+
 ## DR-018 — P003 internal implementation completion boundary
 - Date: 2026-09-20
 - Status: Approved

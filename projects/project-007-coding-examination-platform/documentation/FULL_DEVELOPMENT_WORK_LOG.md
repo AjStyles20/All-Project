@@ -376,3 +376,16 @@ AJ chose to apply exception extra time.
 **Documentation fix:** the first README edit doubled the Windows backslashes, and the bad version was committed in `6005537`. It is corrected in the docs commit.
 
 **Live evidence:** full suite at `6005537`, fresh disposable MySQL 8.4.9 instance plus a temporary SQLite research store: **277 passed, 0 skipped** (TE-014).
+
+
+## 2026-10-29/30 — Web UI slice 1: candidate flow (Claude Code, Engineering)
+**Branch:** `p001-ui-candidate`, from main at `5b59707`.
+
+Built a semantic HTML + CSS + plain JS candidate UI at `/ui` (DR-017), with:
+- a read-only session-lookup endpoint;
+- the `app/main.py` entry point;
+- `uvicorn`.
+
+Design: `UI_SLICE1_CANDIDATE_DESIGN.md` (Figures 4.1, 4.2). Browser-verified against a disposable MySQL with seeded data (TE-015); six defects were found and fixed during that run.
+
+**Not done:** examiner and administrator screens; an assistive-technology audit; HttpOnly-cookie sessions.

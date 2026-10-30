@@ -183,3 +183,28 @@ All verification evidence should be reproducible where practical. Do not record 
 - Observed result: schema check PASS; 277 passed, 0 skipped in 149.18s.
 - Status: PASS
 - Performed by: Claude Code (Engineering). This is the implementing agent's own run, not independent Verification. No real participant data was involved.
+
+### TE-015 — P001 web UI slice 1 browser verification
+- Date: 2026-10-29
+- Requirement(s): NFR-08, P001 FR-30 (candidate workflow), PROJECT_RULES §13 and §22
+- Test type: Live (browser) + automated
+- Environment: Claude desktop built-in browser (Chromium); app served by uvicorn on 127.0.0.1:8001 against a disposable MySQL 8.4.9 instance (migrations 001–006) seeded with test accounts and an ACTIVE timed exam with a bound contract, a 20-minute exception and a research link.
+- Procedure: sign in → exam list → rules → research opt-in → start → type answer → simulate a newer save from another tab → type again → attempt submit → reload → answer question 2 → submit immediately → result before release → 375 px viewport → deep link → sign out.
+- Observed result:
+  - **Autosave:** showed "Saved … (revision n)".
+  - **Deadline:** showed the extended end (+20 minutes).
+  - **Stale tab:** the edit got 409 and "Not saved: a newer version was saved elsewhere…", and the newer copy was not overwritten.
+  - **Submit:** refused while an answer was unsaved; later, Submit flushed the pending question-2 save, then submitted, and the answers became read-only.
+  - **Result:** reported "not released yet".
+  - **Phone width:** no horizontal scroll at 375 px.
+  - **Sign-out:** cleared the token.
+- Defects found and fixed during the run:
+  1. a focus ring on `main` after programmatic focus;
+  2. raw enum values in the rules view;
+  3. **duplicate accessible names** ("Your answer") on both answer boxes;
+  4. a stale notice carried to the next screen;
+  5. the account header missing on deep links;
+  6. compiled `.pyc` files accidentally committed (removed in `eeda20a`; `.gitignore` added).
+- Automated: `tests/integration/test_web_ui.py` (5 tests); full suite 276 passed, 6 skipped.
+- Status: PASS (software/browser verification; no screen-reader or real-user test)
+- Performed by: Claude Code (Engineering)

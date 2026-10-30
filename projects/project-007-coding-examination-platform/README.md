@@ -59,3 +59,14 @@ Full registration/payment/course management, webcam proctoring, AI-code detectio
 
 ## Scientific status
 The final CC1-CC6 ontology, PARTIAL/UNRESOLVED boundary, final probe catalogue, assessor agreement procedure, final corpus/sample size, thresholds, accessibility validation, ECC implementation and held-out final evaluation remain pending. No authorship-proof, AI-use-proof, perfect cheating-detection, lecturer-replacement or complete-programming-competence claim is authorized.
+
+
+## Running the platform with the web UI
+From this folder, with MySQL set up and the `P001_DB_*` variables set (`database/mysql/README.md`):
+
+```powershell
+python -m pip install -r requirements.txt
+uvicorn app.main:app --host 127.0.0.1 --port 8001
+```
+
+Open http://127.0.0.1:8001/. Only the candidate screens exist so far (`documentation/UI_SLICE1_CANDIDATE_DESIGN.md`).

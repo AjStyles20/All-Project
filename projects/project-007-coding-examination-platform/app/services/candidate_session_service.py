@@ -99,6 +99,13 @@ class CandidateSessionService:
             return self.repository.get_session_for_assignment(assignment.assignment_id)
         return session
 
+    def find_session(self, examination_id: str, candidate_user_id: str) -> ExaminationSession | None:
+        """Read-only lookup of the candidate's session, without starting one (UI results view)."""
+        assignment = self.repository.get_assignment(examination_id, candidate_user_id)
+        if assignment is None:
+            raise AssignmentNotFoundError("No assignment for this examination.")
+        return self.repository.get_session_for_assignment(assignment.assignment_id)
+
     def get_session_view(self, session_id: str, candidate_user_id: str) -> SessionView:
         session, assignment = self._owned_session(session_id, candidate_user_id)
         exam = self.examinations.get_examination(assignment.examination_id)

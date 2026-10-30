@@ -32,7 +32,8 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 - **FD-04 Examiner Review & Marking**: PR #21 **merged into main on 2026-10-29** (`6e50711`). Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** (disposable instance, TE-009). EGPCV evidence registration is deferred until the ECC exists. Marking policy is set by DR-012 (weighted %, mark history, explicit release); live-verified again after DR-012 (TE-010). See `documentation/FD04_REVIEW_MARKING_DESIGN.md`.
 - **ECC specification v1.0**: **APPROVED by AJ on 2026-10-29 (DR-013)** with Q1–Q5 resolved, via PR #22. It is not yet implemented. It unblocks FD-05 (ECC management); FD-06 (evidence bridge) needs an explicit question → case research link.
 - **FD-05 ECC Management**: PR #23 **merged into main on 2026-10-29** (`4065605`). Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** (disposable instance, TE-011). Scheduling now requires a contract. Exception extra time extends that candidate's deadline (DR-014, TE-012). See `documentation/FD05_CAPABILITY_CONTRACT_DESIGN.md`.
-- **FD-06 Evidence Bridge**: branch `p001-fd06-evidence-bridge`, draft PR targeting main. Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** with a temporary SQLite research store (TE-013). Governed by DR-015 (ethics reference + opt-in, random codes, admin-only links) and DR-016 (deletion on withdrawal; research store outside the app, TE-014). **No real student bridged**; that needs real ethics approval. See `documentation/FD06_EVIDENCE_BRIDGE_DESIGN.md`.
+- **FD-06 Evidence Bridge**: PR #24 **merged into main on 2026-10-29** (`5b59707`). Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** with a temporary SQLite research store (TE-013). Governed by DR-015 (ethics reference + opt-in, random codes, admin-only links) and DR-016 (deletion on withdrawal; research store outside the app, TE-014). **No real student bridged**; that needs real ethics approval. See `documentation/FD06_EVIDENCE_BRIDGE_DESIGN.md`.
+- **Web UI slice 1 (candidate flow)**: branch `p001-ui-candidate`, draft PR. Semantic HTML/CSS/plain JS at `/ui` (DR-017), browser-verified (TE-015). Examiner and administrator screens are not built yet.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -63,6 +64,7 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#21** P001 FD-04. **Merged 2026-10-29** (`6e50711`).
 - **#22** ECC spec v1.0. **Merged 2026-10-29** (`5f8a235`).
 - **#23** P001 FD-05. **Merged 2026-10-29** (`4065605`).
+- **#24** P001 FD-06. **Merged 2026-10-29** (`5b59707`).
 - **#18** P003 ETEC research-critical implementation. Draft, 100 commits, currently **conflicting** with main. Not touched in the 2026-10-29 cycle.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 

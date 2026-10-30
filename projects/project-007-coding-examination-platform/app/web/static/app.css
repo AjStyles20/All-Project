@@ -94,3 +94,15 @@ th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--bord
 .deadline { position: sticky; top: 0; background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 8px 12px; margin-bottom: 16px; z-index: 5; }
 @media (max-width: 480px) { main { padding: 12px; } th, td { padding: 4px; } }
+
+/* Examiner and administrator screens */
+.areas a { margin-right: 12px; color: var(--accent); }
+textarea.short { min-height: 80px; font-family: inherit; }
+select, input[type="datetime-local"] {
+  font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; max-width: 100%;
+}
+details { margin-top: 12px; }
+form + form, table + form { margin-top: 12px; }
+td input, td select { width: 100%; }
+.card table { display: block; overflow-x: auto; }

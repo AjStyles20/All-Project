@@ -11,7 +11,7 @@ This slice is the first browser interface for the P001 product layer. It covers 
 - submission;
 - released result.
 
-Examiner and administrator screens are **not** built yet. A non-candidate who signs in is told so, rather than shown non-functional controls (PROJECT_RULES §4).
+Examiner and administrator screens were added by slice 2 (see *Slice 2* below).
 
 ## Technology decision (DR-017)
 Following `docs/TECHNOLOGY_PLATFORM_SELECTION.md` §5–6 (progressive frontend rule), the UI is **semantic HTML, one CSS file and plain JavaScript**, calling the existing JSON API. It is served by the same FastAPI app at `/ui`.
@@ -95,7 +95,36 @@ These were checked in a browser. **No screen-reader or user test has been done**
 - **Browser (TE-015):** the whole flow was driven in a real browser against the disposable MySQL 8.4.9 instance with seeded test data. Six defects were found and fixed during that run (TE-015).
 
 ## Not in this slice
-- Examiner screens (exam/question/contract management, marking, release).
-- Administrator research screens.
 - An accessibility audit with assistive technology.
 - HttpOnly-cookie sessions.
+
+
+## Slice 2 — Examiner and administrator screens
+**Code layout:** `app.js` (sign-in, role-aware routing) with `core.js`, `candidate.js`, `examiner.js` and `admin.js`. The candidate code was moved unchanged. All safety rules above apply to every module, and the test scans all of them for HTML sinks.
+
+**Examiner:**
+- examinations and question bank;
+- exam details, attach/detach questions, assign candidates by user id;
+- lifecycle buttons;
+- contract draft, amendment and exceptions;
+- sessions list, per-question marking with history;
+- release of results.
+
+**Administrator:**
+- research links (questions chosen from a list);
+- bridge runs and records;
+- retry of pending deletions;
+- the anonymous withdrawal log;
+- the code-to-person link, loaded only on request.
+
+**Added endpoints:**
+- `GET /examiner/contract-schema`: the contract editor is built from the domain schema, so the UI cannot drift from ECC v1.0.
+- `GET /admin/research/examinations/{id}/questions`: ids and titles only.
+
+**Known gaps (shown truthfully in the UI, not worked around):**
+- There is no API to create users or list them, so candidates are assigned by typed user id and accounts must be created outside the UI.
+- There is no administrator list of examinations, so an exam is opened by its id, which the examiner's screen displays.
+- Capability exceptions needing extra detail (for example an allowlist) can only be set through the API.
+- Sessions use one bearer token in `sessionStorage`, as in slice 1.
+
+**Verification:** TE-016. No screen-reader, real-user or independent verification has been done.

@@ -107,3 +107,9 @@ Record meaningful project activity chronologically. Preserve failures and correc
 - Work completed: deletion on withdrawal (keeping a shell when analysis records reference a case); anonymous withdrawal log; purge retry endpoint; refusal of a research store inside the app directory; store-location guidance.
 - Tests/evidence: TE-014. Full suite with live MySQL: 277 passed, 0 skipped.
 - Next action: AJ decides on merging PR #24; real ethics approval before real-student use.
+
+### 2026-10-30 — P001 web UI slice 2; status corrections
+- Agent/role: Claude Code / Engineering
+- Work completed: examiner and administrator screens; two supporting endpoints; PROJECT_STATE corrected (FD-06 merged, P003 merged and blocked on external evidence).
+- Tests/evidence: TE-016. Full suite 278 passed, 6 skipped.
+- Next action: AJ reviews #25 and the stacked slice 2 PR. User management and an administrator exam list are unbuilt gaps.

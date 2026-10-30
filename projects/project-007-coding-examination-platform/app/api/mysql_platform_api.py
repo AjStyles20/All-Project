@@ -17,8 +17,8 @@ from app.domain.candidate_session import (
 )
 from app.persistence.mysql_candidate_session_repository import MySQLCandidateSessionRepository
 from app.domain.capability_contract import (
-    AssistanceConstruct, CapabilityContract, ContractException, ContractStatus, ExceptionReason,
-    IntegrityMode,
+    CAPABILITY_VALUES, DETAIL_FIELDS, AssistanceConstruct, CapabilityContract, ContractException,
+    ContractStatus, ExceptionReason, IntegrityMode,
 )
 from app.persistence.mysql_contract_repository import MySQLContractRepository
 from app.services.contract_service import ContractDeclaration, ContractService
@@ -411,6 +411,15 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
             release = reviews.release_results(examination_id, principal.user_id)
         return _release_body(release)
 
+    @app.get("/examiner/contract-schema")
+    def contract_schema(principal=Depends(examiner)):
+        # The contract editor is built from this, so the UI cannot drift from ECC v1.0.
+        return {"capabilities": {key: sorted(values) for key, values in CAPABILITY_VALUES.items()},
+                "detail_fields": DETAIL_FIELDS,
+                "integrity_modes": [mode.value for mode in IntegrityMode],
+                "default_integrity_mode": IntegrityMode.LAB_CONTROLLED.value,
+                "exception_reasons": [reason.value for reason in ExceptionReason]}
+
     @app.get("/examiner/examinations/{examination_id}/contract")
     def contract_versions(examination_id: str, principal=Depends(examiner)):
         with _policy_errors():
@@ -455,6 +464,12 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
             link = research.create_link(principal.user_id, payload.examination_id, payload.question_id,
                                         payload.template_case_id, payload.claim_ids, payload.ethics_reference)
         return _link_body(link)
+
+    @app.get("/admin/research/examinations/{examination_id}/questions")
+    def list_research_questions(examination_id: str, principal=Depends(administrator)):
+        with _policy_errors():
+            entries = research.list_questions(examination_id)
+        return [{"question_id": e.question.question_id, "title": e.question.title} for e in entries]
 
     @app.get("/admin/research/examinations/{examination_id}/links")
     def list_research_links(examination_id: str, principal=Depends(administrator)):

@@ -78,3 +78,14 @@ def test_withdrawal_through_api_reports_deletion(tmp_path):
     assert [(row["cases_deleted"], row["cases_retained_as_shell"]) for row in log] == [(1, 0)]
     assert "candidate_user_id" not in log[0]
     assert client.get("/admin/research/examinations/e1/identities", headers=admin).json() == []
+
+
+def test_admin_lists_exam_questions_for_the_link_form(tmp_path):
+    world = World(tmp_path)
+    client = client_for(world)
+    listed = client.get("/admin/research/examinations/e1/questions", headers=bearer("admin-token"))
+    assert listed.status_code == 200
+    assert [q["question_id"] for q in listed.json()] == ["q1", "q2"]
+    assert set(listed.json()[0]) == {"question_id", "title"}  # no prompts, answers or scores
+    assert client.get("/admin/research/examinations/e1/questions", headers=bearer("examiner-token")).status_code == 403
+    assert client.get("/admin/research/examinations/nope/questions", headers=bearer("admin-token")).status_code == 404

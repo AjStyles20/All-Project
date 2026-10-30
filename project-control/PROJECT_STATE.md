@@ -18,7 +18,7 @@ Decision Record DR-010 prospectively supersedes the earlier implementation prohi
 
 - **P001 — Intelligent Coding Examination Platform:** first research-critical implementation target.
 - **P003 — Geopolitical Economic Risk to Economic Impact Forecasting & Warning:** second implementation target.
-- P003 should not begin until the agreed P001 checkpoint unless AJ changes the order.
+- P003's internal implementation is complete and on main (PR #18, `71f890a`, DR-018); AJ directed the move to P003 on 2026-10-30. Its remaining work is external (see below).
 - P004, P007, P009 and P010 remain survivors/reserves; no full implementation is authorized merely by survivor status.
 
 ## P001 Current State
@@ -33,7 +33,8 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 - **ECC specification v1.0**: **APPROVED by AJ on 2026-10-29 (DR-013)** with Q1–Q5 resolved, via PR #22. It is not yet implemented. It unblocks FD-05 (ECC management); FD-06 (evidence bridge) needs an explicit question → case research link.
 - **FD-05 ECC Management**: PR #23 **merged into main on 2026-10-29** (`4065605`). Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** (disposable instance, TE-011). Scheduling now requires a contract. Exception extra time extends that candidate's deadline (DR-014, TE-012). See `documentation/FD05_CAPABILITY_CONTRACT_DESIGN.md`.
 - **FD-06 Evidence Bridge**: PR #24 **merged into main on 2026-10-29** (`5b59707`). Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** with a temporary SQLite research store (TE-013). Governed by DR-015 (ethics reference + opt-in, random codes, admin-only links) and DR-016 (deletion on withdrawal; research store outside the app, TE-014). **No real student bridged**; that needs real ethics approval. See `documentation/FD06_EVIDENCE_BRIDGE_DESIGN.md`.
-- **Web UI slice 1 (candidate flow)**: branch `p001-ui-candidate`, draft PR. Semantic HTML/CSS/plain JS at `/ui` (DR-017), browser-verified (TE-015). Examiner and administrator screens are not built yet.
+- **Web UI slice 1 (candidate flow)**: branch `p001-ui-candidate`, draft PR. Semantic HTML/CSS/plain JS at `/ui` (DR-017), browser-verified (TE-015).
+- **Web UI slice 2 (examiner and administrator)**: branch `p001-ui-examiner-admin`, draft PR stacked on #25. Browser-verified (TE-016). Not available in the API or UI: user accounts/directory and an administrator list of examinations.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -65,14 +66,16 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#22** ECC spec v1.0. **Merged 2026-10-29** (`5f8a235`).
 - **#23** P001 FD-05. **Merged 2026-10-29** (`4065605`).
 - **#24** P001 FD-06. **Merged 2026-10-29** (`5b59707`).
-- **#18** P003 ETEC research-critical implementation. Draft, 100 commits, currently **conflicting** with main. Not touched in the 2026-10-29 cycle.
+- **#18** P003 ETEC implementation. **Merged 2026-10-30** (`71f890a`). **#26** P003 tests on pushes to main. **Merged 2026-10-30** (`3dc01fc`).
+- **#25** P001 web UI slice 1 (candidate). Draft, awaiting AJ.
+- P001 web UI slice 2 (examiner and administrator): draft PR stacked on #25.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 
 ## Current Work
 1. ~~Live-MySQL evidence for FD-01/FD-02 and merge of PR #19~~. Done 2026-10-29 (TE-005, TE-007; merged `aefc0a8`). Optional: repeat the live run on AJ's own configured server.
 2. ~~FD-03/FD-04/FD-05 merge; DR-013 ECC approval~~. Done 2026-10-29. FD-06 (evidence bridge) is open with DR-015/DR-016 applied. Real institutional ethics approval is required before any real student is bridged. Next: a lightweight web UI.
 3. Prepare pilot and method-freeze materials without treating development fixtures as independent ground truth.
-4. Do not begin P003 implementation until the P001 checkpoint is reached unless AJ changes the order.
+4. **P003 external evaluation, blocked on AJ:** an OpenAI key in AJ's environment plus a model choice and cost approval for the frozen B2 runs; genuinely independent human reviewers; then the locked comparative analysis (DR-018 forbids simulating these).
 
 ### Superseded current-work list (2026-09-20)
 1. Keep P001 on its separate implementation branch until the agreed merge gate. *(PR #17 has since merged.)*

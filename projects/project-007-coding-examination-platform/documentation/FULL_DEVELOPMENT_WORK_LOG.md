@@ -389,3 +389,11 @@ Built a semantic HTML + CSS + plain JS candidate UI at `/ui` (DR-017), with:
 Design: `UI_SLICE1_CANDIDATE_DESIGN.md` (Figures 4.1, 4.2). Browser-verified against a disposable MySQL with seeded data (TE-015); six defects were found and fixed during that run.
 
 **Not done:** examiner and administrator screens; an assistive-technology audit; HttpOnly-cookie sessions.
+
+
+## 2026-10-30 — Web UI slice 2: examiner and administrator (Claude Code, Engineering)
+**Branch:** `p001-ui-examiner-admin`, stacked on `p001-ui-candidate` (PR #25), because AJ had not yet reviewed #25.
+
+Added examiner and administrator screens, the contract-schema and admin question-list endpoints, and split the JS into modules (documented in `UI_SLICE1_CANDIDATE_DESIGN.md`). `main` (P003) was merged into `p001-ui-candidate`, resolving an append conflict between DR-017 and DR-018. Browser evidence: TE-016.
+
+**Test-tooling note:** several browser script failures were caused by fixed waits in the test script, not the application; the script was changed to wait for elements. No application fault was found behind them.

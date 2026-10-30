@@ -208,3 +208,22 @@ All verification evidence should be reproducible where practical. Do not record 
 - Automated: `tests/integration/test_web_ui.py` (5 tests); full suite 276 passed, 6 skipped.
 - Status: PASS (software/browser verification; no screen-reader or real-user test)
 - Performed by: Claude Code (Engineering)
+
+### TE-016 — P001 web UI slice 2 browser verification
+- Date: 2026-10-30
+- Requirement(s): P001 FR-29, FR-30; FD-02 to FD-06 policies through the UI
+- Test type: Live (browser) + automated
+- Environment: built-in browser; uvicorn on 127.0.0.1:8001; fresh disposable MySQL 8.4.9 (migrations 001–006) and a temporary research store, seeded only with test accounts and a template case. Everything else was created through the UI's forms, submitted by script so its own handlers ran.
+- Observed result:
+  - **Refusals shown correctly:** scheduling with no questions; scheduling with no contract; `LIMITED` terminal without an allowlist; amendment without a reason; unknown template case; score above the maximum; release before marking finished.
+  - **Lifecycle and rules:** contract defaulted to lab-controlled; locked on schedule; amendment created v2 and superseded v1.
+  - **Student:** saw v2; opted in; autosaved; submitted.
+  - **Marking:** re-mark kept 7 then 8 in history; result 8/10, 80%; release locked marking.
+  - **Bridge:** copied one case labelled with v2; re-run reported `already recorded 1`.
+  - **Withdrawal:** deleted the case and code link; the log kept only the code and counts.
+  - **Injection:** a question with `<img onerror>` markup displayed as plain text, with 0 injected elements and no script run.
+  - **Phone width:** no horizontal scroll at 375 px on the contract screen.
+- Defect found and fixed: administrators had no way to learn question ids or exam ids (admin question list added; exam id shown to the examiner).
+- Automated: full suite 278 passed, 6 skipped.
+- Status: PASS (implementing agent's own run; no screen-reader, real-user or independent verification)
+- Performed by: Claude Code (Engineering)

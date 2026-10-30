@@ -102,22 +102,144 @@ Use this file for durable architectural, methodological, governance, and scope d
 - Approved by: AJ explicitly on 2026-09-16.
 
 
-## DR-010 — Final Comparative Selection Gate resolved; staged P001 then P003 implementation authorized
-- Date: 2026-09-17
+## DR-010 — Final Comparative Selection Gate resolved; authorize staged P001 then P003 implementation
+- Date: 2026-09-20
 - Status: Approved
 - Authority level: A3
-- Context: The normalized survivor comparison required by DR-009 was completed without collapsing unlike contribution types into a simplistic scalar score. P001 and P003 retained strong, experimentally separable residual contributions and feasible research-critical implementation paths. P004, P007, P009 and P010 remain reserves with the limitations frozen by DR-008.
-- Decision: **Resolve the Final Comparative Selection Gate and authorize staged implementation of P001 followed by P003.** P001 is the first implementation target. P003 is the second implementation target and may proceed once the agreed P001 external-human-evidence checkpoint is reached, unless AJ explicitly changes the order.
-- Rationale: The decision preserves the portfolio's research distinctions while permitting implementation only after the comparative gate required by DR-009. Implementation authorization does not establish scientific superiority, novelty beyond the frozen residual, or successful empirical validation.
-- Consequences:
-  - DR-009's prospective prohibition on Chapter 3/implementation is satisfied and superseded for P001 and P003.
-  - P004, P007, P009 and P010 remain reserve projects; this record does not authorize their full implementation.
-  - P001 and P003 must continue to distinguish software verification from independent empirical evidence.
-  - Historical records that say implementation was prohibited remain valid lineage for the period before this decision.
-- Approved by: AJ.
-- Supersedes: DR-009's prospective implementation prohibition after completion of the Final Comparative Selection Gate; does not supersede DR-008 contribution boundaries.
+- Context: The six surviving FYP candidates were compared after DR-009 using residual contribution, falsifiability, evidence/data feasibility, implementation feasibility, dependency risk, defense clarity, reproducibility, negative-result value, engineering substance and research-to-system traceability. P004 remains scientifically fragile; P009 requires a human-participant study; P007 and P010 retain external-validation/materiality dependencies. P001 and P003 retain strong, experimentally separable residuals with feasible local implementation.
+- Decision:
+  - Select **P001 Intelligent Coding Examination Platform** as the first research-critical implementation target.
+  - Select **P003 Geopolitical Economic Risk to Economic Impact Forecasting and Warning System** as the second implementation target.
+  - Keep P004, P007, P009 and P010 as research survivors/reserves subject to their existing gates; do not treat this implementation order as a claim that other survivors are globally inferior.
+  - For P001, the implementation contribution remains **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, specifically competence-gap-driven bounded minimum independent evidence acquisition.
+  - Authorize research-critical P001 implementation only after/alongside explicit method/specification contracts. Fuller product features remain deferred.
+  - P003 implementation should not begin until P001 reaches an agreed checkpoint unless AJ explicitly changes the order.
+- Rationale: P001 permits a bounded local experiment with explicit B0–B4 baselines, strong research-to-software traceability, useful negative results, no required external API, and manageable hardware requirements. P003 remains the next implementation candidate but requires careful evidence-chain construction and domain review.
+- Consequences: DR-009's implementation prohibition is satisfied and superseded prospectively by this completed selection decision. Historical records remain unchanged. Implementation does not establish scientific superiority; independent assessment and held-out evaluation remain required.
+- Files/components affected: P001 specification/implementation; P003 future implementation; portfolio control records.
+- Claims affected: future P001 implementation status and future P003 implementation order.
+- Approved by: AJ through the completed All-Project selection/implementation workflow and repeated authorization to proceed.
+- Supersedes: DR-009 only with respect to the unresolved Final Comparative Selection Gate and implementation prohibition; DR-009's comparison criteria remain historical methodology.
 
-## DR-011 — P003 internal implementation completion boundary
+
+## DR-011 — P001 FD-02/FD-03 operational policy decisions
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A2 (product-layer policy; no change to objectives, methodology, stack or EGPCV semantics)
+- Context: the FD-02 completion and FD-03 handoffs (`project-control/AGENT_HANDOFFS/2026-10-29_P001_FD02_COMPLETION.md`, `2026-10-29_P001_FD03_OPENED.md`) listed policy points that the implementing agent could not settle on its own. Each was put to AJ with options and a recommendation.
+- Decision:
+  1. **Scheduling requires content.** DRAFT → SCHEDULED needs at least one attached question. *(Kept as implemented.)*
+  2. **Own questions only.** An examiner may attach only questions they created. Another examiner's question is answered as not found (404), so ids cannot be probed. Deliberate sharing may be designed later. *(Changed from the implemented "any question".)*
+  3. **Time window optional.** SCHEDULED does not require `starts_at`/`ends_at`. When a window is set, FD-03 enforces it. *(Kept.)*
+  4. **One attempt.** One examination session per assignment; a repeated start resumes it. *(Kept.)*
+  5. **Late submit allowed.** Submitting after `ends_at` is permitted. It locks only content saved before the deadline, because saves are refused afterwards. *(Kept.)*
+  6. **Auto-submit on close.** ACTIVE → CLOSED also finalises every IN_PROGRESS session of that examination in the same transaction. These sessions are recorded as `AUTO_ON_CLOSE`, distinct from candidate submissions. *(New.)*
+  7. **Latest response only.** No response revision history for now. History is parked as SP-001 until EGPCV process-evidence requirements define it. *(Kept; parked.)*
+  8. **Historical PRs #1–#16 stay open.** No action. *(Kept.)*
+- Rationale: least privilege (2); no-loss finalisation of saved work (5, 6); no invented multi-attempt or process-evidence policy (4, 7); the examiner's ACTIVE/CLOSE transitions remain the primary access control (3).
+- Consequences: FD-02 adds a question-ownership check. FD-03 adds `submission_mode` to `examination_sessions` (migration 003 has not been applied to any shared database, so it is amended in place) and auto-finalisation in the close transition.
+- Files/components affected: `examination_service.py`, `mysql_examination_repository.py`, `candidate_session` domain/service/repository, migration 003, FD-02/FD-03 design documents and tests.
+- Claims affected: none (product layer only).
+- Approved by: AJ, in the Claude Code session of 2026-10-29. Each point was answered explicitly.
+- Supersedes: the "open points" lists in the two handoffs above.
+
+
+## DR-012 — P001 FD-04 marking policy: weighted total, mark history, results release
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A2 (product-layer assessment policy; EGPCV semantics unchanged)
+- Context: FD-04 (draft PR #21) left three open points: how `score_weight` combines with scores, what happens to superseded marks, and whether candidates see marks.
+- Decision:
+  1. **Weighted percentage.** Total % = Σ(score ÷ max_score × weight) ÷ Σ(weight) × 100. It is computed exactly and rounded once to 2 dp, and reported alongside the raw total. It is undefined (null) until every question in the session is marked.
+  2. **Mark history.** Every saved mark is appended to `response_mark_history` in the same transaction as the current-mark upsert. The current mark is still the default view.
+  3. **Explicit release.** Candidates see marks only after the owning examiner releases results. Release requires the examination to be CLOSED (or ARCHIVED) and every session to be SUBMITTED and fully marked. Release is idempotent and locks further marking. Candidates see score, max, comment and totals, not the marker identity or the history.
+- Rationale: weight expresses relative importance independent of each question's point scale (1); integrity and auditability of assessment decisions (NFR-02, NFR-03) (2); students never see partial or provisional marks (3).
+- Consequences: migration 004 gains `response_mark_history` and `examination_result_releases` (amended in place; it was only ever applied to the disposable test instance). New endpoints: `POST /examiner/examinations/{id}/release` and `GET /candidate/sessions/{id}/result`.
+- Claims affected: none.
+- Approved by: AJ, in the Claude Code session of 2026-10-29. Each point was answered explicitly.
+
+
+## DR-013 — Adopt the P001 Examination Capability Contract specification v0.1
+- Date: 2026-10-29
+- Status: **Approved** (Option A) by AJ on 2026-10-29. The spec is frozen as ECC v1.0.
+- Authority level: A3 (research methodology: interpretation rules for observations; freezes an artifact listed in the development-corpus versioning set)
+- Context: the formal research spec (§12) requires observations to be interpreted under the ECC. RTM FR-15 is PENDING, and the operational → EGPCV evidence bridge is blocked on it (FD-04 scope decision).
+- Proposal: `projects/project-007-coding-examination-platform/specification/EXAMINATION_CAPABILITY_CONTRACT_SPECIFICATION.md`.
+
+DECISION REQUEST DR-013
+- **Issue:** adopt the ECC v0.1 specification (capability schema, lifecycle, evidence labelling, interpretation rules R1–R7)?
+- **Requirement/objective affected:** FR-15 (directly); FR-16 to FR-19 (bounded); EGPCV interpretation chain.
+- **Option A, approve v0.1 as drafted:**
+  - Pro: unblocks FD-05 (ECC management) and FD-06 (evidence bridge); formalises existing PASS_003 to PASS_005 material without new claims.
+  - Con: the capability set is fixed until a schema revision.
+- **Option B, approve with changes to the open questions Q1–Q5:**
+  - Pro: AJ tailors binding point, mapping and defaults.
+  - Con: a revision cycle before implementation.
+- **Option C, defer the ECC:**
+  - Pro: no methodology freeze yet.
+  - Con: the evidence bridge stays blocked; FR-15 to FR-19 remain PENDING.
+- **Project Lead recommendation:** Option A, answering Q1–Q5 with the proposed defaults unless AJ prefers otherwise.
+- **Reason:** the draft only operationalises approved research material and existing code fields. It keeps the ECC non-enforcing and verdict-free.
+- **Requires AJ approval:** YES
+- **AJ resolution (2026-10-29):** Option A, with Q1–Q5 answered as proposed:
+  - Q1: capability set as drafted;
+  - Q2: bind on SCHEDULED;
+  - Q3: responses become ARTIFACT and the contract POLICY_CONTEXT; marks are not mapped;
+  - Q4: question → case linking is an explicit research step;
+  - Q5: LAB_CONTROLLED by default.
+- **Consequences:**
+  - FR-15 is SPECIFIED / APPROVED;
+  - FD-05 (ECC management) is unblocked;
+  - FD-06 (evidence bridge) needs an explicit research-link step.
+
+
+## DR-014 — Apply ECC exception extra time to the candidate's deadline
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A2 (product-layer behaviour)
+- Context: FD-05 (PR #23) recorded exception extra time but did not apply it to FD-03 deadlines, so a candidate promised more time could have been cut off.
+- Decision: a candidate's effective deadline is the examination's `ends_at` plus the **largest single** extra-time grant recorded for that candidate. Start and save checks use it, and the candidate's session view shows it (`my_ends_at`).
+- Rationale: candidates must actually receive accommodations they were granted. Using the largest grant rather than the sum means re-recording an exception never silently stacks time; an examiner who wants more time grants a larger exception.
+- Consequences: `CandidateSessionService` takes an optional contract repository. Other capabilities in exceptions remain declarative (DECLARED, NOT ENFORCED).
+- Approved by: AJ, in the Claude Code session of 2026-10-29. The "largest single grant" rule is the implementing agent's choice and is flagged here for AJ review.
+
+
+## DR-015 — P001 research-data handling for the FD-06 evidence bridge
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A3 (research ethics, participant data, research identifiers)
+- Context: FD-06 copies real candidates' submissions into the EGPCV research store. `M8_PILOT_PROTOCOL.md` §8 requires consent, ethics, privacy and de-identification to be resolved before any real-student collection.
+- Decision:
+  1. **Two consent gates:** the research link must carry an institutional ethics approval reference, **and** the candidate must have explicitly opted in for that examination. If either is missing, nothing is copied. A withdrawal stops all further copying.
+  2. **Identifiers:** each candidate gets a random research code per examination. The code → person link lives only in the operational `research_identities` table, exposed through administrator-only endpoints. The research store never receives user IDs or names. Implementing this also redacts the examiner identity from copied contracts.
+  3. **Link role:** only administrators create research links. The marking examiner cannot route their own students into research.
+  4. **Granularity:** one research case per consenting candidate per linked question, built from the linked template case.
+- Consequences: FD-06 is implemented under these rules (TE-013). The software records the ethics reference but cannot verify it. Real institutional approval is required before any real student is bridged.
+- Open (not decided): retention or deletion of already-bridged data on withdrawal; access control for the research store file.
+- Approved by: AJ, in the Claude Code session of 2026-10-29. Each point was answered explicitly.
+
+
+## DR-016 — P001 research data: deletion on withdrawal and research-store location
+- Date: 2026-10-29
+- Status: Approved
+- Authority level: A3 (participant data retention and research-data access)
+- Context: two points DR-015 left open for FD-06 (PR #24).
+- Decision:
+  1. **Withdrawal deletes bridged data.**
+     - A withdrawal is recorded first, so copying stops immediately.
+     - The candidate's bridged evidence and claim links are then deleted from the research store.
+     - A case row is deleted unless an analysis record references it. In that case a content-free shell is kept, so the analysis record stays valid but the evidence is gone.
+     - Operationally, the candidate's bridge records and code → person link are deleted. An anonymous log keeps only the now-unlinkable code and counts.
+     - If the store is unavailable, deletion is pending and an administrator can retry it.
+  2. **Research store outside the application.**
+     - The SQLite file lives outside the application directory, and the bridge refuses a path inside it.
+     - Folder permissions are limited to the application's OS account and named research staff, as documented in the Workbench guide.
+- Rationale: participants' right to withdraw; keeping analysis records consistent; no research data travelling with the codebase or deployments.
+- Consequences: migration 006 gains `research_withdrawal_log`. New endpoints: `POST /admin/research/examinations/{id}/purge-withdrawn` and `GET .../withdrawals`.
+- Limitation: text that analyses derived from evidence before a withdrawal (for example rationales in evidence-state history) is not rewritten. Only the evidence itself is deleted.
+- Approved by: AJ, in the Claude Code session of 2026-10-29. Both points were answered explicitly.
+
+## DR-018 — P003 internal implementation completion boundary
 - Date: 2026-09-20
 - Status: Approved
 - Authority level: A2
@@ -129,3 +251,4 @@ Use this file for durable architectural, methodological, governance, and scope d
 - Change control: New P003 code after this boundary requires a correctness/security defect, a requirement of the frozen external experiment, faithful ingestion/preservation of real external evidence, or an explicitly versioned prospective extension that cannot affect the frozen first-wave evaluation.
 - Files/components affected: `projects/project-011-geopolitical-economic-risk/`, P003 status summaries, future portfolio handoffs.
 - Approved by: AJ through continuation of the authorized implementation workflow.
+- Record history: originally recorded as **DR-011** on branch `p003-etec-implementation` on 2026-09-20. It was renumbered to DR-018 when `main` was merged into that branch on 2026-10-30, because DR-011 to DR-017 had meanwhile been assigned on `main` and on P001 PR #25. The decision content is unchanged. The branch also carried an earlier 2026-09-17 wording of DR-010; `main`'s DR-010 (2026-09-20) is the canonical record and the branch wording is superseded as a draft.

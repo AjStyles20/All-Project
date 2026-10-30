@@ -2,7 +2,7 @@
 
 **Authority:** This file is the canonical cross-reference for project identity after the 10 September 2026 renumbering. Historical folder names and document filenames may retain earlier IDs. When an old ID conflicts with this index, this index controls interpretation.
 
-**Last reconciled/synchronized:** 20 September 2026 — P003 implementation completion boundary.
+**Last reconciled/synchronized:** 30 October 2026 — P003 branch reconciled with main (P003 completion boundary recorded as DR-018).
 
 ## Rules
 
@@ -14,7 +14,7 @@
 6. Historical Project 001 implementation/test claims conflict across control records and remain unresolved; do not repeat the approximately-146-test claim as verified fact without direct implementation/test evidence.
 7. Implementation does not imply verification. Drive presence does not imply audit/freeze.
 8. Final Portfolio Gate contribution statements supersede broader earlier research claims prospectively; historical research passes/documents are preserved as lineage and must not be rewritten to imply the narrowed claim was always the claim.
-9. Historical rule: no survivor was authorized for Chapter 3 or implementation before the Final Comparative Selection Gate. DR-010 resolved that gate and prospectively authorized staged P001 then P003 implementation; the historical prohibition remains lineage, not current status.
+9. Historical rule: no survivor was authorized for Chapter 3 or implementation until the Final Comparative Selection Gate was completed and explicitly approved. **Prospectively superseded by DR-010:** that gate has now been resolved for implementation ordering; P001 is the first research-critical implementation target and P003 is second. This does not retroactively alter the historical research-gate record or authorize every survivor for implementation.
 
 ## Canonical Migration Map
 
@@ -67,4 +67,6 @@ GitHub remains internally inconsistent about the historical AI Defense Simulator
 
 The independent FYP survivor set after the completed Final Portfolio Research Gate is **P001, P003, P004, P007, P009 and P010**. P004 is explicitly a **PROVISIONAL SURVIVOR / FRAGILE residual**. P006 and P011 are parked as independent FYP candidates for different reasons: P006's residual mechanism collapsed under prior-art/same-engine attack; P011 collided with P001. P002 remains outside the FYP competition. P005, P008, P012 and P013 remain killed on research novelty; P014 remains creative/non-FYP.
 
-**Current phase:** The Final Comparative Selection Gate has been resolved by DR-010. P001 and P003 are the authorized implementation tracks. P003 has reached the DR-011 internal implementation-completion boundary and now awaits external empirical evaluation; P004, P007, P009 and P010 remain reserves unless a later approved decision promotes them.
+**Implementation transition:** The Final Comparative Selection Gate has been resolved prospectively by DR-010. P001 is the first research-critical implementation target and P003 is second; P003 should wait for the agreed P001 checkpoint unless AJ changes the order. P004, P007, P009 and P010 remain survivors/reserves and are not automatically authorized for full implementation. Historical gate language above is preserved as lineage.
+
+**P003 status:** P003 has reached the DR-018 internal implementation-completion boundary and now awaits external empirical evaluation (frozen B2 execution, independent human review, authorized comparative analysis).

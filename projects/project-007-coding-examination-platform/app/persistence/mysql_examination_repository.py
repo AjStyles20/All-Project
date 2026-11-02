@@ -57,6 +57,14 @@ class MySQLExaminationRepository:
             cursor.close()
         return [_examination(row) for row in rows]
 
+    def list_all_examinations(self) -> list[Examination]:
+        with self.database.connect() as connection:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM examinations ORDER BY created_at DESC, examination_id")
+            rows = cursor.fetchall()
+            cursor.close()
+        return [_examination(row) for row in rows]
+
     def update_details(self, exam: Examination) -> bool:
         exam.validate()
         with self.database.connect() as connection:

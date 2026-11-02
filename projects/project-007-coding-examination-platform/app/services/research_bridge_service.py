@@ -90,6 +90,9 @@ class ResearchBridgeService:
         self.research.create_link(link)
         return link
 
+    def list_examinations(self):
+        return self.examinations.list_all_examinations()
+
     def list_questions(self, examination_id: str):
         """Question ids and titles for the administrator's link form (no answers or scores)."""
         if self.examinations.get_examination(examination_id) is None:

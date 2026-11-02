@@ -34,6 +34,9 @@ class InMemoryExaminationRepository:
     def list_examinations_by_owner(self, owner_user_id):
         return [e for e in self.exams.values() if e.owner_user_id == owner_user_id]
 
+    def list_all_examinations(self):
+        return list(self.exams.values())
+
     def update_details(self, exam):
         current = self.exams.get(exam.examination_id)
         if current is None or current.status is not ExaminationStatus.DRAFT:

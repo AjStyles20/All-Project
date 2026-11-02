@@ -18,6 +18,8 @@ def main() -> int:
         database_name, version = cursor.fetchone()
         cursor.execute("SHOW TABLES")
         tables = {row[0] for row in cursor.fetchall()}
+        cursor.execute("SHOW COLUMNS FROM users LIKE 'must_change_password'")
+        migration_007_applied = cursor.fetchone() is not None
         cursor.close()
 
     missing = sorted(REQUIRED_TABLES - tables)
@@ -27,7 +29,10 @@ def main() -> int:
     if missing:
         print(f"Missing required tables: {missing}")
         return 1
-    print("P001 MySQL FD-06 schema check: PASS")
+    if not migration_007_applied:
+        print("Missing column users.must_change_password: apply migration 007.")
+        return 1
+    print("P001 MySQL FD-07 schema check: PASS")
     return 0
 
 

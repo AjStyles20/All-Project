@@ -69,6 +69,12 @@ The bridge also needs the EGPCV research store: set `P001_RESEARCH_DB_PATH` to t
 - Never commit it, copy it into the repository, or put it in any folder a web server serves.
 - The research store contains no names or user IDs; the code → person link stays in MySQL (`research_identities`) and is reachable only through administrator endpoints.
 
+## Step 3f — Apply migration 007
+In Workbench, with `p001_coding_exam` selected, execute **once**:
+`database/mysql/migrations/007_user_management.sql`.
+
+It adds `users.must_change_password`. MySQL has no `ADD COLUMN IF NOT EXISTS`, so running it twice reports a harmless duplicate-column error.
+
 ## Step 4 — Configure the application locally
 In PowerShell for the current terminal session:
 
@@ -91,14 +97,23 @@ python -m scripts.check_mysql_connection
 ```
 
 Expected final line:
-`P001 MySQL FD-06 schema check: PASS`.
+`P001 MySQL FD-07 schema check: PASS`.
+
+## Step 5b — Create the first administrator
+There is deliberately no web page or API for this. From the same folder, with the `P001_DB_*` variables set:
+
+```powershell
+python -m scripts.create_admin --username <name> --display-name "<full name>"
+```
+
+It asks for the password without echoing it. Passwords need 12 to 128 characters and must not contain the username. Sign in with that account to create everyone else: each new user gets a one-time password, shown once, and must change it at first sign-in.
 
 ## Step 6 — Run the live integration tests
 The live test is deliberately opt-in:
 
 ```powershell
 $env:P001_RUN_MYSQL_TESTS="1"
-python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py tests/integration/test_mysql_fd04_live.py tests/integration/test_mysql_fd05_live.py tests/integration/test_mysql_fd06_live.py -q
+python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py tests/integration/test_mysql_fd04_live.py tests/integration/test_mysql_fd05_live.py tests/integration/test_mysql_fd06_live.py tests/integration/test_mysql_fd07_live.py -q
 ```
 
 This creates a uniquely named temporary-style candidate account, logs in, verifies the principal/role, revokes the session and verifies the token is no longer accepted.

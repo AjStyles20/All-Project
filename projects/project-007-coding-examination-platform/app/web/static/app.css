@@ -106,3 +106,8 @@ details { margin-top: 12px; }
 form + form, table + form { margin-top: 12px; }
 td input, td select { width: 100%; }
 .card table { display: block; overflow-x: auto; }
+
+/* User administration */
+label.check { display: block; font-weight: 400; margin: 4px 0; }
+fieldset { border: 1px solid var(--border); border-radius: var(--radius); margin: 12px 0 0; }
+code { font: 1.05rem ui-monospace, "Cascadia Code", Consolas, monospace; overflow-wrap: anywhere; }

@@ -122,8 +122,7 @@ These were checked in a browser. **No screen-reader or user test has been done**
 - `GET /admin/research/examinations/{id}/questions`: ids and titles only.
 
 **Known gaps (shown truthfully in the UI, not worked around):**
-- There is no API to create users or list them, so candidates are assigned by typed user id and accounts must be created outside the UI.
-- There is no administrator list of examinations, so an exam is opened by its id, which the examiner's screen displays.
+- *(Resolved by FD-07: account administration, a candidate list for examiners, and an examination list for administrators.)*
 - Capability exceptions needing extra detail (for example an allowlist) can only be set through the API.
 - Sessions use one bearer token in `sessionStorage`, as in slice 1.
 

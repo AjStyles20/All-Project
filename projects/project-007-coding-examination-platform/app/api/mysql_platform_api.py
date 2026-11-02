@@ -4,7 +4,7 @@ from pathlib import Path
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime, timezone
-from fastapi import Depends, FastAPI, Header, HTTPException, status
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response, status
 from pydantic import BaseModel, Field
 from uuid import uuid4
 
@@ -42,7 +42,10 @@ from app.services.examination_service import (
     InvalidExaminationTransition, QuestionNotFoundError,
 )
 
-from app.domain.identity import Role
+from app.domain.identity import Role, UserConflictError, UserSummary
+from app.services.user_admin_service import (
+    MAX_PASSWORD_LENGTH, UserAdminService, UserNotFoundError, WrongPasswordError,
+)
 from app.persistence.mysql_database import MySQLDatabase, MySQLSettings
 from app.persistence.mysql_user_repository import MySQLUserRepository
 from app.services.auth_service import AuthenticationError, AuthService
@@ -92,6 +95,21 @@ class ExceptionInput(BaseModel):
     reason_category: ExceptionReason
     capability_overrides: dict = Field(default_factory=dict)
     extra_time_minutes: int = Field(default=0, ge=0, le=1440)
+
+class NewUserInput(BaseModel):
+    username: str = Field(min_length=1, max_length=100)
+    display_name: str = Field(min_length=1, max_length=150)
+    roles: set[Role] = Field(min_length=1)
+
+class ActiveInput(BaseModel):
+    active: bool
+
+class RolesInput(BaseModel):
+    roles: set[Role] = Field(min_length=1)
+
+class PasswordChangeInput(BaseModel):
+    current_password: str = Field(min_length=1, max_length=MAX_PASSWORD_LENGTH)
+    new_password: str = Field(min_length=1, max_length=MAX_PASSWORD_LENGTH)
 
 class ResearchLinkInput(BaseModel):
     examination_id: str = Field(min_length=1, max_length=64)
@@ -183,6 +201,13 @@ def _record_body(record: BridgeRecord) -> dict:
             "bridged_at": _iso(record.bridged_at)}
 
 
+def _user_body(user: UserSummary) -> dict:
+    # Never includes the password hash.
+    return {"user_id": user.user_id, "username": user.username, "display_name": user.display_name,
+            "is_active": user.is_active, "must_change_password": user.must_change_password,
+            "roles": sorted(role.value for role in user.roles)}
+
+
 def _mark_body(mark: ResponseMark) -> dict:
     return {"score": mark.score, "comment": mark.comment,
             "response_revision": mark.response_revision,
@@ -206,6 +231,10 @@ def _policy_errors():
         yield
     except ExaminationNotFoundError as exc:
         raise HTTPException(status_code=404, detail="Examination not found.") from exc
+    except UserNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except WrongPasswordError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except ResearchStoreNotConfigured as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except QuestionNotFoundError as exc:
@@ -215,7 +244,7 @@ def _policy_errors():
     except ExaminationOwnershipError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
     except (InvalidExaminationTransition, ExaminationConflictError, SessionConflictError,
-            MarkingConflictError, ResearchBridgeError) as exc:
+            MarkingConflictError, ResearchBridgeError, UserConflictError) as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -224,7 +253,7 @@ def _policy_errors():
 def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_service=None,
                               examination_service=None, candidate_session_service=None,
                               review_service=None, contract_service=None,
-                              research_bridge_service=None) -> FastAPI:
+                              research_bridge_service=None, user_admin_service=None) -> FastAPI:
     database = MySQLDatabase(settings)
     auth = auth_service or AuthService(MySQLUserRepository(database))
     examinations = examination_service or ExaminationService(MySQLExaminationRepository(database))
@@ -234,6 +263,7 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
     contracts = contract_service or ContractService(
         MySQLContractRepository(database), MySQLExaminationRepository(database),
         MySQLCandidateSessionRepository(database))
+    accounts = user_admin_service or UserAdminService(MySQLUserRepository(database))
     research_db_path = os.getenv("P001_RESEARCH_DB_PATH")
     research = research_bridge_service or ResearchBridgeService(
         MySQLResearchRepository(database),
@@ -246,7 +276,7 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
         MySQLExaminationRepository(database))
     app = FastAPI(title="P001 Intelligent Coding Examination Platform", version="0.3.0")
 
-    def current_principal(authorization: str | None = Header(default=None)):
+    def current_principal(request: Request, authorization: str | None = Header(default=None)):
         if not authorization or not authorization.startswith("Bearer "):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                 detail="Bearer authentication required.")
@@ -254,6 +284,9 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
         if principal is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                 detail="Invalid or expired session.")
+        # Enforced here, not only in the UI: a one-time password opens nothing else.
+        if principal.must_change_password and request.url.path not in ("/auth/me", "/auth/password", "/auth/logout"):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="PASSWORD_CHANGE_REQUIRED")
         return principal
 
     def require_roles(*roles: Role):
@@ -288,7 +321,16 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
     @app.get("/auth/me")
     def me(principal=Depends(current_principal)):
         return {"user_id": principal.user_id, "username": principal.username,
-                "roles": sorted(role.value for role in principal.roles)}
+                "roles": sorted(role.value for role in principal.roles),
+                "must_change_password": principal.must_change_password}
+
+    @app.post("/auth/password", status_code=204)
+    def change_password(payload: PasswordChangeInput, authorization: str | None = Header(default=None),
+                        principal=Depends(current_principal)):
+        with _policy_errors():
+            accounts.change_own_password(principal.user_id, payload.current_password, payload.new_password,
+                                         authorization[7:])
+        return None
 
     @app.get("/admin/ping")
     def admin_ping(principal=Depends(require_roles(Role.ADMINISTRATOR))):
@@ -455,6 +497,47 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
         return [_exception_body(exception) for exception in exceptions]
 
     administrator = require_roles(Role.ADMINISTRATOR)
+
+    @app.get("/examiner/candidates")
+    def list_candidates(principal=Depends(examiner)):
+        # Only what assignment needs: no roles, status or other account details.
+        return [{"user_id": u.user_id, "username": u.username, "display_name": u.display_name}
+                for u in accounts.list_candidates()]
+
+    @app.get("/admin/users")
+    def list_users(principal=Depends(administrator)):
+        return [_user_body(user) for user in accounts.list_users()]
+
+    @app.post("/admin/users", status_code=201)
+    def create_user(payload: NewUserInput, response: Response, principal=Depends(administrator)):
+        with _policy_errors():
+            user, password = accounts.create_user(payload.username, payload.display_name, payload.roles)
+        response.headers["Cache-Control"] = "no-store"
+        return {**_user_body(user), "one_time_password": password}
+
+    @app.patch("/admin/users/{user_id}/active", status_code=204)
+    def set_user_active(user_id: str, payload: ActiveInput, principal=Depends(administrator)):
+        with _policy_errors():
+            accounts.set_active(principal.user_id, user_id, payload.active)
+        return None
+
+    @app.put("/admin/users/{user_id}/roles", status_code=204)
+    def set_user_roles(user_id: str, payload: RolesInput, principal=Depends(administrator)):
+        with _policy_errors():
+            accounts.set_roles(principal.user_id, user_id, payload.roles)
+        return None
+
+    @app.post("/admin/users/{user_id}/password-reset")
+    def reset_user_password(user_id: str, response: Response, principal=Depends(administrator)):
+        with _policy_errors():
+            password = accounts.reset_password(user_id)
+        response.headers["Cache-Control"] = "no-store"
+        return {"one_time_password": password}
+
+    @app.get("/admin/examinations")
+    def list_all_examinations(principal=Depends(administrator)):
+        return [{"examination_id": e.examination_id, "title": e.title, "status": e.status.value}
+                for e in research.list_examinations()]
 
     # Research links are administrator-only so the marking examiner cannot route
     # their own students into research (DR-015 (3)).

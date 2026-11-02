@@ -1,23 +1,90 @@
-// Administrator research screens (FD-06, DR-015, DR-016). The API has no administrator
-// list of examinations yet, so an examination is opened by its id.
+// Administrator screens: research (FD-06, DR-015, DR-016) and users (FD-07).
 import { api, el, say, show, when, words } from "./core.js";
 
 const part = encodeURIComponent;
+const ROLES = ["CANDIDATE", "EXAMINER", "ADMINISTRATOR", "INDEPENDENT_ASSESSOR"];
 
 function textField(id, label, extra = {}, hint) {
   const input = el("input", { id, type: "text", ...extra });
   return { input, node: el("div", {}, el("label", { for: id, text: label }), input, hint ? el("p", { class: "meta", text: hint }) : null) };
 }
 
-export function adminHome() {
-  const exam = textField("admin-exam-id", "Examination id", { required: true, maxlength: 64 },
-    "Ask the examiner: it is shown on their examination screen. There is no administrator list of examinations yet.");
-  show(el("form", { class: "card", onsubmit: (event) => {
-    event.preventDefault();
-    location.hash = `#/admin/exam/${part(exam.input.value.trim())}`;
-  } },
-    el("h2", { text: "Research administration" }), exam.node,
-    el("div", { class: "actions" }, el("button", { type: "submit", class: "primary", text: "Open" }))));
+export async function adminHome() {
+  const exams = await api("GET", "/admin/examinations");
+  show(el("section", {},
+    el("h2", { text: "Research administration" }),
+    exams.length ? exams.map((exam) => el("article", { class: "card" },
+      el("h3", { text: exam.title }),
+      el("p", { class: "meta" }, el("span", { class: "badge", text: exam.status })),
+      el("div", { class: "actions" }, el("button", { type: "button", class: "primary", text: "Open research settings",
+        "aria-label": `Open research settings for ${exam.title}`,
+        onclick: () => { location.hash = `#/admin/exam/${part(exam.examination_id)}`; } })),
+    )) : el("p", { class: "card", text: "There are no examinations yet." })));
+}
+
+function oneTimePasswordCard(username, password) {
+  // Shown once: only the hash is stored, so it cannot be displayed again.
+  return el("div", { class: "card banner", role: "alert" },
+    el("h3", { text: `One-time password for ${username}` }),
+    el("p", {}, el("code", { text: password })),
+    el("p", { class: "meta", text: "Copy it now and give it to the user privately. It will not be shown again, and they must change it at first sign-in." }));
+}
+
+export async function usersView(banner) {
+  const users = await api("GET", "/admin/users");
+  const username = textField("new-user-name", "Username", { required: true, maxlength: 100, autocomplete: "off" });
+  const display = textField("new-user-display", "Display name", { required: true, maxlength: 150, autocomplete: "off" });
+  const roleBoxes = ROLES.map((role) => ({ role, box: el("input", { id: `new-role-${role}`, type: "checkbox" }) }));
+  const reload = (next) => usersView(next);
+  const act = async (run) => { try { await run(); } catch (error) { say(error.message, "error"); } };
+  const editRoles = (user) => {
+    const boxes = ROLES.map((role) => {
+      const box = el("input", { id: `role-${user.user_id}-${role}`, type: "checkbox" });
+      box.checked = user.roles.includes(role);
+      return { role, box };
+    });
+    return el("details", {}, el("summary", { text: "Roles" }),
+      boxes.map(({ role, box }) => el("label", { class: "check", for: box.id }, box, ` ${words(role)}`)),
+      el("button", { type: "button", text: "Save roles", "aria-label": `Save roles for ${user.username}`, onclick: () => act(async () => {
+        await api("PUT", `/admin/users/${part(user.user_id)}/roles`, { roles: boxes.filter((b) => b.box.checked).map((b) => b.role) });
+        say("Roles saved. They apply from the user's next request.");
+        reload();
+      }) }));
+  };
+  show(el("section", {},
+    el("h2", { text: "Users" }),
+    banner || null,
+    el("form", { class: "card", onsubmit: (event) => {
+      event.preventDefault();
+      act(async () => {
+        const created = await api("POST", "/admin/users", { username: username.input.value, display_name: display.input.value,
+          roles: roleBoxes.filter((r) => r.box.checked).map((r) => r.role) });
+        say(`Account ${created.username} created.`);
+        reload(oneTimePasswordCard(created.username, created.one_time_password));
+      });
+    } },
+      el("h3", { text: "New user" }), username.node, display.node,
+      el("fieldset", {}, el("legend", { text: "Roles" }),
+        roleBoxes.map(({ role, box }) => el("label", { class: "check", for: box.id }, box, ` ${words(role)}`))),
+      el("div", { class: "actions" }, el("button", { type: "submit", class: "primary", text: "Create user" }))),
+    users.map((user) => el("article", { class: "card" },
+      el("h3", { text: `${user.display_name} (${user.username})` }),
+      el("p", { class: "meta", text: `${user.roles.map(words).join(", ")} · ${user.is_active ? "active" : "deactivated"}${user.must_change_password ? " · has not chosen a password yet" : ""}` }),
+      editRoles(user),
+      el("div", { class: "actions" },
+        el("button", { type: "button", text: user.is_active ? "Deactivate" : "Reactivate",
+          "aria-label": `${user.is_active ? "Deactivate" : "Reactivate"} ${user.username}`, onclick: () => act(async () => {
+            await api("PATCH", `/admin/users/${part(user.user_id)}/active`, { active: !user.is_active });
+            say(`${user.username} ${user.is_active ? "deactivated and signed out" : "reactivated"}.`);
+            reload();
+          }) }),
+        el("button", { type: "button", text: "Reset password", "aria-label": `Reset password for ${user.username}`, onclick: () => act(async () => {
+          if (!confirm(`Reset the password for ${user.username}? They will be signed out.`)) return;
+          const result = await api("POST", `/admin/users/${part(user.user_id)}/password-reset`);
+          reload(oneTimePasswordCard(user.username, result.one_time_password));
+        }) })),
+    )),
+  ));
 }
 
 export async function adminExamView(examId) {

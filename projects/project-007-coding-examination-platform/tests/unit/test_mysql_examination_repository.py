@@ -27,6 +27,9 @@ class FakeCursor:
         # Scripted results for repository code that reads rows (e.g. contract binding).
         return self.database.fetch_results.pop(0) if self.database.fetch_results else None
 
+    def fetchall(self):
+        return self.database.fetch_all
+
     def close(self):
         pass
 
@@ -37,6 +40,7 @@ class FakeDatabase:
         self.raise_on_execute = raise_on_execute
         self.statements = []
         self.fetch_results = list(fetch_results or [])
+        self.fetch_all = []
 
     @contextmanager
     def connect(self):

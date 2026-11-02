@@ -111,8 +111,11 @@ export async function examinerHome() {
 
 export async function examView(examId) {
   const base = `/examiner/examinations/${part(examId)}`;
-  const [exam, questions, assignments] = await Promise.all([
-    api("GET", base), api("GET", "/examiner/questions"), api("GET", `${base}/assignments`)]);
+  const [exam, questions, assignments, candidates] = await Promise.all([
+    api("GET", base), api("GET", "/examiner/questions"), api("GET", `${base}/assignments`), api("GET", "/examiner/candidates")]);
+  const candidateNames = Object.fromEntries(candidates.map((c) => [c.user_id, `${c.display_name} (${c.username})`]));
+  const assigned = new Set(assignments.map((a) => a.candidate_user_id));
+  const assignable = candidates.filter((c) => !assigned.has(c.user_id));
   const reload = () => examView(examId);
   const isDraft = exam.status === "DRAFT";
 
@@ -135,7 +138,7 @@ export async function examView(examId) {
   const questionPick = selectInput("attach-question", available.map((q) => [q.question_id, q.title]));
   const order = textInput("attach-order", String(exam.questions.length + 1), { inputmode: "numeric" });
   const weight = textInput("attach-weight", "1", { inputmode: "numeric" });
-  const candidate = textInput("assign-candidate", "", { required: true, maxlength: 64 });
+  const candidate = selectInput("assign-candidate", assignable.map((c) => [c.user_id, candidateNames[c.user_id]]));
 
   show(el("section", {},
     el("h2", { text: exam.title }),
@@ -173,13 +176,13 @@ export async function examView(examId) {
         el("div", { class: "actions" }, el("button", { type: "submit", text: "Attach" }))) : null),
     el("div", { class: "card" },
       el("h3", { text: "Candidates" }),
-      assignments.length ? el("ul", {}, assignments.map((a) => el("li", { text: a.candidate_user_id })))
+      assignments.length ? el("ul", {}, assignments.map((a) => el("li", { text: candidateNames[a.candidate_user_id] || `${a.candidate_user_id} (inactive)` })))
         : el("p", { class: "meta", text: "No candidates assigned." }),
-      ["CLOSED", "ARCHIVED"].includes(exam.status) ? null : el("form", { onsubmit: async (event) => {
+      ["CLOSED", "ARCHIVED"].includes(exam.status) || !assignable.length ? null : el("form", { onsubmit: async (event) => {
         event.preventDefault();
         if (await attempt(() => api("POST", `${base}/assignments`, { candidate_user_id: candidate.value }), "Candidate assigned.")) reload();
       } },
-        field("Assign by user id", candidate, "There is no user directory yet, so enter the candidate's user id."),
+        field("Assign a candidate", candidate),
         el("div", { class: "actions" }, el("button", { type: "submit", text: "Assign" })))),
   ));
 }

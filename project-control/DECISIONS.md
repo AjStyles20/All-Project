@@ -268,3 +268,17 @@ DECISION REQUEST DR-013
 - Files/components affected: `projects/project-011-geopolitical-economic-risk/`, P003 status summaries, future portfolio handoffs.
 - Approved by: AJ through continuation of the authorized implementation workflow.
 - Record history: originally recorded as **DR-011** on branch `p003-etec-implementation` on 2026-09-20. It was renumbered to DR-018 when `main` was merged into that branch on 2026-10-30, because DR-011 to DR-017 had meanwhile been assigned on `main` and on P001 PR #25. The decision content is unchanged. The branch also carried an earlier 2026-09-17 wording of DR-010; `main`'s DR-010 (2026-09-20) is the canonical record and the branch wording is superseded as a draft.
+
+
+## DR-019 — P001 account model: script-created first administrator, server-enforced one-time passwords
+- Date: 2026-11-02
+- Status: Implemented; design choices made by the implementing agent, **flagged for AJ review**
+- Authority level: A2
+- Context: AJ asked for user management (FD-07). The account model needed these choices.
+- Decision:
+  1. The first administrator is created only by a command-line script, never through the API.
+  2. Administrators issue generated one-time passwords, shown once. The server blocks everything else until the user changes them.
+  3. The last active administrator cannot be deactivated or demoted (row-locked check).
+  4. Examiners can list active candidates (id, username, display name) to assign them.
+- Consequences: migration 007. Login rate limiting and timing-safe username handling remain open (`FD07_USER_MANAGEMENT_DESIGN.md`).
+- Approved by: pending AJ review of the PR.

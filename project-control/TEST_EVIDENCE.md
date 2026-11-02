@@ -227,3 +227,23 @@ All verification evidence should be reproducible where practical. Do not record 
 - Automated: full suite 278 passed, 6 skipped.
 - Status: PASS (implementing agent's own run; no screen-reader, real-user or independent verification)
 - Performed by: Claude Code (Engineering)
+
+### TE-017 — P001 FD-07 user management, live and browser
+- Date: 2026-11-02
+- Requirement(s): baseline FR-02; DR-019
+- Test type: Live + browser + full regression
+- Environment: fresh disposable MySQL 8.4.9 (migrations 001–007, least-privilege `p001_app`); built-in browser; uvicorn on 127.0.0.1:8001.
+- Observed result, live: full suite with `P001_RUN_MYSQL_TESTS=1` at `7a64cf3`: schema check PASS; **306 passed, 0 skipped**.
+- Observed result, browser:
+  - **First administrator:** created by the real script against that database.
+  - **First sign-in:** the new user was held on the forced-change screen; the API returned 403 `PASSWORD_CHANGE_REQUIRED`; a password containing the username and a mismatched repeat were refused.
+  - **Reset:** a live session went from 200 to 401 and the old one-time password was refused.
+  - **Deactivate:** a live session went from 200 to 401 and login was refused; reactivation did not revive the old session.
+  - **Self-deactivation:** refused.
+  - **Lecturer:** assigned a candidate from the list; `/admin/users` returned 403.
+  - **Administrator:** saw the exam list.
+  - **CSP:** no refusals in the console.
+- Test-script defect: a first reset check used a token already signed out, so its 401 proved nothing; it was redone with live sessions.
+- Application defects found and fixed: validation errors displayed as "Request failed (422)" (`core.js`, changed after the live run and rechecked in the browser); a forced change on `#/home` could leave the user stuck on the form (found by code reading, fixed before the run).
+- Status: PASS (implementing agent's own run; not independent verification or a security review)
+- Performed by: Claude Code (Engineering)

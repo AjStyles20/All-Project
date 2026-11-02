@@ -7,7 +7,8 @@ REQUIRED_TABLES = {"users", "user_roles", "auth_sessions", "examinations", "ques
                    "response_marks", "response_mark_history",
                    "examination_result_releases", "capability_contracts", "contract_exceptions",
                    "research_links", "research_consent_events", "research_identities",
-                   "research_bridge_records", "research_withdrawal_log"}
+                   "research_bridge_records", "research_withdrawal_log",
+                   "login_throttle", "account_audit_events"}
 
 
 def main() -> int:
@@ -32,7 +33,7 @@ def main() -> int:
     if not migration_007_applied:
         print("Missing column users.must_change_password: apply migration 007.")
         return 1
-    print("P001 MySQL FD-07 schema check: PASS")
+    print("P001 MySQL FD-08 schema check: PASS")
     return 0
 
 

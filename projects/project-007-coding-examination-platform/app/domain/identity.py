@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
 
 class Role(str, Enum):
@@ -31,3 +32,25 @@ class UserSummary:
 
 class UserConflictError(ValueError):
     """The change collides with existing accounts or would lock administrators out."""
+
+
+class AuditAction(str, Enum):
+    USER_CREATED = "USER_CREATED"
+    ROLES_CHANGED = "ROLES_CHANGED"
+    DEACTIVATED = "DEACTIVATED"
+    REACTIVATED = "REACTIVATED"
+    PASSWORD_RESET = "PASSWORD_RESET"
+    PASSWORD_CHANGED = "PASSWORD_CHANGED"
+    LOGIN_LOCKED = "LOGIN_LOCKED"
+    LOGIN_LOCK_CLEARED = "LOGIN_LOCK_CLEARED"
+
+
+@dataclass(frozen=True)
+class AuditEvent:
+    """Never holds passwords or hashes. actor_user_id is None for script or automatic events."""
+    occurred_at: datetime
+    action: AuditAction
+    actor_user_id: str | None
+    target_user_id: str
+    target_username: str
+    detail: dict = field(default_factory=dict)

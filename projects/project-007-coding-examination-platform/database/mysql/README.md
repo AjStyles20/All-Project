@@ -75,6 +75,14 @@ In Workbench, with `p001_coding_exam` selected, execute **once**:
 
 It adds `users.must_change_password`. MySQL has no `ADD COLUMN IF NOT EXISTS`, so running it twice reports a harmless duplicate-column error.
 
+## Step 3g — Apply migration 008
+In Workbench, with `p001_coding_exam` selected, execute:
+`database/mysql/migrations/008_login_protection_and_audit.sql`.
+
+It creates `login_throttle` (failed sign-in counters, stored as hashes) and `account_audit_events` (a record of account changes).
+
+**Behind a reverse proxy,** sign-in limits only work per client if uvicorn is told to trust that proxy (`--proxy-headers --forwarded-allow-ips=<proxy ip>`). Otherwise every user appears to share the proxy's address.
+
 ## Step 4 — Configure the application locally
 In PowerShell for the current terminal session:
 
@@ -97,7 +105,7 @@ python -m scripts.check_mysql_connection
 ```
 
 Expected final line:
-`P001 MySQL FD-07 schema check: PASS`.
+`P001 MySQL FD-08 schema check: PASS`.
 
 ## Step 5b — Create the first administrator
 There is deliberately no web page or API for this. From the same folder, with the `P001_DB_*` variables set:
@@ -113,7 +121,7 @@ The live test is deliberately opt-in:
 
 ```powershell
 $env:P001_RUN_MYSQL_TESTS="1"
-python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py tests/integration/test_mysql_fd04_live.py tests/integration/test_mysql_fd05_live.py tests/integration/test_mysql_fd06_live.py tests/integration/test_mysql_fd07_live.py -q
+python -m pytest tests/integration/test_mysql_identity_live.py tests/integration/test_mysql_fd02_live.py tests/integration/test_mysql_fd03_live.py tests/integration/test_mysql_fd04_live.py tests/integration/test_mysql_fd05_live.py tests/integration/test_mysql_fd06_live.py tests/integration/test_mysql_fd07_live.py tests/integration/test_mysql_fd08_live.py -q
 ```
 
 This creates a uniquely named temporary-style candidate account, logs in, verifies the principal/role, revokes the session and verifies the token is no longer accepted.

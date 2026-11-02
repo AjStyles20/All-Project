@@ -23,14 +23,14 @@ def service_with_admin():
 
 def test_created_user_has_one_time_password_stored_only_as_a_hash():
     service, repo = service_with_admin()
-    user, password = service.create_user("  Student.One ", "Student One", {Role.CANDIDATE})
+    user, password = service.create_user("admin-1", "  Student.One ", "Student One", {Role.CANDIDATE})
     assert user.username == "student.one" and user.must_change_password
     stored = repo.get_by_id(user.user_id).password_hash
     assert password not in stored and verify_password(password, stored)
     with pytest.raises(UserConflictError):
-        service.create_user("student.one", "Again", {Role.CANDIDATE})
+        service.create_user("admin-1", "student.one", "Again", {Role.CANDIDATE})
     with pytest.raises(ValueError):
-        service.create_user("nobody", "No Roles", set())
+        service.create_user("admin-1", "nobody", "No Roles", set())
 
 
 def test_password_rules():
@@ -45,7 +45,7 @@ def test_password_rules():
 
 def test_change_own_password_clears_flag_and_signs_out_other_devices():
     service, repo = service_with_admin()
-    user, temp = service.create_user("student", "Student", {Role.CANDIDATE})
+    user, temp = service.create_user("admin-1", "student", "Student", {Role.CANDIDATE})
     repo.sessions = {token_digest("this-device"): user.user_id, token_digest("other-device"): user.user_id,
                      token_digest("someone-else"): "admin-1"}
     with pytest.raises(WrongPasswordError):
@@ -60,20 +60,20 @@ def test_change_own_password_clears_flag_and_signs_out_other_devices():
 
 def test_reset_issues_new_one_time_password_and_revokes_all_sessions():
     service, repo = service_with_admin()
-    user, old = service.create_user("student", "Student", {Role.CANDIDATE})
+    user, old = service.create_user("admin-1", "student", "Student", {Role.CANDIDATE})
     service.change_own_password(user.user_id, old, "a-long-enough-one", "t")
     repo.sessions = {token_digest("t"): user.user_id}
-    new = service.reset_password(user.user_id)
+    new = service.reset_password("admin-1", user.user_id)
     assert repo.sessions == {}
     assert repo.principal_for_user(user.user_id).must_change_password
     assert verify_password(new, repo.get_by_id(user.user_id).password_hash)
     with pytest.raises(UserNotFoundError):
-        service.reset_password("missing")
+        service.reset_password("admin-1", "missing")
 
 
 def test_deactivation_blocks_access_and_revokes_sessions():
     service, repo = service_with_admin()
-    user, _ = service.create_user("student", "Student", {Role.CANDIDATE})
+    user, _ = service.create_user("admin-1", "student", "Student", {Role.CANDIDATE})
     repo.sessions = {token_digest("t"): user.user_id}
     service.set_active("admin-1", user.user_id, False)
     assert repo.principal_for_user(user.user_id) is None and repo.sessions == {}
@@ -90,7 +90,7 @@ def test_administrators_cannot_be_locked_out():
     with pytest.raises(UserConflictError, match="own administrator"):
         service.set_roles("admin-1", "admin-1", {Role.EXAMINER})
     # Another administrator acting on the last one: the repository guard refuses.
-    second, _ = service.create_user("second", "Second", {Role.ADMINISTRATOR})
+    second, _ = service.create_user("admin-1", "second", "Second", {Role.ADMINISTRATOR})
     service.set_active("admin-1", second.user_id, False)
     with pytest.raises(UserConflictError, match="last active"):
         service.set_active(second.user_id, "admin-1", False)

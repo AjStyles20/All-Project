@@ -78,6 +78,10 @@ export async function usersView(banner) {
             say(`${user.username} ${user.is_active ? "deactivated and signed out" : "reactivated"}.`);
             reload();
           }) }),
+        el("button", { type: "button", text: "Clear sign-in lock", "aria-label": `Clear sign-in lock for ${user.username}`, onclick: () => act(async () => {
+          const result = await api("POST", `/admin/users/${part(user.user_id)}/clear-login-lock`);
+          say(result.cleared ? `Sign-in lock cleared for ${user.username}.` : `${user.username} had no sign-in lock.`);
+        }) }),
         el("button", { type: "button", text: "Reset password", "aria-label": `Reset password for ${user.username}`, onclick: () => act(async () => {
           if (!confirm(`Reset the password for ${user.username}? They will be signed out.`)) return;
           const result = await api("POST", `/admin/users/${part(user.user_id)}/password-reset`);
@@ -160,4 +164,18 @@ export async function adminExamView(examId) {
           : el("p", { class: "meta", text: "None." }));
       })), identities),
   ));
+}
+
+export async function auditView() {
+  const events = await api("GET", "/admin/audit");
+  show(el("section", {},
+    el("h2", { text: "Account audit trail" }),
+    el("p", { class: "meta", text: "Newest first. Passwords are never recorded." }),
+    el("div", { class: "card" }, events.length ? el("table", {},
+      el("thead", {}, el("tr", {}, ["When", "Action", "Account", "By", "Detail"].map((h) => el("th", { text: h })))),
+      el("tbody", {}, events.map((e) => el("tr", {},
+        el("td", { text: when(e.occurred_at) }), el("td", { text: words(e.action) }), el("td", { text: e.target_username }),
+        el("td", { text: e.actor_user_id || "system" }),
+        el("td", { text: Object.entries(e.detail).map(([k, v]) => `${words(k)}: ${Array.isArray(v) ? v.join(", ") : v}`).join("; ") || "—" })))))
+      : el("p", { class: "meta", text: "No account changes recorded yet." }))));
 }

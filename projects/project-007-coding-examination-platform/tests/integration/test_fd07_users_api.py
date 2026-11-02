@@ -6,7 +6,8 @@ from app.persistence.user_repository import UserRecord
 from app.security.passwords import hash_password
 from app.services.auth_service import AuthService
 from app.services.user_admin_service import UserAdminService
-from tests.user_fakes import InMemoryUserRepository
+from app.services.login_guard import LoginGuard
+from tests.user_fakes import InMemoryLoginThrottleRepository, InMemoryUserRepository
 
 
 class SessionAuth:
@@ -41,7 +42,9 @@ def setup():
     repo = InMemoryUserRepository()
     repo.create(UserRecord("admin-1", "root", hash_password("AdminPassword123"), "Root", True), {Role.ADMINISTRATOR})
     repo.create(UserRecord("lect-1", "lecturer", hash_password("LecturerPass123"), "Lecturer", True), {Role.EXAMINER})
-    client = TestClient(create_mysql_platform_app(auth_service=SessionAuth(repo), user_admin_service=UserAdminService(repo)))
+    guard = LoginGuard(InMemoryLoginThrottleRepository())
+    client = TestClient(create_mysql_platform_app(auth_service=SessionAuth(repo),
+                                                  user_admin_service=UserAdminService(repo, guard), login_guard=guard))
     return client, repo
 
 

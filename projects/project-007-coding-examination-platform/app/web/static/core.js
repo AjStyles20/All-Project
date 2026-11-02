@@ -43,7 +43,11 @@ export function when(iso) {
 
 export class ApiError extends Error {
   constructor(status, detail) {
-    super(typeof detail === "string" ? detail : `Request failed (${status}).`);
+    // FastAPI validation errors arrive as a list of {loc, msg}; name the field in plain words.
+    const listed = Array.isArray(detail)
+      ? detail.map((d) => `${d.loc ? String(d.loc[d.loc.length - 1]).replace(/_/g, " ") + ": " : ""}${d.msg}`).join("; ")
+      : null;
+    super(typeof detail === "string" ? detail : listed || `Request failed (${status}).`);
     this.status = status;
   }
 }

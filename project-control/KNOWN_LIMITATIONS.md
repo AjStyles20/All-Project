@@ -18,3 +18,11 @@ No actual Project 001 application has been instantiated yet.
 
 ## KL-005 — Human approval remains required for A3 decisions
 The system is intentionally not designed to autonomously change project identity, objectives, methodology, core stack, or major scope.
+
+
+## P001 security gaps to close before public or real-student deployment (2026-11-02)
+- Login has no rate limit or lockout (PROJECT_RULES §22).
+- Login timing reveals whether a username exists.
+- Account changes have no audit trail.
+
+See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MANAGEMENT_DESIGN.md`.

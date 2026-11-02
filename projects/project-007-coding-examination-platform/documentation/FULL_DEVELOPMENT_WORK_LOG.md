@@ -397,3 +397,11 @@ Design: `UI_SLICE1_CANDIDATE_DESIGN.md` (Figures 4.1, 4.2). Browser-verified aga
 Added examiner and administrator screens, the contract-schema and admin question-list endpoints, and split the JS into modules (documented in `UI_SLICE1_CANDIDATE_DESIGN.md`). `main` (P003) was merged into `p001-ui-candidate`, resolving an append conflict between DR-017 and DR-018. Browser evidence: TE-016.
 
 **Test-tooling note:** several browser script failures were caused by fixed waits in the test script, not the application; the script was changed to wait for elements. No application fault was found behind them.
+
+
+## 2026-11-02 — FD-07: user management (Claude Code, Engineering)
+**Branch:** `p001-fd07-user-management`, from main at `40ae970`.
+
+Implemented migration 007, `UserAdminService`, `scripts/create_admin.py`, the account endpoints, and the Users and Change-password screens. Examiners now pick candidates from a list and administrators pick examinations from a list. Design: `FD07_USER_MANAGEMENT_DESIGN.md`. Evidence: TE-017. Design choices are recorded in DR-019 for AJ's review.
+
+**Flagged, not built:** login rate limiting and lockout, timing-safe login, and an account audit trail.

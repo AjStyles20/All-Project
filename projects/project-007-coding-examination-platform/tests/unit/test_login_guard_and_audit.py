@@ -29,43 +29,80 @@ def guard_and_clock():
 
 
 def fail(guard, user="ada", ip="10.0.0.1", times=1):
-    return [guard.record_failure(user, ip) for _ in range(times)][-1]
+    """Full attempts that end in a wrong password, in the order the API runs them."""
+    result = False
+    for _ in range(times):
+        guard.begin(user, ip)
+        result = guard.attempt_failed(user, ip)
+    return result
 
 
 def test_lock_after_limit_then_expires():
     guard, clock = guard_and_clock()
     assert fail(guard, times=USER_FAILURE_LIMIT - 1) is False
-    guard.check("ada", "10.0.0.1")
     assert fail(guard) is True  # this failure caused the lock
     with pytest.raises(LoginThrottled) as locked:
-        guard.check("ada", "10.0.0.1")
+        guard.begin("ada", "10.0.0.1")
     assert 0 < locked.value.retry_after_seconds <= 900
     clock.now = T0 + timedelta(minutes=16)
-    guard.check("ada", "10.0.0.1")
+    guard.begin("ada", "10.0.0.1")
+
+
+def test_parallel_attempts_cannot_exceed_the_limit():
+    # The bug found in browser testing: requests all pass the lock check while earlier ones
+    # are still hashing. Here none has finished, and the locked_until check is blinded, so
+    # only the atomic count can stop them.
+    guard, _ = guard_and_clock()
+    guard.repository.locked_until = lambda keys: None
+    allowed = throttled = 0
+    for _ in range(USER_FAILURE_LIMIT + 10):
+        try:
+            guard.begin("ada", "10.0.0.1")
+            allowed += 1
+        except LoginThrottled:
+            throttled += 1
+    assert (allowed, throttled) == (USER_FAILURE_LIMIT, 10)
+
+
+def test_correct_password_on_the_last_allowed_attempt_still_works():
+    guard, _ = guard_and_clock()
+    fail(guard, times=USER_FAILURE_LIMIT - 1)
+    guard.begin("ada", "10.0.0.1")
+    guard.attempt_succeeded("ada", "10.0.0.1")
+    fail(guard, times=USER_FAILURE_LIMIT - 1)  # the count started again
+    guard.begin("ada", "10.0.0.1")
 
 
 def test_attacker_elsewhere_cannot_lock_the_real_user_out():
     guard, _ = guard_and_clock()
     fail(guard, ip="203.0.113.9", times=USER_FAILURE_LIMIT)
     with pytest.raises(LoginThrottled):
-        guard.check("ada", "203.0.113.9")
-    guard.check("ada", "10.0.0.1")  # same account, different address: unaffected
+        guard.begin("ada", "203.0.113.9")
+    guard.begin("ada", "10.0.0.1")  # same account, different address: unaffected
 
 
 def test_unknown_usernames_lock_exactly_like_real_ones():
     guard, _ = guard_and_clock()
     fail(guard, user="no-such-person", times=USER_FAILURE_LIMIT)
     with pytest.raises(LoginThrottled):
-        guard.check("no-such-person", "10.0.0.1")
+        guard.begin("no-such-person", "10.0.0.1")
 
 
 def test_ip_wide_limit_stops_spraying_many_usernames():
     guard, _ = guard_and_clock()
     for n in range(IP_FAILURE_LIMIT):
-        guard.record_failure(f"user{n}", "198.51.100.7")
+        fail(guard, user=f"user{n}", ip="198.51.100.7")
     with pytest.raises(LoginThrottled):
-        guard.check("brand-new-name", "198.51.100.7")
-    guard.check("brand-new-name", "10.0.0.1")
+        guard.begin("brand-new-name", "198.51.100.7")
+    guard.begin("brand-new-name", "10.0.0.1")
+
+
+def test_a_lab_signing_in_correctly_from_one_ip_is_never_throttled():
+    guard, _ = guard_and_clock()
+    for n in range(IP_FAILURE_LIMIT * 3):
+        guard.begin(f"student{n}", "192.0.2.1")
+        guard.attempt_succeeded(f"student{n}", "192.0.2.1")
+    guard.begin("one-more", "192.0.2.1")
 
 
 def test_old_failures_fall_out_of_the_window():
@@ -73,16 +110,16 @@ def test_old_failures_fall_out_of_the_window():
     fail(guard, times=USER_FAILURE_LIMIT - 1)
     clock.now = T0 + timedelta(minutes=16)
     assert fail(guard) is False
-    guard.check("ada", "10.0.0.1")
+    guard.begin("ada", "10.0.0.1")
 
 
-def test_success_clears_the_pair_but_not_the_ip_counter():
+def test_success_clears_the_pair_but_keeps_earlier_ip_failures():
     guard, _ = guard_and_clock()
-    fail(guard, times=USER_FAILURE_LIMIT - 1)
-    guard.record_success("ada", "10.0.0.1")
-    assert fail(guard) is False
-    repo = guard.repository
-    assert any(row["count"] >= USER_FAILURE_LIMIT for row in repo.rows.values())  # the IP row kept counting
+    fail(guard, times=3)
+    guard.begin("ada", "10.0.0.1")
+    guard.attempt_succeeded("ada", "10.0.0.1")
+    from app.services.login_guard import ip_key
+    assert guard.repository.rows[ip_key("10.0.0.1")]["count"] == 3
 
 
 def test_stored_keys_never_contain_what_was_typed():
@@ -98,8 +135,8 @@ def test_administrator_clear_works_from_any_ip():
     fail(guard, ip="10.0.0.1", times=USER_FAILURE_LIMIT)
     fail(guard, ip="10.0.0.2", times=USER_FAILURE_LIMIT)
     assert guard.clear_user("ADA ") == 2
-    guard.check("ada", "10.0.0.1")
-    guard.check("ada", "10.0.0.2")
+    guard.begin("ada", "10.0.0.1")
+    guard.begin("ada", "10.0.0.2")
 
 
 # ---- timing ----
@@ -167,14 +204,15 @@ def test_reset_lifts_the_lock_and_clearing_is_audited():
     assert repo.audit[-1].action is AuditAction.LOGIN_LOCK_CLEARED
     fail(guard, user="root", times=USER_FAILURE_LIMIT)
     service.reset_password("admin-1", "admin-1")
-    guard.check("root", "10.0.0.1")
+    guard.begin("root", "10.0.0.1")
 
 
 # ---- SQL contract ----
 
-def test_failure_counter_is_one_atomic_upsert_reading_old_values_first():
-    database = FakeDatabase(fetch_results=[(1, None)])
-    MySQLLoginThrottleRepository(database).record_failure("k", "s", 5, T0, T0 - timedelta(minutes=15), T0 + timedelta(minutes=15))
+def test_attempt_count_is_one_atomic_upsert_reading_old_values_first():
+    database = FakeDatabase(fetch_results=[(3,)])
+    position = MySQLLoginThrottleRepository(database).reserve("k", "s", 5, T0, T0 - timedelta(minutes=15), T0 + timedelta(minutes=15))
+    assert position == 3
     sql = database.statements[0][0]
     assert sql.index("locked_until = IF") < sql.index("failed_count = IF") < sql.index("window_started_at = IF")
 

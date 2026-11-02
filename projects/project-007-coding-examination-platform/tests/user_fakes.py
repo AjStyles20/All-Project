@@ -79,7 +79,7 @@ class InMemoryUserRepository:
 
 
 class InMemoryLoginThrottleRepository:
-    """Mirrors the SQL upsert: window reset, lock when the limit is reached."""
+    """Mirrors the SQL upsert: window reset, lock when the limit is reached, position returned."""
     def __init__(self):
         self.rows = {}  # key -> dict(subject, count, started, locked)
 
@@ -87,7 +87,7 @@ class InMemoryLoginThrottleRepository:
         locks = [self.rows[k]["locked"] for k in keys if k in self.rows and self.rows[k]["locked"]]
         return max(locks) if locks else None
 
-    def record_failure(self, key, subject_key, limit, now, window_cutoff, lock_until):
+    def reserve(self, key, subject_key, limit, now, window_cutoff, lock_until):
         row = self.rows.get(key)
         if row is None:
             self.rows[key] = row = {"subject": subject_key, "count": 1, "started": now, "locked": None}
@@ -97,7 +97,11 @@ class InMemoryLoginThrottleRepository:
                 row["locked"] = lock_until
         else:
             row.update(count=1, started=now)
-        return row["count"] == limit and row["locked"] is not None and row["locked"] > now
+        return row["count"]
+
+    def refund(self, key):
+        if key in self.rows:
+            self.rows[key]["count"] = max(self.rows[key]["count"] - 1, 0)
 
     def clear(self, keys):
         for key in keys:

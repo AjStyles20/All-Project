@@ -61,3 +61,15 @@ def test_forged_forwarded_header_does_not_dodge_the_limit():
 def test_oversized_login_input_is_rejected_before_hashing():
     client, _ = setup()
     assert client.post("/auth/login", json={"username": "lecturer", "password": "x" * 1025}).status_code == 422
+
+
+def test_parallel_wrong_passwords_through_the_api_stop_at_the_limit():
+    # Regression for the race found in browser testing (TE-018): real threads, real hashing.
+    from concurrent.futures import ThreadPoolExecutor
+
+    client, _ = setup()
+    with ThreadPoolExecutor(max_workers=12) as pool:
+        codes = list(pool.map(lambda _: bad_login(client).status_code, range(12)))
+    assert codes.count(401) == USER_FAILURE_LIMIT and codes.count(429) == 12 - USER_FAILURE_LIMIT
+    right = client.post("/auth/login", json={"username": "lecturer", "password": "LecturerPass123"})
+    assert right.status_code == 429

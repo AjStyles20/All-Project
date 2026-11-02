@@ -25,23 +25,35 @@ def test_mysql_fd08_throttle_counts_atomically_and_expires():
     moment = {"now": datetime.now(timezone.utc).replace(tzinfo=None)}
     guard = LoginGuard(MySQLLoginThrottleRepository(database), lambda: moment["now"])
 
-    # Simultaneous failures must not under-count: exactly the limit locks.
-    threads = [threading.Thread(target=guard.record_failure, args=(name, ip)) for _ in range(USER_FAILURE_LIMIT)]
+    # Of many simultaneous attempts, exactly the limit get through on a real server.
+    results = []
+
+    def attempt():
+        try:
+            guard.begin(name, ip)
+            results.append("allowed")
+        except LoginThrottled:
+            results.append("throttled")
+
+    threads = [threading.Thread(target=attempt) for _ in range(USER_FAILURE_LIMIT + 7)]
     for t in threads:
         t.start()
     for t in threads:
         t.join()
+    assert results.count("allowed") == USER_FAILURE_LIMIT and results.count("throttled") == 7
+    assert guard.attempt_failed(name, ip) is True
     with pytest.raises(LoginThrottled):
-        guard.check(name, ip)
-    guard.check(name, "192.0.2.251")  # same name elsewhere: not locked
+        guard.begin(name, ip)
+    guard.begin(name, "192.0.2.251")  # same name elsewhere: not locked
+    guard.attempt_succeeded(name, "192.0.2.251")
 
     moment["now"] += timedelta(minutes=16)
-    guard.check(name, ip)  # the lock expired
-    assert guard.record_failure(name, ip) is False  # a fresh window starts at one
+    guard.begin(name, ip)  # the lock expired and a fresh window starts
+    assert guard.attempt_failed(name, ip) is False
 
     assert guard.clear_user(name) == 1
     moment["now"] += timedelta(hours=1)
-    guard.record_success("fd08-other-" + uuid4().hex[:6], ip)  # triggers the purge
+    guard.attempt_succeeded("fd08-other-" + uuid4().hex[:6], ip)  # triggers the purge
     with database.connect() as connection:
         cursor = connection.cursor()
         cursor.execute("SELECT COUNT(*) FROM login_throttle WHERE window_started_at < %s",

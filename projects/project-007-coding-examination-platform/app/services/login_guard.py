@@ -4,6 +4,10 @@ Lockouts on an exam platform can be weaponised: anyone could lock a classmate ou
 an exam opens. So the per-user limit is keyed on (username, client IP), locks are short,
 existing sessions are never affected, and administrators can clear a lock. Unknown
 usernames are counted exactly like real ones, so a lock reveals nothing about who exists.
+
+Attempts are counted BEFORE the slow password hash. Counting afterwards lets parallel
+requests all pass the check while each is still hashing, so a burst of guesses could
+exceed the limit (found in browser testing, TE-018).
 """
 import hashlib
 from datetime import datetime, timedelta, timezone
@@ -47,22 +51,31 @@ class LoginGuard:
         self.repository = repository
         self.clock = clock
 
-    def check(self, username: str, client_ip: str) -> None:
+    def begin(self, username: str, client_ip: str) -> None:
+        """Claim one attempt, or raise LoginThrottled. Call before verifying the password."""
         now = self.clock()
         latest = self.repository.locked_until([user_key(username, client_ip), ip_key(client_ip)])
         if latest is not None and latest > now:
             raise LoginThrottled(max(1, int((latest - now).total_seconds())))
+        # The atomic count decides, not the check above: of N parallel requests, exactly
+        # the first `limit` get through, whatever order they arrive in.
+        cutoff, lock_until = now - WINDOW, now + LOCK
+        over_ip = self.repository.reserve(ip_key(client_ip), None, IP_FAILURE_LIMIT, now, cutoff, lock_until) > IP_FAILURE_LIMIT
+        over_user = self.repository.reserve(user_key(username, client_ip), subject_key(username),
+                                            USER_FAILURE_LIMIT, now, cutoff, lock_until) > USER_FAILURE_LIMIT
+        if over_ip or over_user:
+            raise LoginThrottled(int(LOCK.total_seconds()))
 
-    def record_failure(self, username: str, client_ip: str) -> bool:
-        """Returns True if this failure just locked the (username, IP) pair."""
-        now = self.clock()
-        self.repository.record_failure(ip_key(client_ip), None, IP_FAILURE_LIMIT, now, now - WINDOW, now + LOCK)
-        return self.repository.record_failure(user_key(username, client_ip), subject_key(username),
-                                              USER_FAILURE_LIMIT, now, now - WINDOW, now + LOCK)
+    def attempt_failed(self, username: str, client_ip: str) -> bool:
+        """The attempt stays counted. True if this user and IP are now locked."""
+        latest = self.repository.locked_until([user_key(username, client_ip)])
+        return latest is not None and latest > self.clock()
 
-    def record_success(self, username: str, client_ip: str) -> None:
-        # Only this pair: one successful login must not reset an IP-wide attack counter.
+    def attempt_succeeded(self, username: str, client_ip: str) -> None:
         self.repository.clear([user_key(username, client_ip)])
+        # Refund the IP count: a lab of 100 students signing in correctly must not trip
+        # the IP-wide limit. Earlier failures from this IP stay counted.
+        self.repository.refund(ip_key(client_ip))
         self.repository.purge_older_than(self.clock() - WINDOW - LOCK)
 
     def clear_user(self, username: str) -> int:

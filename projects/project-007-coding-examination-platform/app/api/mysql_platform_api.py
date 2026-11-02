@@ -319,16 +319,16 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
         # the limit. Behind a proxy, configure uvicorn's --proxy-headers explicitly.
         client_ip = request.client.host if request.client else "unknown"
         try:
-            guard.check(payload.username, client_ip)
+            guard.begin(payload.username, client_ip)
             token, expires = auth.login(payload.username, payload.password)
         except LoginThrottled as exc:
             raise HTTPException(status_code=429, detail=str(exc),
                                 headers={"Retry-After": str(exc.retry_after_seconds)}) from exc
         except AuthenticationError as exc:
-            if guard.record_failure(payload.username, client_ip):
+            if guard.attempt_failed(payload.username, client_ip):
                 accounts.record_login_lock(payload.username, client_ip)
             raise HTTPException(status_code=401, detail=str(exc)) from exc
-        guard.record_success(payload.username, client_ip)
+        guard.attempt_succeeded(payload.username, client_ip)
         return {"access_token": token, "token_type": "bearer",
                 "expires_at": expires.isoformat()}
 

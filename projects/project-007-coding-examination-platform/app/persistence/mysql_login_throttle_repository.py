@@ -17,9 +17,10 @@ class MySQLLoginThrottleRepository:
             cursor.close()
         return row[0] if row else None
 
-    def record_failure(self, key: str, subject_key: str | None, limit: int, now, window_cutoff, lock_until) -> bool:
-        """Atomic upsert, so simultaneous failures cannot under-count. MySQL applies the
-        assignments left to right, so locked_until must read the old counter values first."""
+    def reserve(self, key: str, subject_key: str | None, limit: int, now, window_cutoff, lock_until) -> int:
+        """Count one attempt and return this attempt's position in the window. The upsert
+        holds the row lock until commit, so the read-back sees exactly this attempt's count.
+        MySQL applies the assignments left to right, so locked_until reads old values first."""
         with self.database.connect() as connection:
             cursor = connection.cursor()
             cursor.execute(
@@ -30,10 +31,17 @@ class MySQLLoginThrottleRepository:
                 "window_started_at = IF(window_started_at >= %s, window_started_at, %s)",
                 (key, subject_key, now, window_cutoff, limit, lock_until, window_cutoff, window_cutoff, now),
             )
-            cursor.execute("SELECT failed_count, locked_until FROM login_throttle WHERE scope_key = %s", (key,))
+            cursor.execute("SELECT failed_count FROM login_throttle WHERE scope_key = %s", (key,))
             row = cursor.fetchone()
             cursor.close()
-        return bool(row) and row[0] == limit and row[1] is not None and row[1] > now
+        return row[0] if row else 1
+
+    def refund(self, key: str) -> None:
+        with self.database.connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute("UPDATE login_throttle SET failed_count = GREATEST(failed_count - 1, 0) "
+                           "WHERE scope_key = %s", (key,))
+            cursor.close()
 
     def clear(self, keys: list[str]) -> None:
         placeholders = ",".join(["%s"] * len(keys))

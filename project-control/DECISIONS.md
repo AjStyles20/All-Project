@@ -296,3 +296,17 @@ DECISION REQUEST DR-013
   4. Account changes are audited in the same transaction; passwords and hashes are never recorded.
 - Consequences: migration 008. Limits are constants in `app/services/login_guard.py`.
 - Approved by: pending AJ review of the PR.
+
+
+## DR-021 — Build every portfolio project as a product
+- Date: 2026-11-03
+- Status: Approved
+- Authority level: A3
+- Context: AJ asked for every project in the repository to be built, including projects marked KILL or PARK.
+- Decision:
+  1. Each project is built in turn on its own branch: a technology and scope record (PROJECT_RULES §21), a working first version, tests and a draft PR. AJ merges.
+  2. Order: surviving projects first (P007, P009, P010, P004), then the parked and killed ones. P001 and P003 continue under their existing records.
+  3. Building a KILL or PARK project makes it a product only. Its research verdict, novelty status and contribution claims stay unchanged.
+  4. Projects that need hardware, real participants or paid services (for example P013 earbud routing, the P009 human study) are built only as far as possible without them, and the missing parts are recorded.
+- Consequences: DR-010's ordering remains for the research-critical work; this decision adds product builds alongside it.
+- Approved by: AJ in chat on 2026-11-03 ("Every project in the repo").

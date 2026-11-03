@@ -175,7 +175,7 @@ export async function auditView() {
       el("thead", {}, el("tr", {}, ["When", "Action", "Account", "By", "Detail"].map((h) => el("th", { text: h })))),
       el("tbody", {}, events.map((e) => el("tr", {},
         el("td", { text: when(e.occurred_at) }), el("td", { text: words(e.action) }), el("td", { text: e.target_username }),
-        el("td", { text: e.actor_user_id || "system" }),
+        el("td", { text: e.actor_username || (e.actor_user_id ? "removed account" : "system") }),
         el("td", { text: Object.entries(e.detail).map(([k, v]) => `${words(k)}: ${Array.isArray(v) ? v.join(", ") : v}`).join("; ") || "—" })))))
       : el("p", { class: "meta", text: "No account changes recorded yet." }))));
 }

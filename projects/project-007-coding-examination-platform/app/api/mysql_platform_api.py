@@ -213,7 +213,8 @@ def _user_body(user: UserSummary) -> dict:
 
 def _audit_body(event: AuditEvent) -> dict:
     return {"occurred_at": _iso(event.occurred_at), "action": event.action.value,
-            "actor_user_id": event.actor_user_id, "target_user_id": event.target_user_id,
+            "actor_user_id": event.actor_user_id, "actor_username": event.actor_username,
+            "target_user_id": event.target_user_id,
             "target_username": event.target_username, "detail": event.detail}
 
 
@@ -319,13 +320,13 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
         # the limit. Behind a proxy, configure uvicorn's --proxy-headers explicitly.
         client_ip = request.client.host if request.client else "unknown"
         try:
-            guard.begin(payload.username, client_ip)
+            position = guard.begin(payload.username, client_ip)
             token, expires = auth.login(payload.username, payload.password)
         except LoginThrottled as exc:
             raise HTTPException(status_code=429, detail=str(exc),
                                 headers={"Retry-After": str(exc.retry_after_seconds)}) from exc
         except AuthenticationError as exc:
-            if guard.attempt_failed(payload.username, client_ip):
+            if guard.attempt_failed(position):
                 accounts.record_login_lock(payload.username, client_ip)
             raise HTTPException(status_code=401, detail=str(exc)) from exc
         guard.attempt_succeeded(payload.username, client_ip)

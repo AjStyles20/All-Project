@@ -30,8 +30,7 @@ def test_mysql_fd08_throttle_counts_atomically_and_expires():
 
     def attempt():
         try:
-            guard.begin(name, ip)
-            results.append("allowed")
+            results.append(guard.begin(name, ip))
         except LoginThrottled:
             results.append("throttled")
 
@@ -40,16 +39,16 @@ def test_mysql_fd08_throttle_counts_atomically_and_expires():
         t.start()
     for t in threads:
         t.join()
-    assert results.count("allowed") == USER_FAILURE_LIMIT and results.count("throttled") == 7
-    assert guard.attempt_failed(name, ip) is True
+    assert sorted(r for r in results if r != "throttled") == list(range(1, USER_FAILURE_LIMIT + 1))
+    assert results.count("throttled") == 7
+    assert [guard.attempt_failed(r) for r in results if r != "throttled"].count(True) == 1
     with pytest.raises(LoginThrottled):
         guard.begin(name, ip)
     guard.begin(name, "192.0.2.251")  # same name elsewhere: not locked
     guard.attempt_succeeded(name, "192.0.2.251")
 
     moment["now"] += timedelta(minutes=16)
-    guard.begin(name, ip)  # the lock expired and a fresh window starts
-    assert guard.attempt_failed(name, ip) is False
+    assert guard.attempt_failed(guard.begin(name, ip)) is False  # lock expired, fresh window
 
     assert guard.clear_user(name) == 1
     moment["now"] += timedelta(hours=1)
@@ -76,6 +75,7 @@ def test_mysql_fd08_audit_commits_and_rolls_back_with_the_change():
     assert newest[0].action is AuditAction.ROLES_CHANGED and newest[0].target_user_id == user.user_id
     assert newest[0].detail == {"roles_after": ["CANDIDATE", "EXAMINER"], "roles_before": ["CANDIDATE"]}
     assert newest[1].action is AuditAction.USER_CREATED and newest[1].actor_user_id == admin.user_id
+    assert newest[1].actor_username == admin.username
 
     # A refused change leaves no record: the guard raises inside the same transaction.
     for other in accounts.list_users():

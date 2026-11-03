@@ -17,7 +17,10 @@ class InMemoryUserRepository:
         self.audit.append(event)
 
     def list_audit(self, limit=200):
-        return list(reversed(self.audit))[:limit]
+        def named(event):
+            actor = self.records.get(event.actor_user_id)
+            return replace(event, actor_username=actor.username if actor else None)
+        return [named(e) for e in reversed(self.audit)][:limit]
 
     def get_roles(self, user_id):
         return set(self.roles[user_id])

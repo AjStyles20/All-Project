@@ -1,3 +1,4 @@
+from app.domain.identity import AuditAction
 from app.services.login_guard import USER_FAILURE_LIMIT
 from tests.integration.test_fd07_users_api import setup, sign_in
 
@@ -67,9 +68,21 @@ def test_parallel_wrong_passwords_through_the_api_stop_at_the_limit():
     # Regression for the race found in browser testing (TE-018): real threads, real hashing.
     from concurrent.futures import ThreadPoolExecutor
 
-    client, _ = setup()
+    client, repo = setup()
     with ThreadPoolExecutor(max_workers=12) as pool:
         codes = list(pool.map(lambda _: bad_login(client).status_code, range(12)))
     assert codes.count(401) == USER_FAILURE_LIMIT and codes.count(429) == 12 - USER_FAILURE_LIMIT
     right = client.post("/auth/login", json={"username": "lecturer", "password": "LecturerPass123"})
     assert right.status_code == 429
+    # One lock, one audit record, however the burst interleaved (TE-018).
+    assert [e.action for e in repo.audit].count(AuditAction.LOGIN_LOCKED) == 1
+
+
+def test_audit_trail_names_the_administrator():
+    client, _ = setup()
+    admin = sign_in(client, "root", "AdminPassword123")
+    for _ in range(USER_FAILURE_LIMIT):
+        bad_login(client)
+    client.post("/admin/users/lect-1/clear-login-lock", headers=admin)
+    newest = client.get("/admin/audit", headers=admin).json()[0]
+    assert newest["action"] == "LOGIN_LOCK_CLEARED" and newest["actor_username"] == "root"

@@ -47,10 +47,12 @@ class AuditAction(str, Enum):
 
 @dataclass(frozen=True)
 class AuditEvent:
-    """Never holds passwords or hashes. actor_user_id is None for script or automatic events."""
+    """Never holds passwords or hashes. actor_user_id is None for script or automatic events.
+    actor_username is filled in when the trail is read, so it follows later renames."""
     occurred_at: datetime
     action: AuditAction
     actor_user_id: str | None
     target_user_id: str
     target_username: str
     detail: dict = field(default_factory=dict)
+    actor_username: str | None = None

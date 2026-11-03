@@ -37,11 +37,14 @@ class MySQLUserRepository:
     def list_audit(self, limit: int = 200) -> list[AuditEvent]:
         with self.database.connect() as connection:
             cursor = connection.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM account_audit_events ORDER BY event_id DESC LIMIT %s", (limit,))
+            cursor.execute("SELECT e.*, u.username AS actor_username FROM account_audit_events e "
+                           "LEFT JOIN users u ON u.user_id = e.actor_user_id "
+                           "ORDER BY e.event_id DESC LIMIT %s", (limit,))
             rows = cursor.fetchall()
             cursor.close()
         return [AuditEvent(r["occurred_at"], AuditAction(r["action"]), r["actor_user_id"], r["target_user_id"],
-                           r["target_username"], json.loads(r["detail"]) if isinstance(r["detail"], (str, bytes, bytearray)) else r["detail"])
+                           r["target_username"], json.loads(r["detail"]) if isinstance(r["detail"], (str, bytes, bytearray)) else r["detail"],
+                           r["actor_username"])
                 for r in rows]
 
     def get_roles(self, user_id: str) -> set[Role]:

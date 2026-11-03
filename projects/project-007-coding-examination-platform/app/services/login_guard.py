@@ -51,8 +51,9 @@ class LoginGuard:
         self.repository = repository
         self.clock = clock
 
-    def begin(self, username: str, client_ip: str) -> None:
-        """Claim one attempt, or raise LoginThrottled. Call before verifying the password."""
+    def begin(self, username: str, client_ip: str) -> int:
+        """Claim one attempt and return its position in the window, or raise LoginThrottled.
+        Call before verifying the password."""
         now = self.clock()
         latest = self.repository.locked_until([user_key(username, client_ip), ip_key(client_ip)])
         if latest is not None and latest > now:
@@ -61,15 +62,18 @@ class LoginGuard:
         # the first `limit` get through, whatever order they arrive in.
         cutoff, lock_until = now - WINDOW, now + LOCK
         over_ip = self.repository.reserve(ip_key(client_ip), None, IP_FAILURE_LIMIT, now, cutoff, lock_until) > IP_FAILURE_LIMIT
-        over_user = self.repository.reserve(user_key(username, client_ip), subject_key(username),
-                                            USER_FAILURE_LIMIT, now, cutoff, lock_until) > USER_FAILURE_LIMIT
-        if over_ip or over_user:
+        position = self.repository.reserve(user_key(username, client_ip), subject_key(username),
+                                           USER_FAILURE_LIMIT, now, cutoff, lock_until)
+        if over_ip or position > USER_FAILURE_LIMIT:
             raise LoginThrottled(int(LOCK.total_seconds()))
+        return position
 
-    def attempt_failed(self, username: str, client_ip: str) -> bool:
-        """The attempt stays counted. True if this user and IP are now locked."""
-        latest = self.repository.locked_until([user_key(username, client_ip)])
-        return latest is not None and latest > self.clock()
+    @staticmethod
+    def attempt_failed(position: int) -> bool:
+        """The attempt stays counted. True only for the one failure that caused the lock:
+        asking "is it locked now?" instead made every attempt of a parallel burst report the
+        same lock, so the audit trail listed it five times (TE-018)."""
+        return position == USER_FAILURE_LIMIT
 
     def attempt_succeeded(self, username: str, client_ip: str) -> None:
         self.repository.clear([user_key(username, client_ip)])

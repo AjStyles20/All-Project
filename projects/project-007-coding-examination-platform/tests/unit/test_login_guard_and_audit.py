@@ -32,8 +32,7 @@ def fail(guard, user="ada", ip="10.0.0.1", times=1):
     """Full attempts that end in a wrong password, in the order the API runs them."""
     result = False
     for _ in range(times):
-        guard.begin(user, ip)
-        result = guard.attempt_failed(user, ip)
+        result = guard.attempt_failed(guard.begin(user, ip))
     return result
 
 

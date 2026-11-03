@@ -405,3 +405,11 @@ Added examiner and administrator screens, the contract-schema and admin question
 Implemented migration 007, `UserAdminService`, `scripts/create_admin.py`, the account endpoints, and the Users and Change-password screens. Examiners now pick candidates from a list and administrators pick examinations from a list. Design: `FD07_USER_MANAGEMENT_DESIGN.md`. Evidence: TE-017. Design choices are recorded in DR-019 for AJ's review.
 
 **Flagged, not built:** login rate limiting and lockout, timing-safe login, and an account audit trail.
+
+
+## 2026-11-03 — FD-08: login protection and account audit trail (Claude Code, Engineering)
+**Branch:** `p001-fd08-login-audit`, from main at `1ceaab1` (FD-07 merged as PR #28).
+
+Implemented migration 008, `LoginGuard` (per account-and-address and per-address limits), a decoy hash for unknown usernames, the account audit trail written in the same transaction as each change, "Clear sign-in lock" and the Audit trail screen. Design: `FD08_LOGIN_PROTECTION_AUDIT_DESIGN.md`. Evidence: TE-018. Policy choices in DR-020 for AJ's review.
+
+**Defects found in browser testing and fixed:** a parallel burst of wrong passwords got past the limit and a correct password then still worked (attempts are now counted before hashing); one lock was audited five times; the audit screen showed the administrator's internal id instead of the username.

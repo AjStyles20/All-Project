@@ -44,7 +44,7 @@ An administrator never chooses or knows a user's lasting password.
 | GET | `/examiner/candidates` | Examiner, Administrator |
 
 ## Known limitations
-These matter under PROJECT_RULES §22 and should be resolved **before any public or real-student deployment**:
+These matter under PROJECT_RULES §22 and should be resolved **before any public or real-student deployment**. Items 1, 2 and 5 are addressed by FD-08 (`FD08_LOGIN_PROTECTION_AUDIT_DESIGN.md`):
 1. **No login rate limit or lockout.** Passwords can be guessed repeatedly, limited only by the slow hash.
 2. **Username enumeration by timing.** A login for an unknown username returns faster, because it skips password hashing.
 3. **One-time passwords are handed over by the administrator**; the platform sends no email.

@@ -247,3 +247,22 @@ All verification evidence should be reproducible where practical. Do not record 
 - Application defects found and fixed: validation errors displayed as "Request failed (422)" (`core.js`, changed after the live run and rechecked in the browser); a forced change on `#/home` could leave the user stuck on the form (found by code reading, fixed before the run).
 - Status: PASS (implementing agent's own run; not independent verification or a security review)
 - Performed by: Claude Code (Engineering)
+
+### TE-018 — P001 FD-08 login protection and account audit trail, live and browser
+- Date: 2026-11-03
+- Requirement(s): PROJECT_RULES §22; DR-020
+- Test type: Live + browser + API + full regression
+- Environment: disposable MySQL 8.4.9 (migrations 001–008, least-privilege `p001_app`); built-in browser; uvicorn on 127.0.0.1:8001.
+- Observed result, live: schema check PASS. Full suite with `P001_RUN_MYSQL_TESTS=1`: 329 passed at `705748d`; 333 passed at `051af00`; **334 passed, 0 skipped at `89a9487`** (final code).
+- Observed result, browser and API:
+  - **Sign-in form:** after the limit it shows "Too many failed sign-in attempts. Please try again later."
+  - **Parallel burst** of 12 wrong passwords (unknown username): exactly 5 × 401, 7 × 429. Same for 8 and 10 attempts on real accounts.
+  - **Clear sign-in lock** from the Users screen: the next wrong password got 401, not 429.
+  - **Audit trail:** shows the lock and the clearing, names the administrator, and records no passwords.
+- Application defects found and fixed:
+  1. **Race (security):** on `705748d` a parallel burst passed the lock check while earlier attempts were still hashing, so more than five guesses got through and the correct password then signed in. The earlier tests missed it because they recorded failures one at a time. Fixed in `051af00`: each attempt is counted atomically before hashing. Regression tests use real threads, through the API and on live MySQL.
+  2. **Duplicate audit records:** one lock caused by a burst was recorded five times. Fixed in `89a9487`: only the attempt that reaches the limit records it.
+  3. **Audit screen** showed the administrator's internal id. Fixed in `89a9487`.
+- Test-script defects: a burst against a username that turned out not to exist (still a valid check, since unknown names lock the same); one check hit an account already locked by an interrupted earlier script, and was repeated after clearing the lock. The final audit-screen check was made through the API because the browser pane was pointed at the wrong port.
+- Status: PASS (implementing agent's own run; not independent verification or a security review)
+- Performed by: Claude Code (Engineering)

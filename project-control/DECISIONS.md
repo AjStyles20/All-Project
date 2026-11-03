@@ -282,3 +282,17 @@ DECISION REQUEST DR-013
   4. Examiners can list active candidates (id, username, display name) to assign them.
 - Consequences: migration 007. Login rate limiting and timing-safe username handling remain open (`FD07_USER_MANAGEMENT_DESIGN.md`).
 - Approved by: pending AJ review of the PR.
+
+
+## DR-020 — P001 sign-in limits and account audit trail
+- Date: 2026-11-03
+- Status: Implemented; policy values chosen by the implementing agent, **flagged for AJ review**
+- Authority level: A2
+- Context: AJ asked for login protection and an account audit trail (FD-08), closing gaps recorded under DR-019.
+- Decision:
+  1. Lock after 5 failed attempts in 15 minutes for 15 minutes, keyed on username + client IP, so nobody can lock a classmate out from elsewhere. A separate cap of 100 failures per IP in 15 minutes.
+  2. A lock never ends an existing session. Administrators can clear it; a password reset clears it.
+  3. `X-Forwarded-For` is not trusted; proxies must be configured in uvicorn.
+  4. Account changes are audited in the same transaction; passwords and hashes are never recorded.
+- Consequences: migration 008. Limits are constants in `app/services/login_guard.py`.
+- Approved by: pending AJ review of the PR.

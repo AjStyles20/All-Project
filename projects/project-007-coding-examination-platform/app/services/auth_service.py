@@ -1,8 +1,14 @@
 from datetime import datetime, timedelta, timezone
+from functools import lru_cache
 from uuid import uuid4
 from app.persistence.user_repository import UserRecord, UserRepository
 from app.security.passwords import hash_password, verify_password
 from app.security.tokens import issue_token, token_digest
+
+@lru_cache(maxsize=1)
+def _decoy_hash() -> str:
+    return hash_password("decoy-password-for-unknown-usernames")
+
 
 class AuthenticationError(ValueError):
     pass
@@ -22,7 +28,10 @@ class AuthService:
 
     def login(self, username: str, password: str) -> tuple[str, datetime]:
         user = self.users.get_by_username(username.strip().lower())
-        if user is None or not user.is_active or not verify_password(password, user.password_hash):
+        # Always do the slow hash, so response time does not reveal whether a username
+        # exists or is deactivated.
+        matches = verify_password(password, user.password_hash if user else _decoy_hash())
+        if user is None or not user.is_active or not matches:
             raise AuthenticationError("Invalid username or password.")
         now = datetime.now(timezone.utc)
         expires = now + timedelta(hours=self.session_hours)

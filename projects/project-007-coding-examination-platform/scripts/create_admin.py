@@ -7,10 +7,11 @@ claimed by anyone who reached the server first. Whoever can run this script alre
 database credentials. The password is read without echo and never written anywhere but as a hash.
 """
 import argparse
+from datetime import datetime, timezone
 from getpass import getpass
 from uuid import uuid4
 
-from app.domain.identity import Role, UserConflictError
+from app.domain.identity import AuditAction, AuditEvent, Role, UserConflictError
 from app.persistence.mysql_database import MySQLDatabase
 from app.persistence.mysql_user_repository import MySQLUserRepository
 from app.persistence.user_repository import UserRecord
@@ -32,7 +33,9 @@ def main() -> int:
     try:
         check_new_password(password, username)
         record = UserRecord(str(uuid4()), username, hash_password(password), args.display_name.strip(), True)
-        MySQLUserRepository(MySQLDatabase()).create(record, {Role.ADMINISTRATOR})
+        MySQLUserRepository(MySQLDatabase()).create(record, {Role.ADMINISTRATOR}, audit=AuditEvent(
+            datetime.now(timezone.utc), AuditAction.USER_CREATED, None, record.user_id, username,
+            {"roles": [Role.ADMINISTRATOR.value], "via": "create_admin script"}))
     except (ValueError, UserConflictError) as error:
         print(f"Nothing was created: {error}")
         return 1

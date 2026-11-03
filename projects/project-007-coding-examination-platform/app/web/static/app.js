@@ -1,6 +1,6 @@
 // P001 web UI: sign-in and routing. Plain JavaScript over the existing JSON API; business
 // rules stay on the server (DR-017). Screens live in candidate.js, examiner.js and admin.js.
-import { adminExamView, adminHome, usersView } from "./admin.js";
+import { adminExamView, adminHome, auditView, usersView } from "./admin.js";
 import { clearLeaveGuard, examsView, researchView, resultView, rulesView, sessionView } from "./candidate.js";
 import { TOKEN_KEY, api, el, ensureAccount, forgetAccount, say, show } from "./core.js";
 import { contractView, examView, examinerHome, reviewView, sessionsView } from "./examiner.js";
@@ -83,6 +83,7 @@ const ROUTES = [
   [/^#\/examiner\/session\/([^/]+)$/, reviewView],
   [/^#\/admin$/, adminHome],
   [/^#\/admin\/users$/, usersView],
+  [/^#\/admin\/audit$/, auditView],
   [/^#\/admin\/exam\/([^/]+)$/, adminExamView],
 ];
 
@@ -106,7 +107,7 @@ async function route() {
       return;
     }
     document.getElementById("areas").replaceChildren(...areas.map((a) => el("a", { href: a.hash, text: a.text })),
-      ...(me.roles.includes("ADMINISTRATOR") ? [el("a", { href: "#/admin/users", text: "Users" })] : []),
+      ...(me.roles.includes("ADMINISTRATOR") ? [el("a", { href: "#/admin/users", text: "Users" }), el("a", { href: "#/admin/audit", text: "Audit trail" })] : []),
       el("a", { href: "#/password", text: "Change password" }));
     if (hash === "#/password") { passwordView(false); return; }
     if (hash === "#/home") {

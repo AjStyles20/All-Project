@@ -21,11 +21,11 @@ def test_mysql_fd07_accounts_passwords_and_lockout_guard():
     accounts = UserAdminService(repo)
     suffix = uuid4().hex[:10]
 
-    admin, _ = accounts.create_user("fd07_admin_" + suffix, "FD07 Admin", {Role.ADMINISTRATOR})
+    admin, _ = accounts.create_user(None, "fd07_admin_" + suffix, "FD07 Admin", {Role.ADMINISTRATOR})
     with pytest.raises(UserConflictError):
-        accounts.create_user("fd07_admin_" + suffix, "Duplicate", {Role.CANDIDATE})
+        accounts.create_user(None, "fd07_admin_" + suffix, "Duplicate", {Role.CANDIDATE})
 
-    user, temp = accounts.create_user("fd07_user_" + suffix, "FD07 User", {Role.CANDIDATE})
+    user, temp = accounts.create_user(admin.user_id, "fd07_user_" + suffix, "FD07 User", {Role.CANDIDATE})
     listed = {u.user_id: u for u in accounts.list_users()}[user.user_id]
     assert listed.must_change_password and listed.roles == frozenset({Role.CANDIDATE})
     assert user.user_id in {u.user_id for u in accounts.list_candidates()}
@@ -44,7 +44,7 @@ def test_mysql_fd07_accounts_passwords_and_lockout_guard():
     accounts.set_roles(admin.user_id, user.user_id, {Role.EXAMINER, Role.CANDIDATE})
     assert auth.authenticate(token).roles == frozenset({Role.EXAMINER, Role.CANDIDATE})
 
-    new_temp = accounts.reset_password(user.user_id)
+    new_temp = accounts.reset_password(admin.user_id, user.user_id)
     assert auth.authenticate(token) is None
     token, _ = auth.login(user.username, new_temp)
     assert auth.authenticate(token).must_change_password

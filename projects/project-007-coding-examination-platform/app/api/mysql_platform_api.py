@@ -42,7 +42,9 @@ from app.services.examination_service import (
     InvalidExaminationTransition, QuestionNotFoundError,
 )
 
-from app.domain.identity import Role, UserConflictError, UserSummary
+from app.domain.identity import AuditEvent, Role, UserConflictError, UserSummary
+from app.persistence.mysql_login_throttle_repository import MySQLLoginThrottleRepository
+from app.services.login_guard import LoginGuard, LoginThrottled
 from app.services.user_admin_service import (
     MAX_PASSWORD_LENGTH, UserAdminService, UserNotFoundError, WrongPasswordError,
 )
@@ -52,8 +54,9 @@ from app.services.auth_service import AuthenticationError, AuthService
 
 
 class LoginInput(BaseModel):
-    username: str = Field(min_length=1)
-    password: str = Field(min_length=1)
+    # Bounded: the slow password hash must not be fed arbitrarily large input.
+    username: str = Field(min_length=1, max_length=100)
+    password: str = Field(min_length=1, max_length=1024)
 
 class ExaminationInput(BaseModel):
     title: str = Field(min_length=1, max_length=200)
@@ -208,6 +211,13 @@ def _user_body(user: UserSummary) -> dict:
             "roles": sorted(role.value for role in user.roles)}
 
 
+def _audit_body(event: AuditEvent) -> dict:
+    return {"occurred_at": _iso(event.occurred_at), "action": event.action.value,
+            "actor_user_id": event.actor_user_id, "actor_username": event.actor_username,
+            "target_user_id": event.target_user_id,
+            "target_username": event.target_username, "detail": event.detail}
+
+
 def _mark_body(mark: ResponseMark) -> dict:
     return {"score": mark.score, "comment": mark.comment,
             "response_revision": mark.response_revision,
@@ -253,7 +263,8 @@ def _policy_errors():
 def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_service=None,
                               examination_service=None, candidate_session_service=None,
                               review_service=None, contract_service=None,
-                              research_bridge_service=None, user_admin_service=None) -> FastAPI:
+                              research_bridge_service=None, user_admin_service=None,
+                              login_guard=None) -> FastAPI:
     database = MySQLDatabase(settings)
     auth = auth_service or AuthService(MySQLUserRepository(database))
     examinations = examination_service or ExaminationService(MySQLExaminationRepository(database))
@@ -263,7 +274,8 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
     contracts = contract_service or ContractService(
         MySQLContractRepository(database), MySQLExaminationRepository(database),
         MySQLCandidateSessionRepository(database))
-    accounts = user_admin_service or UserAdminService(MySQLUserRepository(database))
+    guard = login_guard or LoginGuard(MySQLLoginThrottleRepository(database))
+    accounts = user_admin_service or UserAdminService(MySQLUserRepository(database), guard)
     research_db_path = os.getenv("P001_RESEARCH_DB_PATH")
     research = research_bridge_service or ResearchBridgeService(
         MySQLResearchRepository(database),
@@ -303,11 +315,21 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
         return {"status": "ok", "scope": "platform", "database": "mysql"}
 
     @app.post("/auth/login")
-    def login(payload: LoginInput):
+    def login(payload: LoginInput, request: Request):
+        # request.client only: X-Forwarded-For is client-supplied and would let anyone dodge
+        # the limit. Behind a proxy, configure uvicorn's --proxy-headers explicitly.
+        client_ip = request.client.host if request.client else "unknown"
         try:
+            position = guard.begin(payload.username, client_ip)
             token, expires = auth.login(payload.username, payload.password)
+        except LoginThrottled as exc:
+            raise HTTPException(status_code=429, detail=str(exc),
+                                headers={"Retry-After": str(exc.retry_after_seconds)}) from exc
         except AuthenticationError as exc:
+            if guard.attempt_failed(position):
+                accounts.record_login_lock(payload.username, client_ip)
             raise HTTPException(status_code=401, detail=str(exc)) from exc
+        guard.attempt_succeeded(payload.username, client_ip)
         return {"access_token": token, "token_type": "bearer",
                 "expires_at": expires.isoformat()}
 
@@ -511,7 +533,7 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
     @app.post("/admin/users", status_code=201)
     def create_user(payload: NewUserInput, response: Response, principal=Depends(administrator)):
         with _policy_errors():
-            user, password = accounts.create_user(payload.username, payload.display_name, payload.roles)
+            user, password = accounts.create_user(principal.user_id, payload.username, payload.display_name, payload.roles)
         response.headers["Cache-Control"] = "no-store"
         return {**_user_body(user), "one_time_password": password}
 
@@ -530,9 +552,19 @@ def create_mysql_platform_app(settings: MySQLSettings | None = None, *, auth_ser
     @app.post("/admin/users/{user_id}/password-reset")
     def reset_user_password(user_id: str, response: Response, principal=Depends(administrator)):
         with _policy_errors():
-            password = accounts.reset_password(user_id)
+            password = accounts.reset_password(principal.user_id, user_id)
         response.headers["Cache-Control"] = "no-store"
         return {"one_time_password": password}
+
+    @app.post("/admin/users/{user_id}/clear-login-lock")
+    def clear_login_lock(user_id: str, principal=Depends(administrator)):
+        with _policy_errors():
+            removed = accounts.clear_login_lock(principal.user_id, user_id)
+        return {"cleared": removed}
+
+    @app.get("/admin/audit")
+    def account_audit(limit: int = 200, principal=Depends(administrator)):
+        return [_audit_body(event) for event in accounts.list_audit(max(1, min(limit, 500)))]
 
     @app.get("/admin/examinations")
     def list_all_examinations(principal=Depends(administrator)):

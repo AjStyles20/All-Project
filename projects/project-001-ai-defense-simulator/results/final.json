@@ -1,0 +1,69 @@
+{
+  "dev_phrasing": {
+    "B0": {
+      "issues_reached": 0.0,
+      "by_kind": {
+        "UNSUPPORTED_CLAIM": 0.0,
+        "LIMITATION": 0.0,
+        "CONTRADICTION": 0.0
+      },
+      "grounded_share": 0.0,
+      "quote_found_in_cited_chunk": null
+    },
+    "B1": {
+      "issues_reached": 0.2,
+      "by_kind": {
+        "UNSUPPORTED_CLAIM": 0.183,
+        "LIMITATION": 0.138,
+        "CONTRADICTION": 0.375
+      },
+      "grounded_share": 1.0,
+      "quote_found_in_cited_chunk": 1.0
+    },
+    "B4": {
+      "issues_reached": 0.988,
+      "by_kind": {
+        "UNSUPPORTED_CLAIM": 1.0,
+        "LIMITATION": 1.0,
+        "CONTRADICTION": 0.925
+      },
+      "grounded_share": 0.744,
+      "quote_found_in_cited_chunk": 1.0,
+      "finding_false_alarm_rate": 0.0
+    }
+  },
+  "role_unique_category_share": 0.972,
+  "held_out_phrasing": {
+    "B0": {
+      "issues_reached": 0.0,
+      "by_kind": {
+        "UNSUPPORTED_CLAIM": 0.0,
+        "LIMITATION": 0.0,
+        "CONTRADICTION": 0.0
+      },
+      "grounded_share": 0.0,
+      "quote_found_in_cited_chunk": null
+    },
+    "B1": {
+      "issues_reached": 0.154,
+      "by_kind": {
+        "UNSUPPORTED_CLAIM": 0.133,
+        "LIMITATION": 0.2,
+        "CONTRADICTION": 0.125
+      },
+      "grounded_share": 1.0,
+      "quote_found_in_cited_chunk": 1.0
+    },
+    "B4": {
+      "issues_reached": 0.167,
+      "by_kind": {
+        "UNSUPPORTED_CLAIM": 0.0,
+        "LIMITATION": 0.0,
+        "CONTRADICTION": 1.0
+      },
+      "grounded_share": 0.412,
+      "quote_found_in_cited_chunk": 1.0,
+      "finding_false_alarm_rate": 0.0
+    }
+  }
+}

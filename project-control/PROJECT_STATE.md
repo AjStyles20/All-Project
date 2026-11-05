@@ -46,7 +46,9 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 
 - **P004 Internet Compression and Optimization Proxy** (DR-021, product build): PR #33 **merged** (`55d2fb1`). Formal specification committed before code. Origin-controlled gateway with security invariants S1–S10, policies B0–B4, generated corpus, benchmark (TE-022). All predeclared thresholds met (B4 3 regressions vs ≥147), but the network is modelled and B4's verification cost was not counted. See `projects/project-012-internet-compression-proxy/docs/RESULTS.md`.
 
-- **P006 AI Virtual Classroom / Personal Learning World** (DR-021, product build; research verdict PARK unchanged): branch `p006-virtual-classroom`, draft PR. Pass 017 Phases 1–2: APLDG trust kernel and PGAIC mastery kernel, SQL JOIN course, single-user app; all automatic Pass 017 §14 gates pass (TE-023). No language model connected; simulated learners only. See `projects/project-002-ai-virtual-classroom/docs/RESULTS.md`.
+- **P006 AI Virtual Classroom / Personal Learning World** (DR-021, product build; research verdict PARK unchanged): PR #34 **merged** (`ae0fcf8`). Pass 017 Phases 1–2: APLDG trust kernel and PGAIC mastery kernel, SQL JOIN course, single-user app; all automatic Pass 017 §14 gates pass (TE-023). No language model connected; simulated learners only. See `projects/project-002-ai-virtual-classroom/docs/RESULTS.md`.
+
+- **P011 Source-Grounded AI Defense Simulator** (DR-021, product build; research verdict PARK / merged with P001 unchanged): branch `p011-defense-simulator`, draft PR. Document upload (TXT/MD/DOCX/PPTX/PDF), rule-based findings, four reviewer roles, grounded questions, criterion feedback, local app (TE-024). Rules reach 99 % of planted issues on dev wording but only 17 % on held-out wording (random: 15 %). See `projects/project-001-ai-defense-simulator/docs/RESULTS.md`.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -86,7 +88,8 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#31** P009 Screen Memory first version (DR-021). **Merged** (`179d737`).
 - **#32** P010 Chess first version (DR-021). **Merged** (`240c51e`).
 - **#33** P004 Compression Gateway first version (DR-021). **Merged** (`55d2fb1`).
-- P006 Learning World first version (DR-021): branch `p006-virtual-classroom`, draft PR, awaiting AJ.
+- **#34** P006 Learning World first version (DR-021). **Merged** (`ae0fcf8`).
+- P011 Defence Practice first version (DR-021): branch `p011-defense-simulator`, draft PR, awaiting AJ.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 
 ## Current Work

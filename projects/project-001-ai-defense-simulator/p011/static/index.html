@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Defence Practice</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header><h1>Defence practice from your own documents</h1></header>
+  <main>
+    <div id="notice" role="alert"></div>
+
+    <section aria-labelledby="docs-h">
+      <h2 id="docs-h">1. Your documents</h2>
+      <form id="upload" class="row">
+        <label for="file">Add a report, slides or notes (.pdf, .docx, .pptx, .md, .txt, up to 10 MB)</label>
+        <input id="file" type="file" accept=".pdf,.docx,.pptx,.md,.txt" required>
+        <button type="submit">Upload</button>
+      </form>
+      <ul id="documents"></ul>
+      <p class="meta">Files stay on this computer. Nothing is sent to any AI service.</p>
+    </section>
+
+    <section aria-labelledby="find-h">
+      <h2 id="find-h">2. What a reviewer would challenge</h2>
+      <button id="analyse" type="button">Show findings</button>
+      <ul id="findings"></ul>
+    </section>
+
+    <section aria-labelledby="session-h">
+      <h2 id="session-h">3. Practice session</h2>
+      <form id="new-session">
+        <fieldset>
+          <legend>Reviewers on the panel</legend>
+          <div id="roles"></div>
+        </fieldset>
+        <button type="submit">Start session</button>
+      </form>
+      <div id="session"></div>
+    </section>
+
+    <section aria-labelledby="search-h">
+      <h2 id="search-h">Search your documents</h2>
+      <form id="search" class="row">
+        <label for="q">Words to find</label>
+        <input id="q" maxlength="200" required>
+        <button type="submit">Search</button>
+      </form>
+      <ul id="results"></ul>
+    </section>
+  </main>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

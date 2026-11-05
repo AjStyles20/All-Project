@@ -185,7 +185,8 @@ def b3_board(u: Utterance) -> Decision:
 # ---------- B4: board + role + phase + contract + abstention ----------
 
 def b4_contextual(u: Utterance) -> Decision:
-    observed = f"{u.role.value} said during {u.phase.value} under {u.contract.value}"
+    when = {Phase.PRE: "before the game", Phase.DURING: "during play", Phase.POST: "after the game"}[u.phase]
+    observed = f"{u.role.value.lower()} spoke {when}; match rules: {u.contract.value.lower()}"
     if _has(u.text, THREATS):
         return Decision(Ruling.ESCALATE, [observed, "threat phrase: a person must review this"])
     if _has(u.text, ABUSE):

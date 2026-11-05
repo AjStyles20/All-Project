@@ -39,3 +39,8 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 - Exclusion by program and title cannot catch every sensitive window (46 % of unlisted sensitive visits exposed in simulation).
 - No text recognition; search covers window titles and program names.
 - The resumption measure is a proxy; real task-resumption performance needs a study with people and ethics approval.
+
+## P010 Chess (2026-11-05)
+- Text chat only; no voice. No accounts; games in memory.
+- The arbiter's abuse and threat word lists miss unseen phrasings (22 % of severe held-out cases); castling mentions are not parsed.
+- No human-review or appeal procedure; rulings are notices only.

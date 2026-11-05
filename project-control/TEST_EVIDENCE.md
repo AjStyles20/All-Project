@@ -291,3 +291,16 @@ All verification evidence should be reproducible where practical. Do not record 
 - Observed result, Windows probes: run from the development session, Windows reported the desktop as locked and no foreground window; the recorder's lock check therefore captured nothing. **Live capture not verified.**
 - Status: PASS for the tested software; live recording UNVERIFIED; research question NOT tested (needs people).
 - Performed by: Claude Code (Engineering)
+
+### TE-021 — P010 Chess first version: rules, arbiter, browser
+- Date: 2026-11-05
+- Requirement(s): P010 Pass 003 (H5); DR-021
+- Test type: Unit + API + perft + benchmark evaluation + browser
+- Environment: Python 3.14 locally (CI: 3.11); built-in browser; uvicorn on 127.0.0.1:8012.
+- Observed result, rules: perft counts match published values for five reference positions (start position to depth 4 locally).
+- Observed result, tests: 28 passed.
+- Observed result, evaluation (frozen in `5df38dd`): B4 dev F1 1.00 and held-out F1 0.93 with no false penalties; best other method 0.75 dev, 0.45 held-out. Predeclared rule met. B4 misses 22 % of severe held-out cases (unlisted threat and insult phrasings).
+- Observed result, browser: created a social game, White played e4 from the board, a spectator's "night to f six" got a high-confidence notice naming g8f6, the game was unchanged, ordinary chat got no notice.
+- Defects found: a move-generator bug (iterating a list being mutated), found by the first perft run and fixed before commit; one test expectation was wrong (promotions there give mate); evidence wording "said during DURING" reworded after the evaluation (rulings unchanged).
+- Status: PASS for the software; the research result is NOT independently established.
+- Performed by: Claude Code (Engineering)

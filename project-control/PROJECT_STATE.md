@@ -42,7 +42,9 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 
 - **P009 Personal Screen Memory System** (DR-021, product build): PR #31 **merged** (`179d737`). Privacy/security model committed before capture code. Windows recorder (selective policy B4, exclusions, DPAPI encryption, retention, deletion), local dashboard, offline policy comparison (TE-020). Live capture NOT verified (the development session saw a locked desktop). No study with people. See `projects/project-006-screen-memory/docs/EVALUATION.md`.
 
-- **P010 Intelligent Online Chess Platform** (DR-021, product build): branch `p010-chess`, draft PR. In-house rules engine (perft-verified), two-player games with spectators and chat, contextual arbiter B4 against four baselines (TE-021). Text chat stands in for voice; no accounts; games in memory. Rule met, but B4 misses 22 % of severe cases on held-out paraphrases. See `projects/project-005-intelligent-chess-platform/docs/EVALUATION.md`.
+- **P010 Intelligent Online Chess Platform** (DR-021, product build): PR #32 **merged** (`240c51e`). In-house rules engine (perft-verified), two-player games with spectators and chat, contextual arbiter B4 against four baselines (TE-021). Text chat stands in for voice; no accounts; games in memory. Rule met, but B4 misses 22 % of severe cases on held-out paraphrases. See `projects/project-005-intelligent-chess-platform/docs/EVALUATION.md`.
+
+- **P004 Internet Compression and Optimization Proxy** (DR-021, product build): branch `p004-compression-proxy`, draft PR. Formal specification committed before code. Origin-controlled gateway with security invariants S1–S10, policies B0–B4, generated corpus, benchmark (TE-022). All predeclared thresholds met (B4 3 regressions vs ≥147), but the network is modelled and B4's verification cost was not counted. See `projects/project-012-internet-compression-proxy/docs/RESULTS.md`.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -80,7 +82,8 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#29** P001 FD-08 login protection and audit trail. **Merged** (`fe31072`).
 - **#30** P007 School Points first version (DR-021). **Merged** (`7844277`).
 - **#31** P009 Screen Memory first version (DR-021). **Merged** (`179d737`).
-- P010 Chess first version (DR-021): branch `p010-chess`, draft PR, awaiting AJ.
+- **#32** P010 Chess first version (DR-021). **Merged** (`240c51e`).
+- P004 Compression Gateway first version (DR-021): branch `p004-compression-proxy`, draft PR, awaiting AJ.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 
 ## Current Work

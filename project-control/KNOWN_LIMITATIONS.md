@@ -44,3 +44,8 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 - Text chat only; no voice. No accounts; games in memory.
 - The arbiter's abuse and threat word lists miss unseen phrasings (22 % of severe held-out cases); castling mentions are not parsed.
 - No human-review or appeal procedure; rulings are notices only.
+
+## P004 Compression Gateway (2026-11-05)
+- Network is modelled, not emulated; B4 predicts with the same formula the benchmark scores with.
+- B4's fidelity check (24–56 % of encode time on the development laptop) was not counted in the benchmark; large photos can hit the 5 s limit on low-spec hardware.
+- No cache; synthetic corpus; time is the only objective unless the client sends Save-Data.

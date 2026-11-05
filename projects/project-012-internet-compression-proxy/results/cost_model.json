@@ -1,0 +1,80 @@
+{
+  "webp_ms_per_mpx": 1267.2994791652552,
+  "gzip_ms_per_mb": 87.78694407912782,
+  "webp_overhead_ms": 2.090100009809248,
+  "gzip_overhead_ms": 0.12409999908413738,
+  "ratios": [
+    [
+      "image/jpeg",
+      "large",
+      60,
+      0.4714521259059932
+    ],
+    [
+      "image/jpeg",
+      "large",
+      80,
+      0.7321711379862649
+    ],
+    [
+      "image/png",
+      "large",
+      60,
+      0.30108375251886305
+    ],
+    [
+      "image/png",
+      "large",
+      80,
+      0.356842154491185
+    ],
+    [
+      "application/json",
+      "large",
+      6,
+      0.13328216634142714
+    ],
+    [
+      "text/css",
+      "large",
+      6,
+      0.10632882101122296
+    ],
+    [
+      "application/javascript",
+      "large",
+      6,
+      0.06049293360252943
+    ],
+    [
+      "text/html",
+      "large",
+      6,
+      0.09904572990939796
+    ],
+    [
+      "image/png",
+      "small",
+      60,
+      0.976
+    ],
+    [
+      "image/png",
+      "small",
+      80,
+      1.184
+    ],
+    [
+      "application/json",
+      "small",
+      6,
+      1.9523809523809523
+    ]
+  ],
+  "environment": {
+    "python": "3.14.0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 76 Stepping 4, GenuineIntel",
+    "system": "Windows-10-10.0.19045-SP0"
+  }
+}

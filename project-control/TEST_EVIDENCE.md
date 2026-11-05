@@ -316,3 +316,15 @@ All verification evidence should be reproducible where practical. Do not record 
 - Defects found: cost-model fit distorted by tiny objects (fixed on pilot data before freezing); lab gateway started without its fitted model so B4 never transformed (fixed, regression test added); two wrong test expectations fixed. B4's verification cost (24–56 % of encode time) was not counted in the benchmark and makes large photos exceed the 5 s limit on this laptop — recorded, not fixed.
 - Status: PASS for the software and the predeclared thresholds; the result relies on a modelled network and is NOT independently established.
 - Performed by: Claude Code (Engineering)
+
+### TE-023 — P006 Learning World first version: kernels, gates, browser
+- Date: 2026-11-05
+- Requirement(s): P006 (legacy P002) Pass 017 §14, Pass 018 truth tables E1–E8; DR-021
+- Test type: Unit + API + evaluation + browser
+- Environment: Python 3.14 locally (CI: 3.11); built-in browser; app on 127.0.0.1:8015 with a throwaway token.
+- Observed result, tests: 29 passed, organised by the Pass 018 truth tables and experiments E1–E8.
+- Observed result, evaluation (frozen in `e5a6d40`, seeds 100–149): artifact propagation precision/recall 1.00/1.00 (B2 recall 0), no laundering in 1,150 AI-descended claims, false invalidation 0; simulated false mastery 13.9 % (B3 19.4 %), missed mastery 10.0 % (B3 27.8 %), L6-only independent 0 % (B3 100 %).
+- Observed result, browser: hint then correct answer gave "provisional" and moved to a check without help (no hint button); course view showed the superseded v1 claim and dependent lessons as STALE with reasons; no console errors.
+- Defects found: paraphrase lower-cased "INNER" ("iNNER"); explanation listed the authority note before the reason that decided the status; one tautological test assertion; the production Host check briefly allowed the test client's host name — all fixed before commit.
+- Status: PASS for the software and the automatic gates; the reference is a second implementation by the same agent, and learners are simulated.
+- Performed by: Claude Code (Engineering)

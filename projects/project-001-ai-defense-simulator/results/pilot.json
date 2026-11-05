@@ -1,0 +1,36 @@
+{
+  "dev_phrasing": {
+    "B0": {
+      "issues_reached": 0.0,
+      "by_kind": {
+        "UNSUPPORTED_CLAIM": 0.0,
+        "LIMITATION": 0.0,
+        "CONTRADICTION": 0.0
+      },
+      "grounded_share": 0.0,
+      "quote_found_in_cited_chunk": null
+    },
+    "B1": {
+      "issues_reached": 0.2,
+      "by_kind": {
+        "UNSUPPORTED_CLAIM": 0.133,
+        "LIMITATION": 0.2,
+        "CONTRADICTION": 0.4
+      },
+      "grounded_share": 1.0,
+      "quote_found_in_cited_chunk": 1.0
+    },
+    "B4": {
+      "issues_reached": 1.0,
+      "by_kind": {
+        "UNSUPPORTED_CLAIM": 1.0,
+        "LIMITATION": 1.0,
+        "CONTRADICTION": 1.0
+      },
+      "grounded_share": 0.75,
+      "quote_found_in_cited_chunk": 1.0,
+      "finding_false_alarm_rate": 0.0
+    }
+  },
+  "role_unique_category_share": 1.0
+}

@@ -1,0 +1,113 @@
+"""Reproducible test corpus (specification §5). Everything is generated from a seed:
+no downloads, no third-party content, no licence questions.
+"""
+import hashlib
+import io
+import json
+import random
+from dataclasses import dataclass, field
+
+from PIL import Image, ImageDraw
+
+
+@dataclass(frozen=True)
+class Obj:
+    name: str
+    cls: str
+    content_type: str
+    body: bytes
+    headers: dict = field(default_factory=dict)
+
+    @property
+    def sha256(self):
+        return hashlib.sha256(self.body).hexdigest()
+
+
+def _photo(rng, w, h):
+    """Photographic-style image: smooth gradients, shapes and fine noise, all from rng."""
+    base = Image.new("RGB", (w, h))
+    draw = ImageDraw.Draw(base)
+    top, bottom = [rng.randrange(256) for _ in range(3)], [rng.randrange(256) for _ in range(3)]
+    for y in range(h):
+        t = y / h
+        draw.line([(0, y), (w, y)], fill=tuple(int(a + (b - a) * t) for a, b in zip(top, bottom)))
+    for _ in range(25):
+        x, y, r = rng.randrange(w), rng.randrange(h), rng.randrange(20, max(21, w // 5))
+        draw.ellipse([x - r, y - r, x + r, y + r], fill=tuple(rng.randrange(256) for _ in range(3)))
+    noise = Image.frombytes("L", (w, h), rng.randbytes(w * h)).convert("RGB")
+    return Image.blend(base, noise, 0.12)
+
+
+def _graphic(rng, w, h):
+    img = Image.new("RGB", (w, h), (255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    for _ in range(12):
+        x0, y0 = rng.randrange(w), rng.randrange(h)
+        draw.rectangle([x0, y0, x0 + rng.randrange(20, 200), y0 + rng.randrange(20, 120)],
+                       fill=tuple(rng.choice([0, 64, 128, 200, 255]) for _ in range(3)))
+    for i in range(10):
+        draw.text((20, 20 + i * 18), f"Quarterly figure {i}: {rng.randrange(1000)}", fill=(0, 0, 0))
+    return img
+
+
+def _encode(img, fmt, **kw):
+    out = io.BytesIO()
+    img.save(out, format=fmt, **kw)
+    return out.getvalue()
+
+
+def _json(rng, n):
+    rows = [{"id": i, "name": f"student-{rng.randrange(10**6)}", "score": rng.random(), "tags": ["a", "b", "c"][: rng.randrange(1, 4)],
+             "active": rng.random() > 0.5} for i in range(n)]
+    return json.dumps(rows, indent=2).encode()
+
+
+def _css(rng):
+    rules = [f".c{i} {{ margin: {rng.randrange(20)}px; padding: {rng.randrange(20)}px; color: #{rng.randrange(16**6):06x}; "
+             f"display: flex; justify-content: space-between; }}" for i in range(600)]
+    return "\n".join(rules).encode()
+
+
+def _js(rng):
+    fns = [f"function handler{i}(event) {{ const value = event.target.value; if (value.length > {rng.randrange(50)}) "
+           f"{{ return validate{i}(value); }} return null; }}" for i in range(400)]
+    return "\n".join(fns).encode()
+
+
+def _html(rng):
+    items = "".join(f"<li class=\"item\"><a href=\"/p/{i}\">Product {i}</a> <span>{rng.randrange(100)} EUR</span></li>\n"
+                    for i in range(500))
+    return f"<!doctype html><html><head><title>Shop</title></head><body><ul>{items}</ul></body></html>".encode()
+
+
+def build(seed: int) -> list[Obj]:
+    rng = random.Random(seed)
+    photo_big = _photo(rng, 1600, 1200)
+    photo_mid = _photo(rng, 1024, 768)
+    graphic = _graphic(rng, 800, 600)
+    objs = [
+        Obj("k1-photo-q75.jpg", "K1", "image/jpeg", _encode(photo_mid, "JPEG", quality=75)),
+        Obj("k1-photo.webp", "K1", "image/webp", _encode(photo_mid, "WEBP", quality=75)),
+        Obj("k2-photo-large.png", "K2", "image/png", _encode(photo_big, "PNG")),
+        Obj("k2-photo-q95.jpg", "K2", "image/jpeg", _encode(photo_big, "JPEG", quality=95)),
+        Obj("k3-chart.png", "K3", "image/png", _encode(graphic, "PNG")),
+        Obj("k4-data.json", "K4", "application/json", _json(rng, 600)),
+        Obj("k4-site.css", "K4", "text/css", _css(rng)),
+        Obj("k4-app.js", "K4", "application/javascript", _js(rng)),
+        Obj("k4-page.html", "K4", "text/html", _html(rng)),
+        Obj("k5-random.bin", "K5", "application/octet-stream", rng.randbytes(200_000)),
+        Obj("k6-icon.png", "K6", "image/png", _encode(_graphic(rng, 16, 16), "PNG")),
+        Obj("k6-tiny.json", "K6", "application/json", json.dumps({"ok": True, "n": rng.randrange(100)}).encode()),
+        Obj("k7-no-transform.jpg", "K7", "image/jpeg", _encode(photo_mid, "JPEG", quality=95),
+            {"cache-control": "no-transform"}),
+        Obj("k7-private.json", "K7", "application/json", _json(rng, 200), {"cache-control": "private"}),
+        Obj("k7-no-store.png", "K7", "image/png", _encode(graphic, "PNG"), {"cache-control": "no-store"}),
+        Obj("k8-huge.png", "K8", "image/png", _encode(Image.new("1", (9000, 5000)), "PNG")),
+        Obj("k8-broken.jpg", "K8", "image/jpeg", _encode(photo_mid, "JPEG", quality=80)[:5000]),
+    ]
+    return objs
+
+
+def manifest(objs) -> list[dict]:
+    return [{"name": o.name, "class": o.cls, "content_type": o.content_type, "bytes": len(o.body),
+             "sha256": o.sha256, "headers": o.headers, "provenance": "generated by p004/corpus.py"} for o in objs]

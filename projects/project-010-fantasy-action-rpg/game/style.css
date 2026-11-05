@@ -1,0 +1,32 @@
+:root {
+  --bg: #121418; --fg: #ece8de; --muted: #a9a59a; --panel: #1d2026; --line: #343843; --accent: #ffd36e; --focus: #79a8ff;
+}
+@media (prefers-color-scheme: light) {
+  :root { --bg: #f4f1ea; --fg: #1d1b17; --muted: #5b574e; --panel: #ffffff; --line: #d6d0c4; --accent: #9a6a00; --focus: #1a5fd0; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+header { max-width: 1180px; margin: 0 auto; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; }
+h1 { font-size: 1.3rem; margin: 0; }
+h2 { font-size: 1rem; margin: 12px 0 4px; }
+main { max-width: 1180px; margin: 0 auto; padding: 0 16px 24px; display: grid; grid-template-columns: minmax(0, 800px) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+.stage { position: relative; }
+canvas { width: 100%; height: auto; display: block; background: #0d1014; border: 1px solid var(--line); border-radius: 6px; }
+.overlay { position: absolute; inset: 0; background: rgba(10, 12, 16, 0.88); color: #ece8de; padding: 24px 32px; border-radius: 6px; overflow: auto; }
+.overlay h2 { font-size: 1.4rem; color: #ffd36e; }
+.controls { columns: 2; padding-left: 1.2em; }
+@media (max-width: 600px) { .controls { columns: 1; } }
+kbd { border: 1px solid #6b6f78; border-radius: 4px; padding: 0 4px; font: inherit; font-size: 0.85em; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font: inherit; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
+.overlay button { background: #2a2e36; color: #ece8de; border-color: #4a4f5a; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+aside { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 16px 12px; max-height: 560px; overflow: auto; }
+#party { list-style: none; padding: 0; margin: 0; }
+#party li { padding: 3px 0; color: var(--muted); }
+#party li.active { color: var(--fg); font-weight: 600; }
+#log { padding-left: 1.1em; margin: 0; }
+#log li { margin: 4px 0; }
+#goal { color: var(--accent); margin: 0; }
+[hidden] { display: none !important; }

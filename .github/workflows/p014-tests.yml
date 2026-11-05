@@ -1,0 +1,27 @@
+name: P014 Game Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "projects/project-010-fantasy-action-rpg/**"
+      - ".github/workflows/p014-tests.yml"
+  pull_request:
+    paths:
+      - "projects/project-010-fantasy-action-rpg/**"
+      - ".github/workflows/p014-tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/project-010-fantasy-action-rpg/game
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Run game rule tests
+        run: node --test

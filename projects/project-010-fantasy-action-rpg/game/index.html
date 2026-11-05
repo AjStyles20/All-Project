@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'">
+  <title>Lanterns of Brinewold</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Lanterns of Brinewold</h1>
+    <button id="pause-button" type="button">Resume</button>
+  </header>
+  <main>
+    <div class="stage">
+      <canvas id="view" width="800" height="480" tabindex="0" aria-label="Game view. The story log and party status are listed beside it."></canvas>
+
+      <section id="title-panel" class="overlay" aria-labelledby="title-h">
+        <h2 id="title-h">Lanterns of Brinewold</h2>
+        <p>The Murk has drowned the waymarker lanterns of Brinewold, and drowned things walk the reeds.
+          Four unlikely friends take the Lantern Road to light them again.</p>
+        <ul class="controls">
+          <li><kbd>WASD</kbd> or arrows: move</li>
+          <li><kbd>Space</kbd> or <kbd>J</kbd>: attack (hold)</li>
+          <li><kbd>K</kbd> or <kbd>Shift</kbd>: special ability</li>
+          <li><kbd>E</kbd>: talk or use</li>
+          <li><kbd>1</kbd>–<kbd>4</kbd> or <kbd>Tab</kbd>: switch hero (the others fight on their own)</li>
+          <li><kbd>P</kbd> or <kbd>Esc</kbd>: pause</li>
+        </ul>
+        <p id="has-save" hidden>A saved game was found: load it from the pause menu.</p>
+        <button id="start" type="button">Begin</button>
+      </section>
+
+      <section id="pause-panel" class="overlay" aria-labelledby="pause-h" hidden>
+        <h2 id="pause-h">Paused</h2>
+        <div class="row">
+          <button id="resume" type="button">Resume</button>
+          <button id="save" type="button">Save</button>
+          <button id="load" type="button">Load</button>
+        </div>
+        <p id="save-status" role="status"></p>
+      </section>
+
+      <section id="end-panel" class="overlay" aria-labelledby="end-title" hidden>
+        <h2 id="end-title"></h2>
+        <button id="restart" type="button">Play again</button>
+      </section>
+    </div>
+
+    <aside>
+      <h2>Goal</h2>
+      <p id="goal"></p>
+      <h2>Party</h2>
+      <ul id="party"></ul>
+      <h2>Story</h2>
+      <ol id="log" aria-live="polite"></ol>
+    </aside>
+  </main>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

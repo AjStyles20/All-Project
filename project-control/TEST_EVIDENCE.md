@@ -266,3 +266,16 @@ All verification evidence should be reproducible where practical. Do not record 
 - Test-script defects: a burst against a username that turned out not to exist (still a valid check, since unknown names lock the same); one check hit an account already locked by an interrupted earlier script, and was repeated after clearing the lock. The final audit-screen check was made through the API because the browser pane was pointed at the wrong port.
 - Status: PASS (implementing agent's own run; not independent verification or a security review)
 - Performed by: Claude Code (Engineering)
+
+### TE-019 — P007 School Points first version: tests, benchmark and browser
+- Date: 2026-11-05
+- Requirement(s): P007 Pass 004 (H5, §11–§16); DR-021
+- Test type: Unit + API + benchmark evaluation + browser
+- Environment: Python 3.14 locally (CI: 3.11); SQLite; built-in browser; uvicorn on 127.0.0.1:8011.
+- Observed result, tests: 30 passed (ledger rules including parallel redemptions, each engine on each scenario, scoring, success rule, API, CSP).
+- Observed result, benchmark: thresholds committed in `c174ed2` before the final run. Final seeds 1000–1019 at 30 students per group: B4 recall 1.00, false positives 0.05, unsupported claims 0.02, appropriate insufficiency 1.00; B3 0.57 / 0.30 / 0.41 / 0.00; B1 0.39 / 0.38 / 0.58 / 0.00. Composite rule met, also at 15 and 60 students per group.
+- Observed result, browser: loaded S8 into an empty ledger; B4 showed the issuer disparity and proxy-gaming findings with observations, missing context and non-claims; no console errors.
+- Threat to validity: the same agent wrote the scenario generator and B4, so the benchmark result is not evidence the audit works on unseen or real data (`docs/RESULTS.md`).
+- Test defect found: one test matched the word "benchmark" in a docstring; replaced with an import check.
+- Status: PASS for the software; the research result is NOT independently established.
+- Performed by: Claude Code (Engineering)

@@ -153,6 +153,32 @@ class Ledger:
                         original["category"], -original["amount"], timestamp, transaction_id))
             return reversal_id
 
+    def import_dataset(self, dataset: Dataset) -> None:
+        """Load a synthetic dataset into an empty ledger in one transaction (demo and tests)."""
+        with self._write() as db:
+            if db.execute("SELECT 1 FROM students LIMIT 1").fetchone():
+                raise LedgerError("The ledger already holds data.")
+            for p in dataset.policies.values():
+                db.execute("INSERT INTO policies VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                           (p.policy_id, p.version, p.name, p.category, p.earning_rule,
+                            p.intended_objective, p.points_per_award, p.objective_measure))
+            db.executemany("INSERT INTO students VALUES (?, ?)", [(s.student_id, s.group) for s in dataset.students])
+            for issuer in dataset.issuers:
+                db.execute("INSERT INTO issuers VALUES (?, ?)", (issuer.issuer_id, issuer.role))
+                db.executemany("INSERT INTO issuer_scope VALUES (?, ?)", [(issuer.issuer_id, p) for p in sorted(issuer.policy_scope)])
+            db.executemany("INSERT INTO opportunities VALUES (?, ?, ?, ?)",
+                           [(s.student_id, k[0], k[1], c) for s in dataset.students for k, c in s.opportunities.items()])
+            db.executemany("INSERT INTO rewards VALUES (?, ?, ?, ?)",
+                           [(r.reward_id, r.name, r.point_cost, r.stock) for r in dataset.catalogue])
+            db.executemany("INSERT INTO transactions (transaction_id, student_id, issuer_id, policy_id, policy_version, "
+                           "action, category, amount, reason_code, timestamp, measure) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                           [(t.transaction_id, t.student_id, t.issuer_id, t.policy_id, t.policy_version, t.action.value,
+                             t.category, t.amount, t.reason_code, t.timestamp, t.measure) for t in dataset.transactions])
+
+    def is_empty(self) -> bool:
+        with self._connect() as db:
+            return db.execute("SELECT 1 FROM students LIMIT 1").fetchone() is None
+
     # ---- reads ----
 
     @staticmethod

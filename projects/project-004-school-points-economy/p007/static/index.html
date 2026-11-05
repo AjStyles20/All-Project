@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P007 School Points</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header><h1>School Points — governance audit</h1></header>
+  <main>
+    <p class="notice">Demonstration build. Synthetic data only; there is no sign-in.</p>
+    <div id="status" role="status" aria-live="polite"></div>
+
+    <section aria-labelledby="demo-h" id="demo">
+      <h2 id="demo-h">Load a synthetic school</h2>
+      <form id="demo-form">
+        <label for="scenario">Scenario</label>
+        <select id="scenario"></select>
+        <label for="seed">Seed</label>
+        <input id="seed" type="number" min="0" max="1000000" value="1">
+        <button type="submit">Load</button>
+      </form>
+      <p class="meta">Loading only works on an empty ledger. The scenario is hidden from the audit.</p>
+    </section>
+
+    <section aria-labelledby="audit-h">
+      <h2 id="audit-h">Audit</h2>
+      <form id="audit-form">
+        <label for="engine">Method</label>
+        <select id="engine">
+          <option value="B4">B4 Contextual audit</option>
+          <option value="B3">B3 Disparity only</option>
+          <option value="B2">B2 Anomaly detection</option>
+          <option value="B1">B1 Static thresholds</option>
+          <option value="B0">B0 Totals only</option>
+        </select>
+        <button type="submit">Run audit</button>
+      </form>
+      <div id="audit"></div>
+    </section>
+
+    <section aria-labelledby="bal-h">
+      <h2 id="bal-h">Balances</h2>
+      <div id="balances"></div>
+    </section>
+  </main>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

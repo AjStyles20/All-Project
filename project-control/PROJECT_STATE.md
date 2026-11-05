@@ -36,7 +36,9 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 - **Web UI slice 1 (candidate flow)**: PR #25 **merged 2026-10-30** (`748685d`). Semantic HTML/CSS/plain JS at `/ui` (DR-017), browser-verified (TE-015).
 - **Web UI slice 2 (examiner and administrator)**: PR #27 **merged** (`40ae970`). Browser-verified (TE-016).
 - **FD-07 User Management**: PR #28 **merged** (`1ceaab1`). Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** (disposable instance, TE-017). Account model awaiting AJ review (DR-019).
-- **FD-08 Login protection and account audit trail**: branch `p001-fd08-login-audit`, draft PR. Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** (disposable instance, TE-018). Policy awaiting AJ review (DR-020). See `documentation/FD08_LOGIN_PROTECTION_AUDIT_DESIGN.md`.
+- **FD-08 Login protection and account audit trail**: PR #29 **merged** (`fe31072`). Status: IMPLEMENTED / UNIT + API TESTED / **LIVE VERIFIED on MySQL 8.4.9** (disposable instance, TE-018). Policy awaiting AJ review (DR-020). See `documentation/FD08_LOGIN_PROTECTION_AUDIT_DESIGN.md`.
+
+- **P007 School Point & Digital Economy System** (DR-021, product build): branch `p007-school-points`, draft PR. Ledger, scenarios S0–S8, audit engines B0–B4, evaluation harness, dashboard. Synthetic data only, no sign-in. Benchmark rule met (TE-019), but the scenarios and B4 were written by the same agent, so this is not evidence the audit works on real schools. See `projects/project-004-school-points-economy/docs/RESULTS.md`.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -71,7 +73,8 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#18** P003 ETEC implementation. **Merged 2026-10-30** (`71f890a`). **#26** P003 tests on pushes to main. **Merged 2026-10-30** (`3dc01fc`).
 - **#25**, **#27** P001 web UI slices 1 and 2. **Merged** (`748685d`, `40ae970`).
 - **#28** P001 FD-07 user management. **Merged** (`1ceaab1`).
-- P001 FD-08 login protection and audit trail: draft PR, awaiting AJ.
+- **#29** P001 FD-08 login protection and audit trail. **Merged** (`fe31072`).
+- P007 School Points first version (DR-021): branch `p007-school-points`, draft PR, awaiting AJ.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 
 ## Current Work

@@ -33,3 +33,9 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 - Demonstration build: synthetic data only, no sign-in, SQLite.
 - The benchmark scenarios and the contextual audit were written by the same agent; results do not show the audit works on unseen or real data.
 - M6 (time to detection) and M7 (evidence completeness with human reviewers) are not measured.
+
+## P009 Screen Memory (2026-11-05)
+- Live recording not verified on a desktop; Windows only.
+- Exclusion by program and title cannot catch every sensitive window (46 % of unlisted sensitive visits exposed in simulation).
+- No text recognition; search covers window titles and program names.
+- The resumption measure is a proxy; real task-resumption performance needs a study with people and ethics approval.

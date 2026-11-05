@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Screen Memory</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>Screen Memory</h1>
+    <p id="state" class="state" role="status" aria-live="polite">Connecting…</p>
+  </header>
+  <main>
+    <div id="notice" role="alert"></div>
+    <section aria-labelledby="controls-h">
+      <h2 id="controls-h" class="sr-only">Controls</h2>
+      <div class="row">
+        <button id="pause" type="button">Pause</button>
+        <button id="resume" type="button">Resume</button>
+        <button id="del15" type="button">Delete last 15 minutes</button>
+        <button id="del60" type="button">Delete last hour</button>
+        <button id="delall" type="button" class="danger">Delete everything…</button>
+      </div>
+      <p id="stats" class="meta"></p>
+    </section>
+    <section aria-labelledby="search-h">
+      <h2 id="search-h">Find something you saw</h2>
+      <form id="search" class="row">
+        <label for="q">Window title or program</label>
+        <input id="q" type="search" maxlength="200">
+        <button type="submit">Search</button>
+      </form>
+      <ol id="results" class="results"></ol>
+    </section>
+    <section id="viewer" aria-labelledby="viewer-h" hidden>
+      <h2 id="viewer-h">Image</h2>
+      <p id="viewer-caption"></p>
+      <img id="viewer-img" alt="">
+      <div class="row"><button id="viewer-delete" type="button" class="danger">Delete this image</button></div>
+    </section>
+  </main>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

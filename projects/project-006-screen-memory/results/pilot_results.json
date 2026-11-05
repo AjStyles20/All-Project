@@ -1,0 +1,60 @@
+{
+  "results": {
+    "B0": {
+      "frames_per_hour": 1800.095,
+      "mb_per_hour": 162.055,
+      "sensitive_frames": 123.6,
+      "sensitive_share": 0.033,
+      "sensitive_visits_exposed": 0.8,
+      "resumption_proxy": 1.0,
+      "window_coverage": 1.0,
+      "decide_us_per_tick": 4.632
+    },
+    "B1": {
+      "frames_per_hour": 120.247,
+      "mb_per_hour": 10.763,
+      "sensitive_frames": 8.2,
+      "sensitive_share": 0.033,
+      "sensitive_visits_exposed": 0.8,
+      "resumption_proxy": 0.866,
+      "window_coverage": 1.0,
+      "decide_us_per_tick": 2.537
+    },
+    "B2": {
+      "frames_per_hour": 107.198,
+      "mb_per_hour": 9.634,
+      "sensitive_frames": 8.4,
+      "sensitive_share": 0.036,
+      "sensitive_visits_exposed": 0.8,
+      "resumption_proxy": 1.0,
+      "window_coverage": 1.0,
+      "decide_us_per_tick": 288.584
+    },
+    "B3": {
+      "frames_per_hour": 401.781,
+      "mb_per_hour": 36.013,
+      "sensitive_frames": 34.0,
+      "sensitive_share": 0.039,
+      "sensitive_visits_exposed": 0.8,
+      "resumption_proxy": 1.0,
+      "window_coverage": 1.0,
+      "decide_us_per_tick": 5.237
+    },
+    "B4": {
+      "frames_per_hour": 143.484,
+      "mb_per_hour": 12.915,
+      "sensitive_frames": 6.6,
+      "sensitive_share": 0.022,
+      "sensitive_visits_exposed": 0.342,
+      "resumption_proxy": 1.0,
+      "window_coverage": 1.0,
+      "decide_us_per_tick": 44.304
+    }
+  },
+  "rule": {
+    "utility_within_tolerance": true,
+    "fewer_frames_than_B3": true,
+    "fewer_sensitive_than_B3": true,
+    "overall": "MET ON PROXY"
+  }
+}

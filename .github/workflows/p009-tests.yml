@@ -1,0 +1,34 @@
+name: P009 Screen Memory Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "projects/project-006-screen-memory/**"
+      - ".github/workflows/p009-tests.yml"
+  pull_request:
+    paths:
+      - "projects/project-006-screen-memory/**"
+      - ".github/workflows/p009-tests.yml"
+
+jobs:
+  test:
+    # Windows, because the program and its DPAPI encryption are Windows-only.
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: projects/project-006-screen-memory
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install test dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run P009 tests
+        run: python -m pytest -q
+      - name: Check DPAPI round trip
+        run: python -c "from p009.protect import DPAPIProtector as P; p = P(); assert p.unprotect(p.protect(b'x' * 50)) == b'x' * 50"
+      - name: Check the simulation runs
+        run: python -m p009.simulate pilot

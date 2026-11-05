@@ -59,3 +59,7 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 - Rule-based findings do not generalise to new wording (17 % of planted issues on held-out phrasing; random 15 %); no AI provider connected.
 - Contradictions inside one paragraph are not detected; feedback is surface-level and is not a grade.
 - No speech input or output.
+
+## P002 Educational LM (2026-11-05)
+- Tier A only: about 120k parameters, 40 hand-written facts, one domain; memorises a small world. No GPU (Tier B) work.
+- Likelihood comparisons are not understanding; the contrast condition saw every misconception string in training.

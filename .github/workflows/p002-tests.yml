@@ -1,0 +1,29 @@
+name: P002 Educational LM Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "projects/project-003-small-educational-language-model/**"
+      - ".github/workflows/p002-tests.yml"
+  pull_request:
+    paths:
+      - "projects/project-003-small-educational-language-model/**"
+      - ".github/workflows/p002-tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/project-003-small-educational-language-model
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install test dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run P002 tests (including the full gradient check)
+        run: python -m pytest -q

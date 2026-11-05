@@ -1,0 +1,215 @@
+{
+  "default": {
+    "results": {
+      "B0": {
+        "M1_recall": 0.0,
+        "M2_false_positive_rate": 0.0,
+        "M3_unsupported_claim_rate": null,
+        "M3_unsupported_claims": 0,
+        "M4_appropriate_insufficiency": 0.0,
+        "M5_incorrect_insufficiency": 0.0,
+        "M8_seconds_total": 0.003,
+        "M8_peak_kib": 0,
+        "states_by_scenario": {
+          "S0": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S1": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S2": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S3": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S4": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S5": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S6": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S7": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S8": {
+            "NO MATERIAL SIGNAL": 5
+          }
+        }
+      },
+      "B1": {
+        "M1_recall": 0.486,
+        "M2_false_positive_rate": 0.5,
+        "M3_unsupported_claim_rate": 0.566,
+        "M3_unsupported_claims": 30,
+        "M4_appropriate_insufficiency": 0.0,
+        "M5_incorrect_insufficiency": 0.0,
+        "M8_seconds_total": 0.91,
+        "M8_peak_kib": 35,
+        "states_by_scenario": {
+          "S0": {
+            "NO MATERIAL SIGNAL": 4,
+            "GOVERNANCE SIGNAL": 1
+          },
+          "S1": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S2": {
+            "NO MATERIAL SIGNAL": 2,
+            "GOVERNANCE SIGNAL": 3
+          },
+          "S3": {
+            "GOVERNANCE SIGNAL": 4,
+            "NO MATERIAL SIGNAL": 1
+          },
+          "S4": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S5": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S6": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S7": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S8": {
+            "GOVERNANCE SIGNAL": 5
+          }
+        }
+      },
+      "B2": {
+        "M1_recall": 0.0,
+        "M2_false_positive_rate": 0.3,
+        "M3_unsupported_claim_rate": 1.0,
+        "M3_unsupported_claims": 7,
+        "M4_appropriate_insufficiency": 0.0,
+        "M5_incorrect_insufficiency": 0.0,
+        "M8_seconds_total": 0.455,
+        "M8_peak_kib": 27,
+        "states_by_scenario": {
+          "S0": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S1": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S2": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S3": {
+            "GOVERNANCE SIGNAL": 3,
+            "NO MATERIAL SIGNAL": 2
+          },
+          "S4": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S5": {
+            "NO MATERIAL SIGNAL": 4,
+            "GOVERNANCE SIGNAL": 1
+          },
+          "S6": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S7": {
+            "GOVERNANCE SIGNAL": 2,
+            "NO MATERIAL SIGNAL": 3
+          },
+          "S8": {
+            "NO MATERIAL SIGNAL": 5
+          }
+        }
+      },
+      "B3": {
+        "M1_recall": 0.571,
+        "M2_false_positive_rate": 0.2,
+        "M3_unsupported_claim_rate": 0.354,
+        "M3_unsupported_claims": 40,
+        "M4_appropriate_insufficiency": 0.0,
+        "M5_incorrect_insufficiency": 0.0,
+        "M8_seconds_total": 1.065,
+        "M8_peak_kib": 43,
+        "states_by_scenario": {
+          "S0": {
+            "NO MATERIAL SIGNAL": 3,
+            "GOVERNANCE SIGNAL": 2
+          },
+          "S1": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S2": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S3": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S4": {
+            "GOVERNANCE SIGNAL": 4,
+            "NO MATERIAL SIGNAL": 1
+          },
+          "S5": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S6": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S7": {
+            "NO MATERIAL SIGNAL": 4,
+            "GOVERNANCE SIGNAL": 1
+          },
+          "S8": {
+            "GOVERNANCE SIGNAL": 5
+          }
+        }
+      },
+      "B4": {
+        "M1_recall": 1.0,
+        "M2_false_positive_rate": 0.0,
+        "M3_unsupported_claim_rate": 0.0,
+        "M3_unsupported_claims": 0,
+        "M4_appropriate_insufficiency": 1.0,
+        "M5_incorrect_insufficiency": 0.0,
+        "M8_seconds_total": 1.823,
+        "M8_peak_kib": 47,
+        "states_by_scenario": {
+          "S0": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S1": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S2": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S3": {
+            "NO MATERIAL SIGNAL": 5
+          },
+          "S4": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S5": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S6": {
+            "INSUFFICIENT CONTEXT": 5
+          },
+          "S7": {
+            "GOVERNANCE SIGNAL": 5
+          },
+          "S8": {
+            "GOVERNANCE SIGNAL": 5
+          }
+        }
+      }
+    },
+    "success_rule": {
+      "B1": "B4 BETTER",
+      "B3": "B4 BETTER",
+      "overall": "SUPPORTED"
+    }
+  }
+}

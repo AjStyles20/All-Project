@@ -21,9 +21,15 @@ The system is intentionally not designed to autonomously change project identity
 
 
 ## P001 security gaps to close before public or real-student deployment (2026-11-02)
-- ~~Login has no rate limit or lockout (PROJECT_RULES §22).~~ Addressed by FD-08 (pending merge).
-- ~~Login timing reveals whether a username exists.~~ Addressed by FD-08 (pending merge).
-- ~~Account changes have no audit trail.~~ Addressed by FD-08 (pending merge).
+- ~~Login has no rate limit or lockout (PROJECT_RULES §22).~~ Addressed by FD-08 (merged as PR #29).
+- ~~Login timing reveals whether a username exists.~~ Addressed by FD-08 (merged as PR #29).
+- ~~Account changes have no audit trail.~~ Addressed by FD-08 (merged as PR #29).
 - Still open: no independent security review; one-time passwords are handed over by the administrator; behind a reverse proxy, uvicorn must be configured to trust it or all users share one address for the limits.
 
 See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MANAGEMENT_DESIGN.md` and `FD08_LOGIN_PROTECTION_AUDIT_DESIGN.md`.
+
+
+## P007 School Points (2026-11-05)
+- Demonstration build: synthetic data only, no sign-in, SQLite.
+- The benchmark scenarios and the contextual audit were written by the same agent; results do not show the audit works on unseen or real data.
+- M6 (time to detection) and M7 (evidence completeness with human reviewers) are not measured.

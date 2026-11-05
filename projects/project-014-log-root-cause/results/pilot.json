@@ -1,0 +1,21 @@
+{
+  "B0": {
+    "correct_when_answerable": 0.75,
+    "unsupported_assertion_rate": 0.575,
+    "correct_abstention": 0.1,
+    "abstained_when_answerable": 0.0
+  },
+  "B1": {
+    "correct_when_answerable": 0.75,
+    "unsupported_assertion_rate": 0.4,
+    "correct_abstention": 0.45,
+    "abstained_when_answerable": 0.0
+  },
+  "B4": {
+    "correct_when_answerable": 0.85,
+    "unsupported_assertion_rate": 0.075,
+    "correct_abstention": 0.85,
+    "abstained_when_answerable": 0.15,
+    "evidence_with_file_and_line": 1.0
+  }
+}

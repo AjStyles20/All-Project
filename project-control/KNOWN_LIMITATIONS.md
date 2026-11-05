@@ -67,3 +67,8 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 ## P014 Lanterns of Brinewold (2026-11-05)
 - No human playtest; balance tuned with a scripted bot. AI companions do not dodge telegraphed attacks.
 - No sound; keyboard only; one region.
+
+## P005 Log root-cause tool (2026-11-05)
+- Evaluated only on synthetic, self-authored incidents; real incident datasets with known root causes not used.
+- Fixed library of eight fault types; logs only (no metrics or traces); no language model.
+- Abstains on 25 % of incidents that had one clear cause.

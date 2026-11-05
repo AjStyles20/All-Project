@@ -363,3 +363,15 @@ All verification evidence should be reproducible where practical. Do not record 
 - Defects found: interaction range 48 px missed a hero standing beside a lantern (now 60 px); one test expectation ignored the healer AI; Node 26 no longer accepts a folder for `--test`.
 - Status: PASS for the tested rules and browser flow; no human playtest.
 - Performed by: Claude Code (Engineering)
+
+### TE-027 — P005 Log root-cause tool: parsing, diagnosis, benchmark, report
+- Date: 2026-11-05
+- Requirement(s): P005 Pass 001 (claim states, security requirements, evaluation baselines); DR-021
+- Test type: Unit + CLI + synthetic benchmark + browser view of the report
+- Environment: Python 3.14 locally (CI: 3.11); report served on 127.0.0.1:8018 for viewing.
+- Observed result, tests: 13 passed (three log formats with file:line provenance, redaction of passwords/tokens/JWT/AWS keys/e-mail/card-like numbers, templating, hostile log text never verifies anything and is escaped, size limit, noisy minute is not an incident, clear/ambiguous/red-herring behaviour, recorded checks are the only path to VERIFIED, CLI round trip, benchmark sanity).
+- Observed result, benchmark (frozen in `87f788f`, 240 synthetic incidents): B4 correct 75.0 % when answerable, unsupported assertions 9.6 %, correct abstention 80.8 %, abstained when answerable 25.0 %; B0 67.5/60.4/11.7/0; B1 67.5/40.0/45.0/7.5.
+- Observed result, browser: the HTML report for an ambiguous incident showed both supported hypotheses with log lines, separating checks and claim-state legend; no console errors.
+- Defects found: false onset from a single noisy minute and over-literal missing-service check (both on pilot data, fixed before freezing); duplicated verdict heading in the report (fixed, test added).
+- Status: PASS for the tool on synthetic data; not evaluated on real incidents.
+- Performed by: Claude Code (Engineering)

@@ -1,0 +1,62 @@
+{
+  "results": {
+    "dev": {
+      "B0": {
+        "macro_f1": 0.475,
+        "accuracy": 0.6,
+        "false_penalty_rate": 0.57,
+        "missed_severe_rate": 0.0,
+        "appropriate_abstention": 0.0,
+        "incorrect_abstention": 0.0,
+        "policy_consistency": 0.543,
+        "ms_per_ruling": 0.697
+      },
+      "B1": {
+        "macro_f1": 0.74,
+        "accuracy": 0.841,
+        "false_penalty_rate": 0.135,
+        "missed_severe_rate": 0.067,
+        "appropriate_abstention": 1.0,
+        "incorrect_abstention": 0.051,
+        "policy_consistency": 0.714,
+        "ms_per_ruling": 0.142
+      },
+      "B2": {
+        "macro_f1": 0.745,
+        "accuracy": 0.841,
+        "false_penalty_rate": 0.144,
+        "missed_severe_rate": 0.033,
+        "appropriate_abstention": 1.0,
+        "incorrect_abstention": 0.051,
+        "policy_consistency": 0.714,
+        "ms_per_ruling": 0.124
+      },
+      "B3": {
+        "macro_f1": 0.517,
+        "accuracy": 0.729,
+        "false_penalty_rate": 0.312,
+        "missed_severe_rate": 0.0,
+        "appropriate_abstention": 0.0,
+        "incorrect_abstention": 0.0,
+        "policy_consistency": 0.629,
+        "ms_per_ruling": 2.918
+      },
+      "B4": {
+        "macro_f1": 1.0,
+        "accuracy": 1.0,
+        "false_penalty_rate": 0.0,
+        "missed_severe_rate": 0.0,
+        "appropriate_abstention": 1.0,
+        "incorrect_abstention": 0.0,
+        "policy_consistency": 1.0,
+        "ms_per_ruling": 0.905
+      }
+    }
+  },
+  "rule": {
+    "f1_beats_best_other_by_0.05": true,
+    "false_penalty_at_most_0.05": true,
+    "missed_severe_at_most_0.05": true,
+    "overall": "SUPPORTED"
+  }
+}

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chess with an Arbiter</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header><h1>Chess with an arbiter</h1></header>
+  <main>
+    <div id="notice" role="alert"></div>
+
+    <section id="start" aria-labelledby="start-h">
+      <h2 id="start-h">New game</h2>
+      <form id="new-game" class="row">
+        <label for="contract">Match rules</label>
+        <select id="contract">
+          <option value="STRICT">Strict: no help, no position talk to the opponent</option>
+          <option value="SOCIAL" selected>Social: chat freely, no outside help</option>
+          <option value="OPEN">Open: anything except abuse</option>
+          <option value="TRAINING">Training: coaching welcome</option>
+        </select>
+        <button type="submit">Create game</button>
+      </form>
+      <div id="links"></div>
+    </section>
+
+    <section id="game" aria-labelledby="game-h" hidden>
+      <h2 id="game-h">Game</h2>
+      <p id="status" role="status" aria-live="polite"></p>
+      <div class="layout">
+        <div>
+          <div id="board" class="board" role="grid" aria-label="Chess board"></div>
+          <div class="row">
+            <label for="promotion">Promote to</label>
+            <select id="promotion">
+              <option value="q">Queen</option><option value="r">Rook</option>
+              <option value="b">Bishop</option><option value="n">Knight</option>
+            </select>
+            <button id="resign" type="button">Resign</button>
+          </div>
+          <form id="move-form" class="row">
+            <label for="move-text">Or type a move</label>
+            <input id="move-text" placeholder="e2e4" maxlength="5" autocomplete="off">
+            <button type="submit">Move</button>
+          </form>
+          <p id="moves" class="meta"></p>
+        </div>
+        <div class="chat">
+          <h3>Chat</h3>
+          <ol id="messages" aria-live="polite"></ol>
+          <form id="chat-form" class="row">
+            <label for="chat-name" class="sr-only">Your name</label>
+            <input id="chat-name" maxlength="30" placeholder="Your name">
+            <label for="chat-text" class="sr-only">Message</label>
+            <input id="chat-text" maxlength="300" placeholder="Say something" required>
+            <button type="submit">Send</button>
+          </form>
+          <p class="meta">The arbiter reads chat against the board and the match rules. Its notices are for a person to review; it never changes the game.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

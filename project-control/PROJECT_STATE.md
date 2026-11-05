@@ -40,7 +40,9 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 
 - **P007 School Point & Digital Economy System** (DR-021, product build): PR #30 **merged** (`7844277`). Ledger, scenarios S0–S8, audit engines B0–B4, evaluation harness, dashboard. Synthetic data only, no sign-in. Benchmark rule met (TE-019), but the scenarios and B4 were written by the same agent, so this is not evidence the audit works on real schools. See `projects/project-004-school-points-economy/docs/RESULTS.md`.
 
-- **P009 Personal Screen Memory System** (DR-021, product build): branch `p009-screen-memory`, draft PR. Privacy/security model committed before capture code. Windows recorder (selective policy B4, exclusions, DPAPI encryption, retention, deletion), local dashboard, offline policy comparison (TE-020). Live capture NOT verified (the development session saw a locked desktop). No study with people. See `projects/project-006-screen-memory/docs/EVALUATION.md`.
+- **P009 Personal Screen Memory System** (DR-021, product build): PR #31 **merged** (`179d737`). Privacy/security model committed before capture code. Windows recorder (selective policy B4, exclusions, DPAPI encryption, retention, deletion), local dashboard, offline policy comparison (TE-020). Live capture NOT verified (the development session saw a locked desktop). No study with people. See `projects/project-006-screen-memory/docs/EVALUATION.md`.
+
+- **P010 Intelligent Online Chess Platform** (DR-021, product build): branch `p010-chess`, draft PR. In-house rules engine (perft-verified), two-player games with spectators and chat, contextual arbiter B4 against four baselines (TE-021). Text chat stands in for voice; no accounts; games in memory. Rule met, but B4 misses 22 % of severe cases on held-out paraphrases. See `projects/project-005-intelligent-chess-platform/docs/EVALUATION.md`.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -77,7 +79,8 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#28** P001 FD-07 user management. **Merged** (`1ceaab1`).
 - **#29** P001 FD-08 login protection and audit trail. **Merged** (`fe31072`).
 - **#30** P007 School Points first version (DR-021). **Merged** (`7844277`).
-- P009 Screen Memory first version (DR-021): branch `p009-screen-memory`, draft PR, awaiting AJ.
+- **#31** P009 Screen Memory first version (DR-021). **Merged** (`179d737`).
+- P010 Chess first version (DR-021): branch `p010-chess`, draft PR, awaiting AJ.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 
 ## Current Work

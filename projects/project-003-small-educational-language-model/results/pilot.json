@@ -1,0 +1,39 @@
+{
+ "condition": "exposition",
+ "seed": 0,
+ "steps": 200,
+ "params": 122624,
+ "config": {
+  "vocab": 320,
+  "d": 64,
+  "layers": 2,
+  "heads": 4,
+  "ctx": 32
+ },
+ "train_tokens_seen": 51200,
+ "train_text_sha256": "d8658929b1e8dca3",
+ "seconds": 240.9,
+ "curve": [
+  {
+   "step": 50,
+   "train_loss": 4.3464
+  },
+  {
+   "step": 100,
+   "train_loss": 2.2898
+  },
+  {
+   "step": 150,
+   "train_loss": 1.7029
+  },
+  {
+   "step": 200,
+   "train_loss": 1.3816
+  }
+ ],
+ "val_loss": 1.3638,
+ "misconception_accuracy": 0.887,
+ "subject_recall_accuracy": 1.0,
+ "val_perplexity": 3.91,
+ "sample": "we know that the moon vaace floats on water.\nwe know that emptects the brain controls the body."
+}

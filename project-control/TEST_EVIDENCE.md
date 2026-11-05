@@ -340,3 +340,14 @@ All verification evidence should be reproducible where practical. Do not record 
 - Defects found: the first benchmark used reports too short to separate methods (random questions reached 100 %), fixed in the pilot before freezing; one wrong test expectation; XML guard tightened to the whole file after a security hook warning.
 - Status: PASS for the software; the rule-based method does NOT generalise to new wording.
 - Performed by: Claude Code (Engineering)
+
+### TE-025 — P002 Educational LM Tier A: gradient check, training, H2 pilot
+- Date: 2026-11-05
+- Requirement(s): P002 Pass 001 (Tier A, data governance, safety), Pass 002 (H2 pilot); DR-021
+- Test type: Unit + training runs
+- Environment: Pentium N3710-class laptop, Windows 10, Python 3.14, NumPy 2.5, single-threaded BLAS (CI: 3.11).
+- Observed result, tests: 9 passed — every parameter's gradient matches finite differences (relative error < 1e-4; worst seen 6e-6), causal masking, training lowers loss, float32 preserved, checkpoints refuse pickled objects, BPE round trip, held-out templates absent from training, equal condition budgets.
+- Observed result, training (frozen in `3c79bf6`, 3 seeds × 2 conditions, 1,200 steps each, about 4 minutes per run): exposition val loss 0.51, misconception test 90.0 %, recall 99.2 %; contrast 0.60, 37.5 %, 97.5 %; bigram 2.34 / 86.3 % / 70.8 % (exposition).
+- Defects found: corpus line breaks were erased by normalisation (fixed before any run); NumPy float64 constants silently promoted float32 maths (fixed, test added); multi-threaded BLAS was 3× slower on this CPU (single thread set).
+- Status: PASS for the pipeline; the H2 pilot result is negative for naive contrast pretraining.
+- Performed by: Claude Code (Engineering)

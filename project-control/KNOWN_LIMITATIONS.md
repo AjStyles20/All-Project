@@ -54,3 +54,8 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 - No language model connected; AI roles are deterministic stand-ins. Phase 3 (retrieval, providers, model-side injection defences) not built.
 - One verification check per concept: simulated false mastery 13.9 %.
 - Single user, local only; small benchmark course.
+
+## P011 Defence Practice (2026-11-05)
+- Rule-based findings do not generalise to new wording (17 % of planted issues on held-out phrasing; random 15 %); no AI provider connected.
+- Contradictions inside one paragraph are not detected; feedback is surface-level and is not a grade.
+- No speech input or output.

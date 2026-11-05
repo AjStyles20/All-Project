@@ -328,3 +328,15 @@ All verification evidence should be reproducible where practical. Do not record 
 - Defects found: paraphrase lower-cased "INNER" ("iNNER"); explanation listed the authority note before the reason that decided the status; one tautological test assertion; the production Host check briefly allowed the test client's host name — all fixed before commit.
 - Status: PASS for the software and the automatic gates; the reference is a second implementation by the same agent, and learners are simulated.
 - Performed by: Claude Code (Engineering)
+
+### TE-024 — P011 Defence Practice first version: ingestion, findings, sessions, browser
+- Date: 2026-11-05
+- Requirement(s): P011 (legacy P001) FR-001–FR-006, NFR-001/003/004; DR-021
+- Test type: Unit + API + evaluation + browser
+- Environment: Python 3.14 locally (CI: 3.11); built-in browser; app on 127.0.0.1:8016 with a throwaway token.
+- Observed result, tests: 13 passed (TXT/DOCX/PPTX/PDF extraction with locations; refused: wrong type, over 10 MB, broken zip, DTD/XXE, zip bomb; findings tied to real sentences; grounded questions; feedback criteria; token/Host; full flow; delete removes search results).
+- Observed result, evaluation (frozen in `4796c67`): planted issues reached by 12 questions — dev wording B4 99 %, B1 20 %, B0 0 %; held-out wording B4 17 %, B1 15 %, B0 0 %. Quotes found in cited passages 100 %; no false alarms; role categories 97 % distinct.
+- Observed result, browser: uploaded report gave one finding of each kind with document and paragraph; a session of grounded questions; an overconfident answer got relevance, evidence and absolute-wording feedback.
+- Defects found: the first benchmark used reports too short to separate methods (random questions reached 100 %), fixed in the pilot before freezing; one wrong test expectation; XML guard tightened to the whole file after a security hook warning.
+- Status: PASS for the software; the rule-based method does NOT generalise to new wording.
+- Performed by: Claude Code (Engineering)

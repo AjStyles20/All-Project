@@ -279,3 +279,15 @@ All verification evidence should be reproducible where practical. Do not record 
 - Test defect found: one test matched the word "benchmark" in a docstring; replaced with an import check.
 - Status: PASS for the software; the research result is NOT independently established.
 - Performed by: Claude Code (Engineering)
+
+### TE-020 — P009 Screen Memory first version: tests, simulation, Windows probes
+- Date: 2026-11-05
+- Requirement(s): P009 Pass 003 (H5 boundary); DR-021; `docs/PRIVACY_SECURITY_MODEL.md`
+- Test type: Unit + API + offline simulation + Windows probe check
+- Environment: Windows 10, Python 3.14 locally (CI: windows-latest, Python 3.11).
+- Observed result, tests: 27 passed (exclusions, policies including no-future check, encryption on disk, retention and cap, deletion, path safety, recorder pause/lock/idle/exclusion, token and Host checks, simulation).
+- Observed result, DPAPI: encrypt/decrypt round trip on this machine.
+- Observed result, simulation (seeds 100–119, policies frozen in `fb03410`): B4 145 frames/hour, 12 sensitive frames, proxy 1.00; B3 415, 51, 1.00; B2 107, 15, 0.97. Predeclared rule met on the proxy. B2 keeps fewer images than B4.
+- Observed result, Windows probes: run from the development session, Windows reported the desktop as locked and no foreground window; the recorder's lock check therefore captured nothing. **Live capture not verified.**
+- Status: PASS for the tested software; live recording UNVERIFIED; research question NOT tested (needs people).
+- Performed by: Claude Code (Engineering)

@@ -1,0 +1,6 @@
+{
+  "name": "lanterns-of-brinewold",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test" }
+}

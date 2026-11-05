@@ -50,7 +50,9 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 
 - **P011 Source-Grounded AI Defense Simulator** (DR-021, product build; research verdict PARK / merged with P001 unchanged): PR #35 **merged** (`4552a18`). Document upload (TXT/MD/DOCX/PPTX/PDF), rule-based findings, four reviewer roles, grounded questions, criterion feedback, local app (TE-024). Rules reach 99 % of planted issues on dev wording but only 17 % on held-out wording (random: 15 %). See `projects/project-001-ai-defense-simulator/docs/RESULTS.md`.
 
-- **P002 Educational Language Model From Scratch** (DR-021; build regardless, outside FYP competition): branch `p002-educational-lm`, draft PR. Tier A: NumPy Transformer with hand-written, gradient-checked backward pass, BPE tokenizer, hand-written CC0 corpus (TE-025). Finding: naive misconception-contrast pretraining made the model prefer misconceptions (37.5 % vs 90 %). See `projects/project-003-small-educational-language-model/docs/RESULTS.md`.
+- **P002 Educational Language Model From Scratch** (DR-021; build regardless, outside FYP competition): PR #36 **merged** (`445d77c`). Tier A: NumPy Transformer with hand-written, gradient-checked backward pass, BPE tokenizer, hand-written CC0 corpus (TE-025). Finding: naive misconception-contrast pretraining made the model prefer misconceptions (37.5 % vs 90 %). See `projects/project-003-small-educational-language-model/docs/RESULTS.md`.
+
+- **P014 Fantasy Action RPG** (DR-021; creative project, research verdict unchanged): branch `p014-fantasy-rpg`, draft PR. Original browser game *Lanterns of Brinewold*: four-hero party, one region, one quest chain, boss with telegraphed attack; all names, story and dialogue original (`docs/IP_NOTES.md`). Tested by unit tests, a scripted playthrough and a browser check (TE-026). Balance tuned with a bot only; no human playtest yet.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -92,7 +94,8 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#33** P004 Compression Gateway first version (DR-021). **Merged** (`55d2fb1`).
 - **#34** P006 Learning World first version (DR-021). **Merged** (`ae0fcf8`).
 - **#35** P011 Defence Practice first version (DR-021). **Merged** (`4552a18`).
-- P002 Educational LM Tier A (DR-021): branch `p002-educational-lm`, draft PR, awaiting AJ.
+- **#36** P002 Educational LM Tier A (DR-021). **Merged** (`445d77c`).
+- P014 Lanterns of Brinewold game (DR-021): branch `p014-fantasy-rpg`, draft PR, awaiting AJ.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 
 ## Current Work

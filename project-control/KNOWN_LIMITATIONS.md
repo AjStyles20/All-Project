@@ -63,3 +63,7 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 ## P002 Educational LM (2026-11-05)
 - Tier A only: about 120k parameters, 40 hand-written facts, one domain; memorises a small world. No GPU (Tier B) work.
 - Likelihood comparisons are not understanding; the contrast condition saw every misconception string in training.
+
+## P014 Lanterns of Brinewold (2026-11-05)
+- No human playtest; balance tuned with a scripted bot. AI companions do not dodge telegraphed attacks.
+- No sound; keyboard only; one region.

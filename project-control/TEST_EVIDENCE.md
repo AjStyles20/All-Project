@@ -351,3 +351,15 @@ All verification evidence should be reproducible where practical. Do not record 
 - Defects found: corpus line breaks were erased by normalisation (fixed before any run); NumPy float64 constants silently promoted float32 maths (fixed, test added); multi-threaded BLAS was 3× slower on this CPU (single thread set).
 - Status: PASS for the pipeline; the H2 pilot result is negative for naive contrast pretraining.
 - Performed by: Claude Code (Engineering)
+
+### TE-026 — P014 Lanterns of Brinewold: rules, playthrough, browser
+- Date: 2026-11-05
+- Requirement(s): P014 Pass 001 (IP boundary, scope: one region, small party, one quest chain); DR-021
+- Test type: Unit + scripted playthrough + bot balance runs + browser
+- Environment: Node 26 locally (CI: Node 22); built-in browser; static server on 127.0.0.1:8017.
+- Observed result, tests: 12 passed (ferry gating, Oswin-only lanterns with ambushes, gate and boss spawn, win, collision and reeds, cooldowns and mark bonus, healing cap, revive and party wipe, save/load and foreign-save refusal, determinism, full scripted playthrough, boss warning and area attack).
+- Observed result, browser: title and controls, movement and combat with banter, talking to the ferrywoman advanced the quest and placed the raft, hero switching, pause, save to local storage; no console errors.
+- Balance: a scripted bot first won in 6.6 s unhurt; after two tuning passes it wins in about 26 s with two heroes down (`docs/BALANCE.md`). The bot is a rough instrument.
+- Defects found: interaction range 48 px missed a hero standing beside a lantern (now 60 px); one test expectation ignored the healer AI; Node 26 no longer accepts a folder for `--test`.
+- Status: PASS for the tested rules and browser flow; no human playtest.
+- Performed by: Claude Code (Engineering)

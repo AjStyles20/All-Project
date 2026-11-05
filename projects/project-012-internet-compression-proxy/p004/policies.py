@@ -5,6 +5,7 @@ object's type, size and image dimensions, and the client's hints. B4 additionall
 fixed cost model (fitted on pilot objects only) and a verification step.
 """
 from dataclasses import dataclass
+from pathlib import Path
 
 from p004.transforms import NotTransformable, faithful, image_size
 
@@ -107,6 +108,13 @@ class CostModel:
     @staticmethod
     def bucket(size):
         return "small" if size < 4096 else "large"
+
+    @classmethod
+    def load(cls, path):
+        import json
+        saved = json.loads(Path(path).read_text(encoding="utf-8"))
+        return cls(saved["webp_ms_per_mpx"], saved["gzip_ms_per_mb"], saved["webp_overhead_ms"],
+                   saved["gzip_overhead_ms"], {(a, b, c): v for a, b, c, v in saved["ratios"]})
 
     def ratio(self, f, key):
         return (self.ratios or {}).get((f.content_type, self.bucket(f.size), key), 1.0)

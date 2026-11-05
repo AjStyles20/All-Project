@@ -304,3 +304,15 @@ All verification evidence should be reproducible where practical. Do not record 
 - Defects found: a move-generator bug (iterating a list being mutated), found by the first perft run and fixed before commit; one test expectation was wrong (promotions there give mate); evidence wording "said during DURING" reworded after the evaluation (rulings unchanged).
 - Status: PASS for the software; the research result is NOT independently established.
 - Performed by: Claude Code (Engineering)
+
+### TE-022 — P004 Compression Gateway first version: security invariants, benchmark, live gateway
+- Date: 2026-11-05
+- Requirement(s): P004 Pass 004; `docs/SPECIFICATION.md`; DR-021
+- Test type: Unit + integration + benchmark + live servers
+- Environment: Windows 10, Intel Atom/Celeron-class CPU, Python 3.14 (CI: Ubuntu, 3.11); origin and gateway on 127.0.0.1.
+- Observed result, tests: 31 passed, covering security invariants S1–S10 for every transforming policy where relevant.
+- Observed result, benchmark (frozen in `0970587`): regressions B1 181, B2 168, B3 147, B4 3; B4 kept 99 %/98 % of B3's savings on the slow profiles; B4 and B3 agreed on 42 % of decisions. All §9 thresholds met.
+- Observed result, live: correct pass/gzip/abstain decisions; absolute-form target refused (400); upstream redirect returned, not followed.
+- Defects found: cost-model fit distorted by tiny objects (fixed on pilot data before freezing); lab gateway started without its fitted model so B4 never transformed (fixed, regression test added); two wrong test expectations fixed. B4's verification cost (24–56 % of encode time) was not counted in the benchmark and makes large photos exceed the 5 s limit on this laptop — recorded, not fixed.
+- Status: PASS for the software and the predeclared thresholds; the result relies on a modelled network and is NOT independently established.
+- Performed by: Claude Code (Engineering)

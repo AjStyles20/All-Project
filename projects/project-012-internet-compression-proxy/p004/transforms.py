@@ -80,8 +80,8 @@ def fidelity(original: bytes, transformed: bytes):
 
 
 def _ssim(a, b, size=128, window=8):
-    ga = list(a.convert("L").resize((size, size)).getdata())
-    gb = list(b.convert("L").resize((size, size)).getdata())
+    ga = a.convert("L").resize((size, size)).tobytes()
+    gb = b.convert("L").resize((size, size)).tobytes()
     c1, c2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
     scores = []
     for y in range(0, size, window):

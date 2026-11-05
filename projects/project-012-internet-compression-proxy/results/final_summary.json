@@ -1,0 +1,222 @@
+{
+  "summary": {
+    "B0": {
+      "outcomes": {
+        "PASS_THROUGH": 425
+      },
+      "by_profile": {
+        "N0": {
+          "bytes_saved": 0,
+          "bytes_saved_share": 0.0,
+          "total_ms": 296,
+          "baseline_ms": 296
+        },
+        "N1": {
+          "bytes_saved": 0,
+          "bytes_saved_share": 0.0,
+          "total_ms": 873732,
+          "baseline_ms": 873732
+        },
+        "N2": {
+          "bytes_saved": 0,
+          "bytes_saved_share": 0.0,
+          "total_ms": 149872,
+          "baseline_ms": 149872
+        },
+        "N3": {
+          "bytes_saved": 0,
+          "bytes_saved_share": 0.0,
+          "total_ms": 38206,
+          "baseline_ms": 38206
+        },
+        "N4": {
+          "bytes_saved": 0,
+          "bytes_saved_share": 0.0,
+          "total_ms": 5941,
+          "baseline_ms": 5941
+        }
+      }
+    },
+    "B1": {
+      "outcomes": {
+        "TRANSFORM_REGRESSION": 181,
+        "PASS_THROUGH": 75,
+        "TRANSFORM_SUCCESS": 119,
+        "ABSTAIN": 50
+      },
+      "by_profile": {
+        "N0": {
+          "bytes_saved": 17466412,
+          "bytes_saved_share": 0.659,
+          "total_ms": 47498,
+          "baseline_ms": 296
+        },
+        "N1": {
+          "bytes_saved": 17466412,
+          "bytes_saved_share": 0.659,
+          "total_ms": 362148,
+          "baseline_ms": 873732
+        },
+        "N2": {
+          "bytes_saved": 17466412,
+          "bytes_saved_share": 0.659,
+          "total_ms": 104059,
+          "baseline_ms": 149872
+        },
+        "N3": {
+          "bytes_saved": 17466412,
+          "bytes_saved_share": 0.659,
+          "total_ms": 71574,
+          "baseline_ms": 38206
+        },
+        "N4": {
+          "bytes_saved": 17466412,
+          "bytes_saved_share": 0.659,
+          "total_ms": 50488,
+          "baseline_ms": 5941
+        }
+      }
+    },
+    "B2": {
+      "outcomes": {
+        "TRANSFORM_REGRESSION": 168,
+        "TRANSFORM_SUCCESS": 132,
+        "PASS_THROUGH": 75,
+        "ABSTAIN": 50
+      },
+      "by_profile": {
+        "N0": {
+          "bytes_saved": 21509489,
+          "bytes_saved_share": 0.811,
+          "total_ms": 35030,
+          "baseline_ms": 296
+        },
+        "N1": {
+          "bytes_saved": 21509489,
+          "bytes_saved_share": 0.811,
+          "total_ms": 220333,
+          "baseline_ms": 873732
+        },
+        "N2": {
+          "bytes_saved": 21509489,
+          "bytes_saved_share": 0.811,
+          "total_ms": 70060,
+          "baseline_ms": 149872
+        },
+        "N3": {
+          "bytes_saved": 21509489,
+          "bytes_saved_share": 0.811,
+          "total_ms": 55903,
+          "baseline_ms": 38206
+        },
+        "N4": {
+          "bytes_saved": 21509489,
+          "bytes_saved_share": 0.811,
+          "total_ms": 37405,
+          "baseline_ms": 5941
+        }
+      }
+    },
+    "B3": {
+      "outcomes": {
+        "TRANSFORM_REGRESSION": 147,
+        "TRANSFORM_SUCCESS": 128,
+        "PASS_THROUGH": 100,
+        "ABSTAIN": 50
+      },
+      "by_profile": {
+        "N0": {
+          "bytes_saved": 17466512,
+          "bytes_saved_share": 0.659,
+          "total_ms": 47497,
+          "baseline_ms": 296
+        },
+        "N1": {
+          "bytes_saved": 19365790,
+          "bytes_saved_share": 0.731,
+          "total_ms": 296139,
+          "baseline_ms": 873732
+        },
+        "N2": {
+          "bytes_saved": 19365790,
+          "bytes_saved_share": 0.731,
+          "total_ms": 88701,
+          "baseline_ms": 149872
+        },
+        "N3": {
+          "bytes_saved": 17466512,
+          "bytes_saved_share": 0.659,
+          "total_ms": 71573,
+          "baseline_ms": 38206
+        },
+        "N4": {
+          "bytes_saved": 17466512,
+          "bytes_saved_share": 0.659,
+          "total_ms": 50487,
+          "baseline_ms": 5941
+        }
+      }
+    },
+    "B4": {
+      "outcomes": {
+        "PASS_THROUGH": 250,
+        "TRANSFORM_SUCCESS": 122,
+        "TRANSFORM_REGRESSION": 3,
+        "ABSTAIN": 50
+      },
+      "by_profile": {
+        "N0": {
+          "bytes_saved": 0,
+          "bytes_saved_share": 0.0,
+          "total_ms": 296,
+          "baseline_ms": 296
+        },
+        "N1": {
+          "bytes_saved": 19264426,
+          "bytes_saved_share": 0.727,
+          "total_ms": 295648,
+          "baseline_ms": 873732
+        },
+        "N2": {
+          "bytes_saved": 19004443,
+          "bytes_saved_share": 0.717,
+          "total_ms": 80854,
+          "baseline_ms": 149872
+        },
+        "N3": {
+          "bytes_saved": 1199973,
+          "bytes_saved_share": 0.045,
+          "total_ms": 37312,
+          "baseline_ms": 38206
+        },
+        "N4": {
+          "bytes_saved": 1199973,
+          "bytes_saved_share": 0.045,
+          "total_ms": 5816,
+          "baseline_ms": 5941
+        }
+      }
+    }
+  },
+  "verdict": {
+    "Q1_regressions": {
+      "B0": 0,
+      "B1": 181,
+      "B2": 168,
+      "B3": 147,
+      "B4": 3
+    },
+    "Q1_met": true,
+    "Q2_met": true,
+    "Q3_met": true,
+    "B4_same_decision_as_B3": 0.417,
+    "kill_check_behaves_like_B3": false,
+    "eligible_pairs": 300
+  },
+  "environment": {
+    "python": "3.14.0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 76 Stepping 4, GenuineIntel",
+    "system": "Windows-10-10.0.19045-SP0"
+  }
+}

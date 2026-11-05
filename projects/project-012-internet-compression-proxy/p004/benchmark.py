@@ -164,9 +164,7 @@ def main(argv):
              "ratios": [[k[0], k[1], k[2], v] for k, v in model.ratios.items()], "environment": env}, indent=2))
         print("cost model fitted on seed 0:", model)
         return
-    saved = json.loads((RESULTS / "cost_model.json").read_text())
-    model = CostModel(saved["webp_ms_per_mpx"], saved["gzip_ms_per_mb"], saved["webp_overhead_ms"], saved["gzip_overhead_ms"],
-                      {(a, b, c): v for a, b, c, v in saved["ratios"]})
+    model = CostModel.load(RESULTS / "cost_model.json")
     objs = [o for seed in range(1, 6) for o in corpus.build(seed)]
     rows = evaluate(objs, model, transformer)
     summary = summarise(rows)

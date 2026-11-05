@@ -1,0 +1,40 @@
+{
+  "apldg": {
+    "B2": {
+      "artifact_precision": null,
+      "artifact_recall": 0.0,
+      "false_invalidation_rate": 0.0,
+      "claim_status_agreement": 0.801,
+      "laundering_cases": 0,
+      "ai_descendants_checked": 1150
+    },
+    "B4": {
+      "artifact_precision": 1.0,
+      "artifact_recall": 1.0,
+      "false_invalidation_rate": 0.0,
+      "claim_status_agreement": 1.0,
+      "laundering_cases": 0,
+      "ai_descendants_checked": 1150
+    }
+  },
+  "pgaic": {
+    "B3": {
+      "false_mastery_rate": 0.194,
+      "missed_mastery_rate": 0.278,
+      "l6_only_reported_independent": 1.0
+    },
+    "B4": {
+      "false_mastery_rate": 0.139,
+      "missed_mastery_rate": 0.1,
+      "l6_only_reported_independent": 0.0
+    }
+  },
+  "gates": {
+    "no_laundering": true,
+    "propagation_precision_>=0.95": true,
+    "propagation_recall_>=0.95": true,
+    "false_invalidation_<=0.05": true,
+    "l6_never_independent": true,
+    "measurable_benefit_over_baselines": true
+  }
+}

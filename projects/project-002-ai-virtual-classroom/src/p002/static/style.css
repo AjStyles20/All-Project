@@ -1,0 +1,37 @@
+:root {
+  --bg: #ffffff; --fg: #1b1d21; --muted: #5a6070; --card: #f4f5f7; --line: #d6d9e0;
+  --ok: #1d6b35; --error: #a01c1c; --warn: #8a4b00; --focus: #1a5fd0;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15171b; --fg: #e8eaee; --muted: #a2a8b6; --card: #1f2228; --line: #343843;
+    --ok: #7fd49a; --error: #ff8a8a; --warn: #ffbf66; --focus: #79a8ff;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+header, main { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+h1 { font-size: 1.4rem; }
+nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+nav button[aria-pressed="true"] { border-color: var(--focus); font-weight: 600; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+button, input, select { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--card); color: var(--fg); }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+fieldset { border: 1px solid var(--line); border-radius: 8px; margin: 8px 0; }
+.option { padding: 4px 0; }
+.option label { margin-left: 6px; }
+#accommodation { width: 100%; max-width: 420px; display: block; margin: 4px 0 8px; }
+pre { background: var(--card); padding: 8px 12px; border-radius: 6px; overflow-x: auto; white-space: pre-wrap; }
+.prompt { font-weight: 600; }
+.tag { color: var(--muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.04em; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 16px; margin: 12px 0; }
+.meta { color: var(--muted); }
+.ok { color: var(--ok); }
+.error { color: var(--error); }
+.status { font-size: 0.85rem; }
+.status.stale, .status.conflicted, .status.invalid { color: var(--error); }
+.status.review_required, .status.unverified { color: var(--warn); }
+.status.current { color: var(--ok); }
+li { margin: 6px 0; }

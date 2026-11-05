@@ -49,3 +49,8 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 - Network is modelled, not emulated; B4 predicts with the same formula the benchmark scores with.
 - B4's fidelity check (24–56 % of encode time on the development laptop) was not counted in the benchmark; large photos can hit the 5 s limit on low-spec hardware.
 - No cache; synthetic corpus; time is the only objective unless the client sends Save-Data.
+
+## P006 Learning World (2026-11-05)
+- No language model connected; AI roles are deterministic stand-ins. Phase 3 (retrieval, providers, model-side injection defences) not built.
+- One verification check per concept: simulated false mastery 13.9 %.
+- Single user, local only; small benchmark course.

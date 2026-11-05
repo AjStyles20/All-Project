@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning World</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>Learning World: SQL joins</h1>
+    <nav aria-label="Sections">
+      <button type="button" data-tab="practice" aria-pressed="true">Practice</button>
+      <button type="button" data-tab="mastery" aria-pressed="false">My progress</button>
+      <button type="button" data-tab="course" aria-pressed="false">Course and sources</button>
+    </nav>
+  </header>
+  <main>
+    <div id="notice" role="alert"></div>
+    <section id="practice" aria-labelledby="practice-h">
+      <h2 id="practice-h">Practice</h2>
+      <div id="question"></div>
+      <div id="feedback" role="status" aria-live="polite"></div>
+    </section>
+    <section id="mastery" aria-labelledby="mastery-h" hidden>
+      <h2 id="mastery-h">My progress</h2>
+      <p class="meta">Getting something right with a lot of help counts as task success. Mastery is only marked independent after a check without help.</p>
+      <div id="concepts"></div>
+      <h3>Things I'm stuck on</h3>
+      <form id="issue-form" class="row">
+        <label for="issue-concept">Topic</label>
+        <select id="issue-concept"><option value="inner-join">INNER JOIN</option><option value="left-join">LEFT JOIN</option><option value="cross-join">CROSS JOIN</option></select>
+        <label for="issue-text">What confuses me</label>
+        <input id="issue-text" maxlength="300" required>
+        <button type="submit">Add</button>
+      </form>
+      <ul id="issues"></ul>
+    </section>
+    <section id="course" aria-labelledby="course-h" hidden>
+      <h2 id="course-h">Course and sources</h2>
+      <p class="meta">Every statement shows where it came from and whether it can still be relied on.</p>
+      <h3>Lessons and quizzes</h3>
+      <ul id="artifacts"></ul>
+      <h3>Statements</h3>
+      <ul id="claims"></ul>
+      <h3>Sources</h3>
+      <ul id="sources"></ul>
+    </section>
+  </main>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

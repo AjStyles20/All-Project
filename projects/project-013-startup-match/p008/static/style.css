@@ -1,0 +1,32 @@
+:root {
+  --bg: #ffffff; --fg: #1b1d21; --muted: #5a6070; --card: #f4f5f7; --line: #d6d9e0;
+  --ok: #1d6b35; --error: #a01c1c; --warn: #8a4b00; --focus: #1a5fd0;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #15171b; --fg: #e8eaee; --muted: #a2a8b6; --card: #1f2228; --line: #343843;
+    --ok: #7fd49a; --error: #ff8a8a; --warn: #ffbf66; --focus: #79a8ff; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+header, main { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+h1 { font-size: 1.4rem; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 16px 12px; margin: 12px 0; }
+.cards { list-style: none; padding: 0; }
+label { display: block; margin-top: 6px; }
+fieldset label, .checks label { display: inline-block; margin-right: 12px; }
+input, select, textarea, button { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); }
+input:not([type=checkbox]):not([type=radio]), select, textarea { width: 100%; }
+button { cursor: pointer; margin-top: 8px; background: var(--card); }
+fieldset { border: 1px solid var(--line); border-radius: 6px; margin: 8px 0; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.meta { color: var(--muted); }
+.ok { color: var(--ok); }
+.error { color: var(--error); }
+.warn { color: var(--warn); margin: 4px 0; }
+.disclaimer { border-left: 4px solid var(--warn); padding-left: 10px; color: var(--muted); }
+.components { padding-left: 1.2em; }
+.thread p { margin: 4px 0; }
+[hidden] { display: none !important; }

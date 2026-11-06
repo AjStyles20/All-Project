@@ -72,3 +72,7 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 - Evaluated only on synthetic, self-authored incidents; real incident datasets with known root causes not used.
 - Fixed library of eight fault types; logs only (no metrics or traces); no language model.
 - Abstains on 25 % of incidents that had one clear cause.
+
+## P008 StartupMatch (2026-11-06)
+- Profiles are not identity-verified; deal records are self-reported. No e-mail notifications, admin or moderation tools.
+- Fit score is a simple average of known criteria, not tuned or validated on real outcomes.

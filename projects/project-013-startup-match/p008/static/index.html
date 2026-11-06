@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StartupMatch</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>StartupMatch</h1>
+    <div id="account" class="row" hidden><span id="who"></span><button id="logout" type="button">Sign out</button></div>
+  </header>
+  <main>
+    <div id="notice" role="alert"></div>
+
+    <section id="auth" aria-labelledby="auth-h">
+      <h2 id="auth-h">Sign in or create an account</h2>
+      <form id="login" class="card">
+        <h3>Sign in</h3>
+        <label for="li-email">E-mail</label><input id="li-email" type="email" autocomplete="username" required>
+        <label for="li-pw">Password</label><input id="li-pw" type="password" autocomplete="current-password" required>
+        <button type="submit">Sign in</button>
+      </form>
+      <form id="register" class="card">
+        <h3>New account</h3>
+        <fieldset><legend>I am</legend>
+          <label><input type="radio" name="role" value="founder" checked> a founder</label>
+          <label><input type="radio" name="role" value="investor"> an investor</label>
+        </fieldset>
+        <label for="re-name">Company or fund name</label><input id="re-name" maxlength="120" required>
+        <label for="re-email">E-mail</label><input id="re-email" type="email" autocomplete="username" required>
+        <label for="re-pw">Password (10+ characters)</label><input id="re-pw" type="password" minlength="10" autocomplete="new-password" required>
+        <button type="submit">Create account</button>
+      </form>
+      <p class="meta">Profiles are self-declared and not identity-checked. Treat every profile as unverified.</p>
+    </section>
+
+    <section id="founder" hidden>
+      <form id="startup-form" class="card">
+        <h2>Your startup</h2>
+        <label for="s-name">Name</label><input id="s-name" maxlength="120" required>
+        <label for="s-line">One line about it</label><input id="s-line" maxlength="280">
+        <div class="grid">
+          <div><label for="s-sector">Sector</label><select id="s-sector"></select></div>
+          <div><label for="s-stage">Stage</label><select id="s-stage"></select></div>
+          <div><label for="s-country">Country</label><input id="s-country" maxlength="60"></div>
+          <div><label for="s-raising">Raising (amount)</label><input id="s-raising" type="number" min="0"></div>
+        </div>
+        <label for="s-contact">Contact (shown only after an investor accepts)</label><input id="s-contact" maxlength="200">
+        <label><input id="s-listed" type="checkbox" checked> Let investors find this startup</label>
+        <button type="submit">Save</button>
+      </form>
+      <h2>Investors that fit</h2>
+      <p id="f-disclaimer" class="disclaimer"></p>
+      <ol id="matches" class="cards"></ol>
+    </section>
+
+    <section id="investor" hidden>
+      <form id="investor-form" class="card">
+        <h2>Your fund's stated focus</h2>
+        <label for="i-name">Name</label><input id="i-name" maxlength="120" required>
+        <fieldset><legend>Sectors</legend><div id="i-sectors" class="checks"></div></fieldset>
+        <fieldset><legend>Stages</legend><div id="i-stages" class="checks"></div></fieldset>
+        <div class="grid">
+          <div><label for="i-countries">Countries (comma separated)</label><input id="i-countries" maxlength="300"></div>
+          <div><label for="i-min">Smallest cheque</label><input id="i-min" type="number" min="0"></div>
+          <div><label for="i-max">Largest cheque</label><input id="i-max" type="number" min="0"></div>
+        </div>
+        <label for="i-contact">Contact (shown only to founders you accept)</label><input id="i-contact" maxlength="200">
+        <button type="submit">Save</button>
+      </form>
+      <div id="says-vs-does"></div>
+      <form id="deal-form" class="card">
+        <h2>Recorded deals</h2>
+        <p class="meta">Founders see these next to your stated focus. Give a source for each.</p>
+        <div class="grid">
+          <div><label for="d-company">Company</label><input id="d-company" maxlength="120" required></div>
+          <div><label for="d-sector">Sector</label><select id="d-sector"></select></div>
+          <div><label for="d-stage">Stage</label><select id="d-stage"></select></div>
+          <div><label for="d-date">Date</label><input id="d-date" type="date" required></div>
+        </div>
+        <label for="d-source">Source (link or description)</label><input id="d-source" maxlength="300" required>
+        <label for="d-verified">Last checked on (optional)</label><input id="d-verified" type="date">
+        <button type="submit">Add deal</button>
+        <ul id="deals"></ul>
+      </form>
+      <h2>Startups that fit your focus</h2>
+      <p id="i-disclaimer" class="disclaimer"></p>
+      <ol id="startups" class="cards"></ol>
+    </section>
+
+    <section id="intros-section" hidden aria-labelledby="intros-h">
+      <h2 id="intros-h">Intros</h2>
+      <ol id="intros" class="cards"></ol>
+    </section>
+  </main>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

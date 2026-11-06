@@ -52,7 +52,9 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 
 - **P002 Educational Language Model From Scratch** (DR-021; build regardless, outside FYP competition): PR #36 **merged** (`445d77c`). Tier A: NumPy Transformer with hand-written, gradient-checked backward pass, BPE tokenizer, hand-written CC0 corpus (TE-025). Finding: naive misconception-contrast pretraining made the model prefer misconceptions (37.5 % vs 90 %). See `projects/project-003-small-educational-language-model/docs/RESULTS.md`.
 
-- **P014 Fantasy Action RPG** (DR-021; creative project, research verdict unchanged): branch `p014-fantasy-rpg`, draft PR. Original browser game *Lanterns of Brinewold*: four-hero party, one region, one quest chain, boss with telegraphed attack; all names, story and dialogue original (`docs/IP_NOTES.md`). Tested by unit tests, a scripted playthrough and a browser check (TE-026). Balance tuned with a bot only; no human playtest yet.
+- **P014 Fantasy Action RPG** (DR-021; creative project, research verdict unchanged): PR #37 **merged** (`a2765a5`). Original browser game *Lanterns of Brinewold*: four-hero party, one region, one quest chain, boss with telegraphed attack; all names, story and dialogue original (`docs/IP_NOTES.md`). Tested by unit tests, a scripted playthrough and a browser check (TE-026). Balance tuned with a bot only; no human playtest yet.
+
+- **P005 Automated Log Analysis and Root-Cause Assistance** (DR-021; research verdict KILL unchanged, engineering build): branch `p005-log-root-cause`, draft PR. Local CLI: parsing with secret redaction, incident onset, competing hypotheses with typed claim states and file:line evidence, discriminating checks, UNRESOLVED/INSUFFICIENT abstention, VERIFIED only by recorded human checks, HTML report (TE-027). On 240 synthetic incidents: unsupported assertions 9.6 % vs 40–60 % for baselines; abstains on 25 % of answerable cases.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -95,7 +97,8 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#34** P006 Learning World first version (DR-021). **Merged** (`ae0fcf8`).
 - **#35** P011 Defence Practice first version (DR-021). **Merged** (`4552a18`).
 - **#36** P002 Educational LM Tier A (DR-021). **Merged** (`445d77c`).
-- P014 Lanterns of Brinewold game (DR-021): branch `p014-fantasy-rpg`, draft PR, awaiting AJ.
+- **#37** P014 Lanterns of Brinewold (DR-021). **Merged** (`a2765a5`).
+- P005 Log root-cause tool (DR-021): branch `p005-log-root-cause`, draft PR, awaiting AJ.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 
 ## Current Work

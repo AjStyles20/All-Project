@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'">
+  <title>Rehearsal Room</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><h1>Rehearsal Room</h1><p class="meta">Practise talks and answers in front of a simulated audience. Practice only: it does not assess or treat anxiety or any other condition.</p></header>
+  <main>
+    <div id="notice" role="alert"></div>
+
+    <section id="setup" aria-labelledby="setup-h">
+      <h2 id="setup-h">Set up a run</h2>
+      <form id="setup-form" class="card">
+        <label for="scenario">Scenario</label>
+        <select id="scenario"></select>
+        <p id="scenario-info" class="meta"></p>
+        <fieldset><legend>Extra pressure (optional)</legend>
+          <label><input type="checkbox" name="stressor" value="interrupt"> Interruptions during the talk</label>
+          <label><input type="checkbox" name="stressor" value="skeptical"> A more sceptical panel</label>
+          <label><input type="checkbox" name="stressor" value="rapid"> Rapid follow-up questions</label>
+          <label><input type="checkbox" name="stressor" value="strict-time"> Half the time to answer</label>
+          <label><input type="checkbox" name="stressor" value="unexpected"> An unexpected question</label>
+        </fieldset>
+        <p id="suggestion" class="suggest"></p>
+        <fieldset><legend>Voice</legend>
+          <label><input type="checkbox" id="speak-questions"> Read questions aloud (uses your browser's voices on this device)</label>
+          <label><input type="checkbox" id="use-mic"> Answer by speaking</label>
+          <p id="mic-note" class="meta">Speech-to-text is done by your browser. In Chrome and Edge this sends your audio to the browser maker's servers. Typing never leaves this page.</p>
+        </fieldset>
+        <button type="submit">Start</button>
+      </form>
+      <section aria-labelledby="hist-h">
+        <h2 id="hist-h">Your practice so far</h2>
+        <div id="history"></div>
+        <button id="clear-history" type="button">Clear practice history</button>
+      </section>
+    </section>
+
+    <section id="room" hidden aria-labelledby="room-h">
+      <h2 id="room-h" class="sr-only">Rehearsal</h2>
+      <div id="audience" class="audience" aria-live="polite"></div>
+      <div id="bubble" class="bubble" aria-live="assertive" hidden></div>
+      <p id="phase" class="phase"></p>
+      <p id="clock" class="clock" aria-live="off"></p>
+      <form id="input-form" class="card">
+        <label id="input-label" for="input">Your talk</label>
+        <textarea id="input" rows="5" maxlength="6000"></textarea>
+        <div class="row">
+          <button id="mic" type="button" hidden>Start speaking</button>
+          <button id="send" type="submit">Add to talk</button>
+          <button id="finish" type="button">I'm done talking</button>
+        </div>
+        <p class="meta" id="input-hint">Type (or speak) your talk in parts; the audience reacts as you go.</p>
+      </form>
+    </section>
+
+    <section id="result" hidden aria-labelledby="result-h">
+      <h2 id="result-h">How the run went</h2>
+      <div id="report"></div>
+      <button id="again" type="button">Back to set-up</button>
+    </section>
+  </main>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

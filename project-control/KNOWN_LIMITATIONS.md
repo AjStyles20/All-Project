@@ -76,3 +76,7 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 ## P008 StartupMatch (2026-11-06)
 - Profiles are not identity-verified; deal records are self-reported. No e-mail notifications, admin or moderation tools.
 - Fit score is a simple average of known criteria, not tuned or validated on real outcomes.
+
+## P012 Rehearsal Room (2026-11-06)
+- Measures are surface features of answer text, not validated against human ratings; no evidence of transfer to real talks.
+- Fixed question banks; no voice or video analysis. Optional speech-to-text in Chrome/Edge sends audio to the browser maker.

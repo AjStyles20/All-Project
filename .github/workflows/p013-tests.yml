@@ -1,0 +1,27 @@
+name: P013 Earbud Routing Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "projects/project-008-independent-earbud-routing/**"
+      - ".github/workflows/p013-tests.yml"
+  pull_request:
+    paths:
+      - "projects/project-008-independent-earbud-routing/**"
+      - ".github/workflows/p013-tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/project-008-independent-earbud-routing/sim
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Run routing and link model tests
+        run: node --test

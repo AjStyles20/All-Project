@@ -397,3 +397,14 @@ All verification evidence should be reproducible where practical. Do not record 
 - Defects found: exact word matching scored an on-topic answer ("tested" vs "test") 0 % on relevance; simple stemming added with a test.
 - Status: PASS for the tested behaviour; measures not validated against human judgement.
 - Performed by: Claude Code (Engineering)
+
+### TE-030 — P013 Earbud Routing Lab: routing rules, link model and browser run
+- Date: 2026-11-06
+- Requirement(s): P013 Pass 003 suggested engineering build (split/coupled, per-ear mute, session continuity, microphone selection); DR-021
+- Test type: Unit + browser
+- Environment: Node 26 locally (CI: Node 22); built-in browser; static server on 127.0.0.1:8030.
+- Observed result, tests: 12 passed (coupled stereo, split mono, mute downmix on/off, split call with mic on the call bud and media on the other, pause-media call, routing and positions restored after calls, prompt ducking/expiry/hold, bad input refused, plain summary, retransmission maths, air-time budget, mic uplink stream).
+- Observed result, browser: split call on the right kept music on the left with the right mic; link panel showed three streams, 58 % worst-case / 21 % typical air time; ending the call restored split music/podcast; prompt ducked the podcast; mute worked; no console errors; no horizontal scroll at 375 px.
+- Defects found: none in the rules; one leftover no-op in the chime code removed.
+- Status: PASS for the simulated behaviour. Audio side not confirmed by ear; no hardware measurement.
+- Performed by: Claude Code (Engineering)

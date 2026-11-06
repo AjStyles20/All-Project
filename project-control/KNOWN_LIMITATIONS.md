@@ -80,3 +80,8 @@ See `projects/project-007-coding-examination-platform/documentation/FD07_USER_MA
 ## P012 Rehearsal Room (2026-11-06)
 - Measures are surface features of answer text, not validated against human ratings; no evidence of transfer to real talks.
 - Fixed question banks; no voice or video analysis. Optional speech-to-text in Chrome/Edge sends audio to the browser maker.
+
+## P013 Earbud Routing Lab (2026-11-06)
+- Simulation only: no Bluetooth hardware or firmware; latency, bud-to-bud sync, battery and real loss are not measured. The radio panel is a rough model.
+- Left/right output was not confirmed by ear; it follows the tested mix.
+- Per-ear sources over LE Audio are patented (Bose US11916988B2 and related families); legal review is needed before any product use. Stock-phone apps cannot route other apps' audio or calls per ear.

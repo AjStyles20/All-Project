@@ -58,7 +58,9 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 
 - **P008 StartupMatch** (DR-021; research verdict KILL unchanged, product build): PR #39 **merged** (`d92226f`). Two-sided web app: transparent per-criterion matching (unknown ≠ zero), declared-vs-revealed thesis warnings, deal provenance and staleness flags, intro workflow with contact privacy, accounts with scrypt and CSRF guard (TE-028). No accuracy claim; profiles not identity-verified.
 
-- **P012 Interactive AI Virtual Audience** (DR-021; research verdict KILL unchanged, product build): branch `p012-virtual-audience`, draft PR. Browser-only *Rehearsal Room*: panel with moods, interruptions, follow-ups and time pressure, text-based delivery measures, local practice journey with next-drill suggestion (TE-029). Practice only, no clinical claims; does not duplicate P011's document-grounded questions.
+- **P012 Interactive AI Virtual Audience** (DR-021; research verdict KILL unchanged, product build): PR #40 **merged** (`d421821`). Browser-only *Rehearsal Room*: panel with moods, interruptions, follow-ups and time pressure, text-based delivery measures, local practice journey with next-drill suggestion (TE-029). Practice only, no clinical claims; does not duplicate P011's document-grounded questions.
+
+- **P013 Independent Earbud Routing** (DR-021; research verdict KILL research / PARK engineering unchanged): branch `p013-earbud-routing`, draft PR. *Earbud Routing Lab*: tested routing rules (coupled/split, per-ear mute with downmix, split or pause-media calls with mic selection, restore after calls, prompt ducking), rough radio model, browser demo through headphone L/R (TE-030). Simulation only: no hardware; behaviour is patented (Bose US11916988B2), legal review needed before product use.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -104,7 +106,8 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#37** P014 Lanterns of Brinewold (DR-021). **Merged** (`a2765a5`).
 - **#38** P005 Log root-cause tool (DR-021). **Merged** (`213fbfd`).
 - **#39** P008 StartupMatch (DR-021). **Merged** (`d92226f`).
-- P012 Rehearsal Room (DR-021): branch `p012-virtual-audience`, draft PR, awaiting AJ.
+- **#40** P012 Rehearsal Room (DR-021). **Merged** (`d421821`).
+- P013 Earbud Routing Lab (DR-021): branch `p013-earbud-routing`, draft PR, awaiting AJ.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 
 ## Current Work

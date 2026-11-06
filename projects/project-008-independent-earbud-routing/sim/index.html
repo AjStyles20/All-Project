@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Earbud Routing Lab</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Earbud Routing Lab</h1>
+  <p class="sub">A simulation of per-ear routing for a pair of earbuds. Wear ordinary headphones: the left and right channels stand in for the left and right buds. All sounds are generated in the page.</p>
+  <p class="warn">Simulation only. Real phones don't let ordinary apps route other apps' audio or calls per ear, and per-ear sources over LE Audio are patent-encumbered (see the README).</p>
+</header>
+
+<main>
+  <section class="card" aria-labelledby="h-audio">
+    <h2 id="h-audio">Sound</h2>
+    <button id="start" type="button">Start sound</button>
+    <label>Volume <input id="volume" type="range" min="0" max="1" step="0.05" value="0.4"></label>
+  </section>
+
+  <section class="card" aria-labelledby="h-route">
+    <h2 id="h-route">Routing</h2>
+    <fieldset>
+      <legend>Mode</legend>
+      <label><input type="radio" name="mode" value="coupled" checked> Coupled (one source, stereo)</label>
+      <label><input type="radio" name="mode" value="split"> Split (each ear its own source)</label>
+    </fieldset>
+    <div class="row">
+      <label>Coupled source <select id="coupled"><option value="music">Music</option><option value="podcast">Podcast</option></select></label>
+    </div>
+    <div class="row">
+      <label>Left ear <select id="left"><option value="music">Music</option><option value="podcast">Podcast</option></select></label>
+      <label>Right ear <select id="right"><option value="music">Music</option><option value="podcast" selected>Podcast</option></select></label>
+    </div>
+    <div class="row">
+      <label><input type="checkbox" id="muteLeft"> Mute left</label>
+      <label><input type="checkbox" id="muteRight"> Mute right</label>
+      <label><input type="checkbox" id="downmix" checked> Downmix to mono when one ear is muted</label>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-call">
+    <h2 id="h-call">Calls and prompts</h2>
+    <div class="row">
+      <label>During a call <select id="behaviour"><option value="split">Call on one ear, media continues on the other</option><option value="pause-media">Call on both ears, pause media</option></select></label>
+      <label>Call ear <select id="callEar"><option value="right">Right</option><option value="left">Left</option></select></label>
+    </div>
+    <div class="row">
+      <button id="call" type="button">Start call</button>
+      <button id="prompt" type="button">Navigation prompt</button>
+    </div>
+  </section>
+
+  <section class="card now" aria-labelledby="h-now" aria-live="polite">
+    <h2 id="h-now">Now playing</h2>
+    <div class="ears">
+      <div class="ear"><h3>Left bud</h3><p id="nowLeft"></p><div class="meter"><span id="meterLeft"></span></div></div>
+      <div class="ear"><h3>Right bud</h3><p id="nowRight"></p><div class="meter"><span id="meterRight"></span></div></div>
+    </div>
+    <p>Microphone: <strong id="mic"></strong> · Mode: <strong id="modeNow"></strong></p>
+    <p class="small">Positions — music <span id="posMusic"></span> · podcast <span id="posPodcast"></span></p>
+    <p id="error" class="error" role="alert"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-link">
+    <h2 id="h-link">Radio link (rough model)</h2>
+    <div class="row">
+      <label>Packet loss <input id="loss" type="range" min="0" max="0.4" step="0.01" value="0.05"> <span id="lossOut"></span></label>
+      <label>Retransmissions <input id="retx" type="range" min="0" max="6" step="1" value="2"> <span id="retxOut"></span></label>
+    </div>
+    <table>
+      <thead><tr><th>Stream</th><th>Bitrate</th><th>Frame success</th><th>Lost frames / min</th></tr></thead>
+      <tbody id="streams"></tbody>
+    </table>
+    <p>Air time: worst case <strong id="worst"></strong>, typical <strong id="typical"></strong> — <strong id="fits"></strong></p>
+    <p class="small" id="linkNote"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-log">
+    <h2 id="h-log">Event log</h2>
+    <ol id="log" class="log"></ol>
+  </section>
+</main>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

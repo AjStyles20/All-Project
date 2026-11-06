@@ -375,3 +375,14 @@ All verification evidence should be reproducible where practical. Do not record 
 - Defects found: false onset from a single noisy minute and over-literal missing-service check (both on pilot data, fixed before freezing); duplicated verdict heading in the report (fixed, test added).
 - Status: PASS for the tool on synthetic data; not evaluated on real incidents.
 - Performed by: Claude Code (Engineering)
+
+### TE-028 — P008 StartupMatch: matching rules, access control, browser
+- Date: 2026-11-06
+- Requirement(s): P008 Pass 003 product scope; DR-021
+- Test type: Unit + API + browser
+- Environment: Python 3.14 locally (CI: 3.11); built-in browser; app on 127.0.0.1:8019 with fictional seeded accounts.
+- Observed result, tests: 13 passed (per-criterion reasons, unknown left out and lowering confidence, adjacent-stage partial fit, says-vs-does needs four recent deals and ignores old ones, stale and unverified warnings, stable ranking, CSRF header, duplicate e-mail, sign-in throttling, full intro flow with contact hidden until acceptance, messages only after acceptance, outsiders get 404, role checks, validation, daily intro limit).
+- Observed result, browser: founder view ranked a fitting investor at 95 % with reasons and showed a says-vs-does warning on another; intro request sent; investor view listed startups with reasons; accepting revealed the founder's contact and opened messaging.
+- Defects found: a test pointed at a non-existent folder; signed-out state returned 401 and logged console errors (now a normal response).
+- Status: PASS for the tested product behaviour. No accuracy or outcome claim is made.
+- Performed by: Claude Code (Engineering)

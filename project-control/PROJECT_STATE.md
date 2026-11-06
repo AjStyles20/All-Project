@@ -56,7 +56,9 @@ Full-product layer (MySQL, per the MySQL technology decision in `documentation/D
 
 - **P005 Automated Log Analysis and Root-Cause Assistance** (DR-021; research verdict KILL unchanged, engineering build): PR #38 **merged** (`213fbfd`). Local CLI: parsing with secret redaction, incident onset, competing hypotheses with typed claim states and file:line evidence, discriminating checks, UNRESOLVED/INSUFFICIENT abstention, VERIFIED only by recorded human checks, HTML report (TE-027). On 240 synthetic incidents: unsupported assertions 9.6 % vs 40–60 % for baselines; abstains on 25 % of answerable cases.
 
-- **P008 StartupMatch** (DR-021; research verdict KILL unchanged, product build): branch `p008-startup-match`, draft PR. Two-sided web app: transparent per-criterion matching (unknown ≠ zero), declared-vs-revealed thesis warnings, deal provenance and staleness flags, intro workflow with contact privacy, accounts with scrypt and CSRF guard (TE-028). No accuracy claim; profiles not identity-verified.
+- **P008 StartupMatch** (DR-021; research verdict KILL unchanged, product build): PR #39 **merged** (`d92226f`). Two-sided web app: transparent per-criterion matching (unknown ≠ zero), declared-vs-revealed thesis warnings, deal provenance and staleness flags, intro workflow with contact privacy, accounts with scrypt and CSRF guard (TE-028). No accuracy claim; profiles not identity-verified.
+
+- **P012 Interactive AI Virtual Audience** (DR-021; research verdict KILL unchanged, product build): branch `p012-virtual-audience`, draft PR. Browser-only *Rehearsal Room*: panel with moods, interruptions, follow-ups and time pressure, text-based delivery measures, local practice journey with next-drill suggestion (TE-029). Practice only, no clinical claims; does not duplicate P011's document-grounded questions.
 
 Residual contribution: **Evidence-Gap-Driven Programming Competence Verification (EGPCV)**, narrowed to competence-gap-driven bounded minimum independent evidence acquisition rather than generic adaptive viva, browser coding, proctoring, or code-conditioned questioning.
 
@@ -101,7 +103,8 @@ Historical Source-Grounded AI Defense Simulator / canonical P011 test claims mus
 - **#36** P002 Educational LM Tier A (DR-021). **Merged** (`445d77c`).
 - **#37** P014 Lanterns of Brinewold (DR-021). **Merged** (`a2765a5`).
 - **#38** P005 Log root-cause tool (DR-021). **Merged** (`213fbfd`).
-- P008 StartupMatch (DR-021): branch `p008-startup-match`, draft PR, awaiting AJ.
+- **#39** P008 StartupMatch (DR-021). **Merged** (`d92226f`).
+- P012 Rehearsal Room (DR-021): branch `p012-virtual-audience`, draft PR, awaiting AJ.
 - **#1–#16** are historical branches from the earlier Source-Grounded AI Defense Simulator lineage (now canonical P011 per `CANONICAL_PROJECT_INDEX.md`). They are still open and reported mergeable. Whether to close or keep them is AJ's decision.
 
 ## Current Work

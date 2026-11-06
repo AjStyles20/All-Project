@@ -386,3 +386,14 @@ All verification evidence should be reproducible where practical. Do not record 
 - Defects found: a test pointed at a non-existent folder; signed-out state returned 401 and logged console errors (now a normal response).
 - Status: PASS for the tested product behaviour. No accuracy or outcome claim is made.
 - Performed by: Claude Code (Engineering)
+
+### TE-029 — P012 Rehearsal Room: engine and browser run
+- Date: 2026-11-06
+- Requirement(s): P012 Pass 003 product scope and safety boundary; DR-021
+- Test type: Unit + browser
+- Environment: Node 26 locally (CI: Node 22); built-in browser; static server on 127.0.0.1:8020.
+- Observed result, tests: 12 passed (filler counting, relevance with stemming, time limits and strict-time drill, interruption timing and recovery detection both ways, sceptical follow-ups, session always ends, unexpected-question drill, determinism, next-drill choice, report wording free of clinical terms).
+- Observed result, browser: interruption fired during the talk and changed the interrupter's expression; brief answer and "Back to my point" were detected as recovery; five panel questions including two follow-ups; report with per-answer table, skill bars, next drill and "not a grade" note; no console errors.
+- Defects found: exact word matching scored an on-topic answer ("tested" vs "test") 0 % on relevance; simple stemming added with a test.
+- Status: PASS for the tested behaviour; measures not validated against human judgement.
+- Performed by: Claude Code (Engineering)
